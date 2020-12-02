@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>mysql语法总结 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="1.concat()Ⅰ.concat(str1, str2,…) 返回结果为连接参数产生的字符串，如果有任何一个参数为null，则返回值为null。Ⅱ.concat_ws(separator, str1, str2, …)第一个参数指定分隔符。需要注意的是分隔符不能为null，如果为null，则返回结果为null。Ⅲ.group_concat()默认以逗号分隔。 2.having()where 关">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mysql语法总结">
+<meta property="og:url" content="http://example.com/2020/11/21/mysql%E8%AF%AD%E6%B3%95%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="1.concat()Ⅰ.concat(str1, str2,…) 返回结果为连接参数产生的字符串，如果有任何一个参数为null，则返回值为null。Ⅱ.concat_ws(separator, str1, str2, …)第一个参数指定分隔符。需要注意的是分隔符不能为null，如果为null，则返回结果为null。Ⅲ.group_concat()默认以逗号分隔。 2.having()where 关">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-11-21T12:36:15.000Z">
+<meta property="article:modified_time" content="2020-11-26T11:17:01.941Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-mysql语法总结" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/11/21/mysql%E8%AF%AD%E6%B3%95%E6%80%BB%E7%BB%93/" class="article-date">
+  <time datetime="2020-11-21T12:36:15.000Z" itemprop="datePublished">2020-11-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      mysql语法总结
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="1-concat"><a href="#1-concat" class="headerlink" title="1.concat()"></a><strong>1.concat()</strong></h3><p>Ⅰ.concat(str1, str2,…) 返回结果为连接参数产生的字符串，如果有任何一个参数为null，则返回值为null。<br>Ⅱ.concat_ws(separator, str1, str2, …)第一个参数指定分隔符。需要注意的是分隔符不能为null，如果为null，则返回结果为null。<br>Ⅲ.group_concat()默认以逗号分隔。</p>
+<h3 id="2-having"><a href="#2-having" class="headerlink" title="2.having()"></a><strong>2.having()</strong></h3><p>where 关键字无法与合计函数一起使用</p>
+<p>例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SELECT Customer,SUM(OrderPrice) FROM Orders</span><br><span class="line">WHERE Customer&#x3D;&#39;Bush&#39; OR Customer&#x3D;&#39;Adams&#39;</span><br><span class="line">GROUP BY Customer</span><br><span class="line">HAVING SUM(OrderPrice)&gt;1500</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-order-by"><a href="#3-order-by" class="headerlink" title="3.order by()"></a><strong>3.order by()</strong></h3><p>对列进行排序 ASC 升序，DESC降序，默认升序。</p>
+<p>SQL注入中利用该函数判断列数。</p>
+<p><strong>4.ord()和ascii()功能一样</strong></p>
+<h3 id="5-mid-和substr-功能一样"><a href="#5-mid-和substr-功能一样" class="headerlink" title="5.mid()和substr()功能一样"></a><strong>5.mid()和substr()功能一样</strong></h3><p>substr(a,b,c)从b位开始，截取a的c位。</p>
+<p>结合ascii()函数用于盲猜，sql注入时列名，表名，数据库名。</p>
+<h3 id="6-length"><a href="#6-length" class="headerlink" title="6.length()"></a><strong>6.length()</strong></h3><p>用于猜测长度，一般用于猜测数据库名长度。</p>
+<h3 id="7-left-和right"><a href="#7-left-和right" class="headerlink" title="7.left()和right()"></a><strong>7.left()和right()</strong></h3><p>left(a,b)有a的左侧起b位。一般用于猜测数据名，比第5点那种猜法好用点。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/11/21/mysql%E8%AF%AD%E6%B3%95%E6%80%BB%E7%BB%93/" data-id="cki6pgn7k0005nwvcb87u052j" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/11/22/sql%E6%8A%A5%E9%94%99%E7%9B%B2%E6%B3%A8/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          sql盲注
+        
+      </div>
+    </a>
+  
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/12/01/SQL23-38/">SQL23-38</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/27/GET%E8%AF%B7%E6%B1%82%E5%92%8CPOST%E8%AF%B7%E6%B1%82/">GET请求和POST请求</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/26/PHP%E5%87%BD%E6%95%B0%E5%A4%A7%E5%85%A8/">PHP函数大全</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/26/SQL%E6%B3%A8%E5%85%A5%E7%82%B9%E5%88%A4%E6%96%AD/">SQL注入点判断</a>
+          </li>
+        
+          <li>
+            <a href="/2020/11/22/SQL%E5%BB%B6%E8%BF%9F%E6%B3%A8%E5%85%A5-%E5%B8%83%E5%B0%94%E6%B3%A8%E5%85%A5/">SQL延迟注入+布尔注入</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
