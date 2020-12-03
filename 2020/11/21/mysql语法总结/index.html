@@ -29,7 +29,7 @@
 
     <script src="/libs/jquery/jquery.min.js"></script>
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.2.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
 
 
 
@@ -462,8 +462,10 @@
                 <h3 id="1-concat"><a href="#1-concat" class="headerlink" title="1.concat()"></a><strong>1.concat()</strong></h3><p>Ⅰ.concat(str1, str2,…) 返回结果为连接参数产生的字符串，如果有任何一个参数为null，则返回值为null。<br>Ⅱ.concat_ws(separator, str1, str2, …)第一个参数指定分隔符。需要注意的是分隔符不能为null，如果为null，则返回结果为null。<br>Ⅲ.group_concat()默认以逗号分隔。</p>
 <h3 id="2-having"><a href="#2-having" class="headerlink" title="2.having()"></a><strong>2.having()</strong></h3><p>where 关键字无法与合计函数一起使用</p>
 <p>例子：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SELECT Customer,SUM(OrderPrice) FROM Orders</span><br><span class="line">WHERE Customer&#x3D;&#39;Bush&#39; OR Customer&#x3D;&#39;Adams&#39;</span><br><span class="line">GROUP BY Customer</span><br><span class="line">HAVING SUM(OrderPrice)&gt;1500</span><br></pre></td></tr></table></figure>
-
+<pre><code>SELECT Customer,SUM(OrderPrice) FROM Orders
+WHERE Customer=&#39;Bush&#39; OR Customer=&#39;Adams&#39;
+GROUP BY Customer
+HAVING SUM(OrderPrice)&gt;1500</code></pre>
 <h3 id="3-order-by"><a href="#3-order-by" class="headerlink" title="3.order by()"></a><strong>3.order by()</strong></h3><p>对列进行排序 ASC 升序，DESC降序，默认升序。</p>
 <p>SQL注入中利用该函数判断列数。</p>
 <p><strong>4.ord()和ascii()功能一样</strong></p>

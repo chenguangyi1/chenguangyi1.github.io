@@ -29,7 +29,7 @@
 
     <script src="/libs/jquery/jquery.min.js"></script>
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.2.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
 
 
 
@@ -468,8 +468,20 @@
 <p>注：此函数仅对select,show,explain,describe句子返回资源标识符，如果查询失败则返回false。</p>
 <p>对其他的SQL语句，执行成功则返回TRUE，失败则返回false。</p>
 <p>例子：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$con &#x3D; mysql_connect(&quot;localhost&quot;,&quot;mysql_user&quot;,&quot;mysql_pwd&quot;);</span><br><span class="line">if (!$con)</span><br><span class="line">  &#123;</span><br><span class="line">  die(&#39;Could not connect: &#39; . mysql_error());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">$sql &#x3D; &quot;SELECT * FROM Person&quot;;</span><br><span class="line">mysql_query($sql,$con);</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 一些代码</span><br><span class="line"></span><br><span class="line">mysql_close($con);</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+<pre><code>&lt;?php
+$con = mysql_connect(&quot;localhost&quot;,&quot;mysql_user&quot;,&quot;mysql_pwd&quot;);
+if (!$con)
+  &#123;
+  die(&#39;Could not connect: &#39; . mysql_error());
+  &#125;
 
+$sql = &quot;SELECT * FROM Person&quot;;
+mysql_query($sql,$con);
+
+// 一些代码
+
+mysql_close($con);
+?&gt;</code></pre>
 <h3 id="3-mysql-fetch-array-result-resulttype-从结果集中取得一行作为关联数组，或数字数组，或二者兼有。"><a href="#3-mysql-fetch-array-result-resulttype-从结果集中取得一行作为关联数组，或数字数组，或二者兼有。" class="headerlink" title="3.mysql_fetch_array(result,resulttype)从结果集中取得一行作为关联数组，或数字数组，或二者兼有。"></a><strong>3.mysql_fetch_array(result,resulttype)从结果集中取得一行作为关联数组，或数字数组，或二者兼有。</strong></h3><p>data:(必需)该数据指针指，由mysql_query,mysqli_store_result() ,mysqli_use_result()返回的结果。 </p>
 <p>resulttype:(可选)规定要返回哪种类型的数组。</p>
 <ul>
@@ -478,10 +490,30 @@
 <li>MYSQLI_BOTH(同时产生以上两者)–默认使用</li>
 </ul>
 <p>例子：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$con &#x3D; mysql_connect(&quot;localhost&quot;, &quot;hello&quot;, &quot;321&quot;);</span><br><span class="line">if (!$con)</span><br><span class="line">  &#123;</span><br><span class="line">  die(&#39;Could not connect: &#39; . mysql_error());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">$db_selected &#x3D; mysql_select_db(&quot;test_db&quot;,$con);</span><br><span class="line">$sql &#x3D; &quot;SELECT * from Person WHERE Lastname&#x3D;&#39;Adams&#39;&quot;;</span><br><span class="line">$result &#x3D; mysql_query($sql,$con);</span><br><span class="line">print_r(mysql_fetch_array($result));</span><br><span class="line"></span><br><span class="line">mysql_close($con);</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+<pre><code>&lt;?php
+$con = mysql_connect(&quot;localhost&quot;, &quot;hello&quot;, &quot;321&quot;);
+if (!$con)
+  &#123;
+  die(&#39;Could not connect: &#39; . mysql_error());
+  &#125;
 
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">输出结果</span><br><span class="line">Array</span><br><span class="line">(</span><br><span class="line">[0] &#x3D;&gt; Adams</span><br><span class="line">[LastName] &#x3D;&gt; Adams</span><br><span class="line">[1] &#x3D;&gt; John</span><br><span class="line">[FirstName] &#x3D;&gt; John</span><br><span class="line">[2] &#x3D;&gt; London</span><br><span class="line">[City] &#x3D;&gt; London</span><br><span class="line">) </span><br></pre></td></tr></table></figure>
+$db_selected = mysql_select_db(&quot;test_db&quot;,$con);
+$sql = &quot;SELECT * from Person WHERE Lastname=&#39;Adams&#39;&quot;;
+$result = mysql_query($sql,$con);
+print_r(mysql_fetch_array($result));
 
+mysql_close($con);
+?&gt;</code></pre>
+<pre><code>输出结果
+Array
+(
+[0] =&gt; Adams
+[LastName] =&gt; Adams
+[1] =&gt; John
+[FirstName] =&gt; John
+[2] =&gt; London
+[City] =&gt; London
+) </code></pre>
 <h3 id="4-mysql-query常常和mysql-fetch-array一起连用"><a href="#4-mysql-query常常和mysql-fetch-array一起连用" class="headerlink" title="4.mysql_query常常和mysql_fetch_array一起连用"></a>4.mysql_query常常和mysql_fetch_array一起连用</h3><p>例子：</p>
 <p>$tempresult=mysql_query (“SQL语句”);<br> while ($row = mysql_fetch_array($tempresult))<br>    {<br>      print $row[0]; //打印第一列的记录<br>      print $row[1];  //打印第二列的记录<br>    }  </p>
 <p>  数组变量 $row 被 mysql_fetch_array 函数建立并用查询的结果字段来填充，数组的每一个分量对应于查询结果的每一个字段 。</p>
@@ -497,8 +529,9 @@
 <h3 id="7-ctype-digit-检测字符串中是否只含有数字。注：字符串里的数字，负数，小数都不行。"><a href="#7-ctype-digit-检测字符串中是否只含有数字。注：字符串里的数字，负数，小数都不行。" class="headerlink" title="7.ctype_digit()检测字符串中是否只含有数字。注：字符串里的数字，负数，小数都不行。"></a>7.ctype_digit()检测字符串中是否只含有数字。注：字符串里的数字，负数，小数都不行。</h3><p>例子：</p>
 <p><strong>&lt;?php</strong><br><strong>$strings = array(‘1820.20’, ‘10002’, ‘wsl!12’);</strong><br><strong>foreach ($strings as $testcase) {</strong><br>  <strong>if (ctype_digit($testcase)) {</strong><br>    <strong>echo “The string $testcase consists of all digits.\n”;</strong><br>  <strong>} else {</strong><br>    <strong>echo “The string $testcase does not consist of all digits.\n”;</strong><br>  <strong>}</strong><br><strong>}</strong></p>
 <p>结果：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">The string 1820.20 does not consist of all digits.</span><br><span class="line">The string 10002 consists of all digits.</span><br><span class="line">The string wsl!12 does not consist of all digits.</span><br></pre></td></tr></table></figure>
-
+<pre><code>The string 1820.20 does not consist of all digits.
+The string 10002 consists of all digits.
+The string wsl!12 does not consist of all digits.</code></pre>
 <p>例子：字符串里的数字才可以！！！</p>
 <h4 id="附：is-numeric-—-检测变量是否为数字或数字字符串-数字可以为负数，小数"><a href="#附：is-numeric-—-检测变量是否为数字或数字字符串-数字可以为负数，小数" class="headerlink" title="附：is_numeric() — 检测变量是否为数字或数字字符串(数字可以为负数，小数)"></a>附：is_numeric() — 检测变量是否为数字或数字字符串(数字可以为负数，小数)</h4><p><strong>&lt;?php</strong></p>
 <p><strong>$numeric_string = ‘42’;</strong><br><strong>$integer    = 42;</strong></p>
@@ -515,15 +548,15 @@
 <li>\x1a</li>
 </ul>
 <p>功能于addslashes一样，范围不一样！</p>
-<h3 id="9-SERVER-是一个包含了诸如头信息-header-、路径-path-、以及脚本位置-script-locations-等等信息的数组。"><a href="#9-SERVER-是一个包含了诸如头信息-header-、路径-path-、以及脚本位置-script-locations-等等信息的数组。" class="headerlink" title="9.$_SERVER 是一个包含了诸如头信息(header)、路径(path)、以及脚本位置(script locations)等等信息的数组。"></a>9.$_SERVER 是一个包含了诸如头信息(header)、路径(path)、以及脚本位置(script locations)等等信息的数组。</h3><h3 id="10-setcookie-用于设置-cookie"><a href="#10-setcookie-用于设置-cookie" class="headerlink" title="10.setcookie() 用于设置 cookie"></a>10.setcookie() 用于设置 cookie</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setcookie(name, value, expire, path, domain)</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setcookie(&quot;user&quot;, &quot;runoob&quot;, time()+3600)</span><br></pre></td></tr></table></figure>
-
+<h3 id="9-SERVER-是一个包含了诸如头信息-header-、路径-path-、以及脚本位置-script-locations-等等信息的数组。"><a href="#9-SERVER-是一个包含了诸如头信息-header-、路径-path-、以及脚本位置-script-locations-等等信息的数组。" class="headerlink" title="9.$_SERVER 是一个包含了诸如头信息(header)、路径(path)、以及脚本位置(script locations)等等信息的数组。"></a>9.$_SERVER 是一个包含了诸如头信息(header)、路径(path)、以及脚本位置(script locations)等等信息的数组。</h3><h3 id="10-setcookie-用于设置-cookie"><a href="#10-setcookie-用于设置-cookie" class="headerlink" title="10.setcookie() 用于设置 cookie"></a>10.setcookie() 用于设置 cookie</h3><pre><code>setcookie(name, value, expire, path, domain)</code></pre>
+<pre><code>setcookie(&quot;user&quot;, &quot;runoob&quot;, time()+3600)</code></pre>
 <p>①这里设置了cookie的名称为user，值为runoob，1小时后失效。</p>
 <p>②$_COOKIE() 变量用于取回 cookie 的值。</p>
 <p>③删除COOKIE</p>
 <p>当删除 cookie 时,应当使过期日期设置为过去的时间点。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">设置 cookie 过期时间为过去 1 小时</span><br><span class="line">setcookie(&quot;user&quot;, &quot;&quot;, time()-3600);</span><br></pre></td></tr></table></figure>
+<pre><code>设置 cookie 过期时间为过去 1 小时
+setcookie(&quot;user&quot;, &quot;&quot;, time()-3600);</code></pre>
+
             </div>
             <hr/>
 
