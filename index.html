@@ -644,8 +644,13 @@ web application tec
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                1.SQLI-LABS23与第一关的不同的是，对#，–，进行了替换成了空格。
-①可以采用 ；%00代替注释符进行注释②采用引号闭合方式加报错进行注入查库：?id=-1’ or updatexml(null,concat(0x3a,(sele
+                                1.SQLI-LABS23$reg = &quot;/#/&quot;;
+
+$reg1 = &quot;/--/&quot;;
+
+$replace = &quot;&quot;;
+
+$id = preg_replace($reg, $rep
                             
                         </div>
                         <div class="publish-info">

