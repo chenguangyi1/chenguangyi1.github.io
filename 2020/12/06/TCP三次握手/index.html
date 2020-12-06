@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="HTML基础, Keep-Boom">
+    <meta name="keywords" content="TCP三次握手, Keep-Boom">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>HTML基础 | Keep-Boom</title>
+    <title>TCP三次握手 | Keep-Boom</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/17.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/5.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">HTML基础</h1>
+                    <h1 class="description center-align post-title">TCP三次握手</h1>
                 </div>
             </div>
         </div>
@@ -459,49 +459,13 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="①表单的基础认识"><a href="#①表单的基础认识" class="headerlink" title="①表单的基础认识"></a>①表单的基础认识</h3><pre><code>&lt;form action=&quot;welcome.php&quot; method=&quot;post&quot;&gt;
-名字: &lt;input type=&quot;text&quot; name=&quot;fname&quot;&gt;
-年龄: &lt;input type=&quot;text&quot; name=&quot;age&quot;&gt;
-&lt;input type=&quot;submit&quot; value=&quot;提交&quot;&gt;
-&lt;/form&gt;</code></pre>
-<p>&lt;from 表单的属性有：</p>
-<ul>
-<li><p>name=”表单名称” ,非必须但是为避免混乱，不同表单尽量用不同的名字，且应该与表单的功能相符；</p>
-</li>
-<li><p>action=”表单提交地址”，真正处理表单的数据脚本和程序，可以是*.php*.html*.asp\mailto:等等；</p>
-</li>
-<li><p>method=”数据提交方式”，get\post,两者区别还不知道就该自己认认真真去查了。</p>
-</li>
-<li><p>enctype=”表单信息提交的编码方式”。text/plain–以纯文本的形式传送，</p>
-<p>​                                                                  application/x-www-from-urlencoded–默认的编码方式，</p>
-<p>​                                                                  multipart/form-data –MIME编码</p>
-</li>
-<li><p>target=”目标窗口打开方式”，</p>
-<pre><code>_blank（在新的窗口打开） 、_parent、_self（显示在相同窗口下、 _top</code></pre>
-<p>;&gt;</p>
-</li>
-</ul>
-<h3 id="②-lt-input-，输入类的控件-gt"><a href="#②-lt-input-，输入类的控件-gt" class="headerlink" title="②&lt;input ，输入类的控件&gt;"></a>②&lt;input ，输入类的控件&gt;</h3><ul>
-<li>type=”控件类型” :</li>
-<li>text文本输入框 | password密码输入框，（文本类参数有：name，size，maxlength，value）；</li>
-<li>button按钮（name，value , onclick） </li>
-<li>submit提交按钮（name , value） </li>
-<li>eset重置按钮（name , value） </li>
-<li>radio单选按钮（name必须设置相同 , value，checked只能有一项被设置，设置多个时，选中的为最后一个） checkbox复选按钮（name设置相同 , value ，checked可以设置多个，都为选中状态） </li>
-<li>image图像按钮（src ,name）</li>
-<li>hidden 隐藏域，主要用来传递一些数据，不会显示在页面中（name, value）&gt;</li>
-<li>如：</li>
-</ul>
-<form name=" " action=" " method=" ">
-  <input type='radio' name='ex' value='male'>男<br/>
-  <input type='radio' name='ex' value='female'>女
-
-</form>
-
-<pre><code>&lt;form name=&quot; &quot; action=&quot; &quot; method=&quot; &quot;&gt;
-  &lt;input type=&#39;radio&#39; name=&#39;ex&#39; value=&#39;male&#39;&gt;男&lt;br/&gt;
-  &lt;input type=&#39;radio&#39; name=&#39;ex&#39; value=&#39;female&#39;&gt;女
-  &lt;/form&gt;</code></pre>
+                <p><img src="D:\boke\blog\source\images\5.png"></p>
+<h3 id="第一次握手："><a href="#第一次握手：" class="headerlink" title="第一次握手："></a>第一次握手：</h3><p>发送端（客户端）发送连接请求将SYN=1,ACK=0,产生一个随机序列seq=x（Client 进入 SYN-SENT(同步已发送)状态）</p>
+<h3 id="第二次握手："><a href="#第二次握手：" class="headerlink" title="第二次握手："></a>第二次握手：</h3><p>接收端（服务器端）接收到请求，确认的话会将（SYN=1,ACK=1,ack=x+1，产生随机序列seq=y ）发送给客户端请求连接（Server 进入 SYN-RCVD（同步收到）状态）</p>
+<h3 id="第三次握手："><a href="#第三次握手：" class="headerlink" title="第三次握手："></a>第三次握手：</h3><p>客户端接收到服务器端请求的报文，确认ACK=1,ack=x+1后，将ACK=1，ack=y+1发送给服务器端。服务器端确认ack=y+1，ACK=1完之后，（Client 和 Server 都进入 ESTABLISHED（已建立连接）状态），通信通道建立完成，可以开始传输数据。</p>
+<p>注：ack和ACK不同</p>
+<p>ack代表的是头部的确认号Acknowledge number,是对上一个包的序号进行确认的号。ack=seq+1</p>
+<p>ACK用于标志TCP包是否对上一个包进行确认操作，确认了置1。没确认则为0。</p>
 
             </div>
             <hr/>
@@ -527,7 +491,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2020/12/06/HTML%E5%9F%BA%E7%A1%80/">http://example.com/2020/12/06/HTML%E5%9F%BA%E7%A1%80/</a>
+                    <a href="http://example.com/2020/12/06/TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/">http://example.com/2020/12/06/TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -732,9 +696,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2020/12/06/TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/">
                     <div class="card-image">
@@ -752,9 +717,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-12-06
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-06
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -763,6 +728,7 @@
                         </span>
                     </div>
                 </div>
+
                 
             </div>
         </div>
@@ -773,13 +739,13 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/12/03/SQLi-LABS%20%E7%AC%AC7%E5%85%B3/">
+                <a href="/2020/12/06/HTML%E5%9F%BA%E7%A1%80/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="">
+                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="HTML基础">
                         
-                        <span class="card-title"></span>
+                        <span class="card-title">HTML基础</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -790,7 +756,7 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-03
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-06
                             </span>
                         <span class="publish-author">
                             
