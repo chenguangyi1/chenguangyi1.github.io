@@ -517,7 +517,52 @@ $id= preg_replace(&#39;/[\/\\\\]/&#39;,&quot;&quot;, $id);    //Strip out slashe
 <p>windows下apache会有解析问题用不了上面这种绕过空格的方法。所以还有终绕过方式。利用括号闭合进行绕过。</p>
 <p>如：</p>
 <pre><code>id=1&#39; oorr(updatexml(null,concat(0x3a,(select (group_concat(table_name)) from (infoorrmation_schema.tables) where(table_schema=&#39;security&#39;)),0x3a),null));%00</code></pre>
-<h3 id="6-SQLI-LABS26a"><a href="#6-SQLI-LABS26a" class="headerlink" title="6.SQLI-LABS26a"></a>6.SQLI-LABS26a</h3>
+<h3 id="6-SQLI-LABS26a"><a href="#6-SQLI-LABS26a" class="headerlink" title="6.SQLI-LABS26a"></a>6.SQLI-LABS26a</h3><h3 id="7-SQLI-LABS27"><a href="#7-SQLI-LABS27" class="headerlink" title="7.SQLI-LABS27"></a>7.SQLI-LABS27</h3><h3 id="8-SQLI-LABS27a"><a href="#8-SQLI-LABS27a" class="headerlink" title="8.SQLI-LABS27a"></a>8.SQLI-LABS27a</h3><h3 id="9-SQLI-LABS28"><a href="#9-SQLI-LABS28" class="headerlink" title="9.SQLI-LABS28"></a>9.SQLI-LABS28</h3><h3 id="10-SQLI-LABS28a"><a href="#10-SQLI-LABS28a" class="headerlink" title="10.SQLI-LABS28a"></a>10.SQLI-LABS28a</h3><h3 id="11-SQLI-LABS29"><a href="#11-SQLI-LABS29" class="headerlink" title="11.SQLI-LABS29"></a>11.SQLI-LABS29</h3><p>注：本关需要先在less-29/后加login.php才能正常进行。</p>
+<p>知识补充：客户端请求数据—&gt;Tomacat服务器（过滤，验证）—&gt;Apache服务器（解析）—&gt;Tomacat(服务器)—&gt;返回给客户端</p>
+<table>
+<thead>
+<tr>
+<th>Web服务器</th>
+<th>参数获取函数</th>
+<th>获取到的参数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PHP/Apache</td>
+<td>$_GET（   ）</td>
+<td>last</td>
+</tr>
+<tr>
+<td>JSP/Tomact</td>
+<td>Rsquest.get</td>
+<td>first</td>
+</tr>
+<tr>
+<td>Perl(CGI)/Apache</td>
+<td>param(    )</td>
+<td>first</td>
+</tr>
+<tr>
+<td>Python/Apache</td>
+<td>getvalue(    )</td>
+<td>all(list)</td>
+</tr>
+<tr>
+<td>ASP/IIS</td>
+<td>request.query string(   )</td>
+<td>all(comma-delimited string)</td>
+</tr>
+</tbody></table>
+<p>本关的Tomcat服务器过滤，验证。功能类似为一个WAF。但因为Tomcat解析的是第一个参数，而Apache解析的是最后一个。所以可以利用这个进行绕过WAF检测。</p>
+<pre><code>less-27/login.php?id=1&amp;id=2&amp;id=3</code></pre>
+<p>回显出来的是id=1，还是id=2，还是id=3呢？</p>
+<p>因为这里最终是apache进行解析回显。所以回显是id=3。所以保证第一个参数是对的绕过Tomcat检测，在最后一个参数处进行注入即可。</p>
+<p>注：该攻击方式为HPP（HTTP Parameter Pollution），是参数污染攻击的一种。</p>
+<p>爆库：</p>
+<pre><code>less-29/login.php?id=1&amp;id=-1&#39; union select 1,2,database() --+</code></pre>
+<p>其他自行思考。这里还有报错回显，所以也可以利用报错注入。</p>
+<h3 id="12-SQLI-LABS30"><a href="#12-SQLI-LABS30" class="headerlink" title="12.SQLI-LABS30"></a>12.SQLI-LABS30</h3><h3 id="13-SQLI-LABS31"><a href="#13-SQLI-LABS31" class="headerlink" title="13.SQLI-LABS31"></a>13.SQLI-LABS31</h3><p>这两关和29关差不多只是注入点不同。也可尝试使用延迟注入。</p>
+<h3 id="14-SQLI-LABS32"><a href="#14-SQLI-LABS32" class="headerlink" title="14.SQLI-LABS32"></a>14.SQLI-LABS32</h3>
             </div>
             <hr/>
 

