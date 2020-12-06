@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Hexo">
+    <meta name="keywords" content="HTML基础, Hexo">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>Hexo</title>
+    <title>HTML基础 | Hexo</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/0.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/17.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title"></h1>
+                    <h1 class="description center-align post-title">HTML基础</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-12-03
+                    2020-12-06
                 </div>
                 
 
@@ -459,51 +459,49 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>title: SQLi-LABS 第7关</p>
-<p>data: 2020-12-3 19:25:30</p>
-<p>tags:</p>
-<h4 id="这一关是进行文件导入注入"><a href="#这一关是进行文件导入注入" class="headerlink" title="这一关是进行文件导入注入"></a>这一关是进行文件导入注入</h4><h4 id="①前提条件："><a href="#①前提条件：" class="headerlink" title="①前提条件："></a>①前提条件：</h4><ul>
-<li>要有文件读写权限。</li>
-</ul>
-<pre><code>and (select count(*) from mysql.user)&gt;0</code></pre>
-<p>如果返回正常，说名拥有权限。如果返回错误，则需要进行提权操作。</p>
+                <h3 id="①表单的基础认识"><a href="#①表单的基础认识" class="headerlink" title="①表单的基础认识"></a>①表单的基础认识</h3><pre><code>&lt;form action=&quot;welcome.php&quot; method=&quot;post&quot;&gt;
+名字: &lt;input type=&quot;text&quot; name=&quot;fname&quot;&gt;
+年龄: &lt;input type=&quot;text&quot; name=&quot;age&quot;&gt;
+&lt;input type=&quot;submit&quot; value=&quot;提交&quot;&gt;
+&lt;/form&gt;</code></pre>
+<p>&lt;from 表单的属性有：</p>
 <ul>
-<li><p>必须拥有预读取文件的绝对路径。相对路径不行</p>
+<li><p>name=”表单名称” ,非必须但是为避免混乱，不同表单尽量用不同的名字，且应该与表单的功能相符；</p>
 </li>
-<li><p>欲读取文件要小于max_allowed_packet</p>
+<li><p>action=”表单提交地址”，真正处理表单的数据脚本和程序，可以是*.php*.html*.asp\mailto:等等；</p>
 </li>
-<li><p>预读取文件必须在服务器上</p>
+<li><p>method=”数据提交方式”，get\post,两者区别还不知道就该自己认认真真去查了。</p>
+</li>
+<li><p>enctype=”表单信息提交的编码方式”。text/plain–以纯文本的形式传送，</p>
+<p>​                                                                  application/x-www-from-urlencoded–默认的编码方式，</p>
+<p>​                                                                  multipart/form-data –MIME编码</p>
+</li>
+<li><p>target=”目标窗口打开方式”，</p>
+<pre><code>_blank（在新的窗口打开） 、_parent、_self（显示在相同窗口下、 _top</code></pre>
+<p>;&gt;</p>
 </li>
 </ul>
-<h4 id="②函数介绍"><a href="#②函数介绍" class="headerlink" title="②函数介绍"></a>②函数介绍</h4><ul>
-<li>into outfile() 写入文件（文件为不存在的文件）</li>
+<h3 id="②-lt-input-，输入类的控件-gt"><a href="#②-lt-input-，输入类的控件-gt" class="headerlink" title="②&lt;input ，输入类的控件&gt;"></a>②&lt;input ，输入类的控件&gt;</h3><ul>
+<li>type=”控件类型” :</li>
+<li>text文本输入框 | password密码输入框，（文本类参数有：name，size，maxlength，value）；</li>
+<li>button按钮（name，value , onclick） </li>
+<li>submit提交按钮（name , value） </li>
+<li>eset重置按钮（name , value） </li>
+<li>radio单选按钮（name必须设置相同 , value，checked只能有一项被设置，设置多个时，选中的为最后一个） checkbox复选按钮（name设置相同 , value ，checked可以设置多个，都为选中状态） </li>
+<li>image图像按钮（src ,name）</li>
+<li>hidden 隐藏域，主要用来传递一些数据，不会显示在页面中（name, value）&gt;</li>
+<li>如：</li>
 </ul>
-<pre><code>select ....into outfile &quot;flie_name&quot;`</code></pre>
-<pre><code>id=1&#39;)) union select 1,2,&quot;内容&quot; into outfile &quot;路径\\文件名&quot;</code></pre>
-<p>虽然页面还是会报错，但进入文件夹会发现文件已经生成写入。</p>
-<ul>
-<li>Load_file(file_name)读取文件</li>
-</ul>
-<pre><code>id=1&#39;)) union select 1,2,load_life(路径文件)</code></pre>
-<h4 id="③开始注入"><a href="#③开始注入" class="headerlink" title="③开始注入"></a>③开始注入</h4><ul>
-<li>注入点判断</li>
-</ul>
-<p>这里我是用延时注入进行判断</p>
-<pre><code>?id=1&#39;)) and sleep(3) --+</code></pre>
-<p>正确会3秒后刷新页面。</p>
-<ul>
-<li>列数判断 </li>
-</ul>
-<p>order by 数字</p>
-<ul>
-<li>拥有权限，恶意文件写入</li>
-</ul>
-<pre><code>union select 1,&quot;     &quot;,3 into outflie &quot;           &quot; --+  路径使用双斜杆\\防止转义</code></pre>
-<ul>
-<li><img src="%5Cimages%5C5.png"></li>
-<li>写入成功连接蚁剑</li>
-<li>控制webshell行进文件删减等操作。</li>
-</ul>
+<form name=" " action=" " method=" ">
+  <input type='radio' name='ex' value='male'>男<br/>
+  <input type='radio' name='ex' value='female'>女
+
+</form>
+
+<pre><code>&lt;form name=&quot; &quot; action=&quot; &quot; method=&quot; &quot;&gt;
+  &lt;input type=&#39;radio&#39; name=&#39;ex&#39; value=&#39;male&#39;&gt;男&lt;br/&gt;
+  &lt;input type=&#39;radio&#39; name=&#39;ex&#39; value=&#39;female&#39;&gt;女
+  &lt;/form&gt;</code></pre>
 
             </div>
             <hr/>
@@ -529,7 +527,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2020/12/03/SQLi-LABS%20%E7%AC%AC7%E5%85%B3/">http://example.com/2020/12/03/SQLi-LABS%20%E7%AC%AC7%E5%85%B3/</a>
+                    <a href="http://example.com/2020/12/06/HTML%E5%9F%BA%E7%A1%80/">http://example.com/2020/12/06/HTML%E5%9F%BA%E7%A1%80/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -734,9 +732,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2020/12/06/HTML%E5%9F%BA%E7%A1%80/">
                     <div class="card-image">
@@ -754,9 +753,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-12-06
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-06
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -765,6 +764,7 @@
                         </span>
                     </div>
                 </div>
+
                 
             </div>
         </div>
@@ -775,13 +775,13 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/12/02/SQLmap%E5%9F%BA%E6%9C%AC%E6%8C%87%E4%BB%A4/">
+                <a href="/2020/12/03/SQLi-LABS%20%E7%AC%AC7%E5%85%B3/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/13.jpg" class="responsive-img" alt="SQLmap基本指令">
+                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="">
                         
-                        <span class="card-title">SQLmap基本指令</span>
+                        <span class="card-title"></span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -792,7 +792,7 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-02
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-03
                             </span>
                         <span class="publish-author">
                             
