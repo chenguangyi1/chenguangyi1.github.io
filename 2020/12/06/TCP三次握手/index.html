@@ -459,7 +459,7 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p><img src="%5Cimages%5C5.png"></p>
+                <p><img src="/images/5.png"></p>
 <h3 id="第一次握手："><a href="#第一次握手：" class="headerlink" title="第一次握手："></a>第一次握手：</h3><p>发送端（客户端）发送连接请求将SYN=1,ACK=0,产生一个随机序列seq=x（Client 进入 SYN-SENT(同步已发送)状态）</p>
 <h3 id="第二次握手："><a href="#第二次握手：" class="headerlink" title="第二次握手："></a>第二次握手：</h3><p>接收端（服务器端）接收到请求，确认的话会将（SYN=1,ACK=1,ack=x+1，产生随机序列seq=y ）发送给客户端请求连接（Server 进入 SYN-RCVD（同步收到）状态）</p>
 <h3 id="第三次握手："><a href="#第三次握手：" class="headerlink" title="第三次握手："></a>第三次握手：</h3><p>客户端接收到服务器端请求的报文，确认ACK=1,ack=x+1后，将ACK=1，ack=y+1发送给服务器端。服务器端确认ack=y+1，ACK=1完之后，（Client 和 Server 都进入 ESTABLISHED（已建立连接）状态），通信通道建立完成，可以开始传输数据。</p>
