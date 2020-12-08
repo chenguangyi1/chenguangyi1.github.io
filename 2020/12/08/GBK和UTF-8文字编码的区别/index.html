@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="PHP函数大全, Keep-Boom">
+    <meta name="keywords" content="GBK和UTF-8文字编码的区别, Keep-Boom">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>PHP函数大全 | Keep-Boom</title>
+    <title>GBK和UTF-8文字编码的区别 | Keep-Boom</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -315,7 +315,7 @@
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">PHP函数大全</h1>
+                    <h1 class="description center-align post-title">GBK和UTF-8文字编码的区别</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-11-26
+                    2020-12-08
                 </div>
                 
 
@@ -459,124 +459,20 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="1-isset-检查变量是否存在。"><a href="#1-isset-检查变量是否存在。" class="headerlink" title="1.isset() 检查变量是否存在。"></a>1.<strong>isset() 检查变量是否存在。</strong></h3><p>若变量不存在或为NULL，返回FALSE。</p>
-<p>若变量不为NULL时，返回TRUE。</p>
-<p>若变量为多个时，必须都不为NULL，才返回TRUE。</p>
-<h3 id="2-mysql-query-query-connection-执行一条MySQL查询。"><a href="#2-mysql-query-query-connection-执行一条MySQL查询。" class="headerlink" title="2.mysql_query(query,connection)执行一条MySQL查询。"></a><strong>2.mysql_query(query,connection)执行一条MySQL查询。</strong></h3><p>query:(必需)规定要发送的SQL查询语句。注‘查询字符串不应以分号结束。</p>
-<p>connection：(可选)SQL连接标识符。如果未规定，则使用上次的打开的连接。</p>
-<p>如果之前没有打开连接，这个函数会尝试无参数调用mysql_conncet()来建立连接。</p>
-<p>注：此函数仅对select,show,explain,describe句子返回资源标识符，如果查询失败则返回false。</p>
-<p>对其他的SQL语句，执行成功则返回TRUE，失败则返回false。</p>
-<p>例子：</p>
-<pre><code>&lt;?php
-$con = mysql_connect(&quot;localhost&quot;,&quot;mysql_user&quot;,&quot;mysql_pwd&quot;);
-if (!$con)
-  &#123;
-  die(&#39;Could not connect: &#39; . mysql_error());
-  &#125;
-
-$sql = &quot;SELECT * FROM Person&quot;;
-mysql_query($sql,$con);
-
-// 一些代码
-
-mysql_close($con);
-?&gt;</code></pre>
-<h3 id="3-mysql-fetch-array-result-resulttype-从结果集中取得一行作为关联数组，或数字数组，或二者兼有。"><a href="#3-mysql-fetch-array-result-resulttype-从结果集中取得一行作为关联数组，或数字数组，或二者兼有。" class="headerlink" title="3.mysql_fetch_array(result,resulttype)从结果集中取得一行作为关联数组，或数字数组，或二者兼有。"></a><strong>3.mysql_fetch_array(result,resulttype)从结果集中取得一行作为关联数组，或数字数组，或二者兼有。</strong></h3><p>data:(必需)该数据指针指，由mysql_query,mysqli_store_result() ,mysqli_use_result()返回的结果。 </p>
-<p>resulttype:(可选)规定要返回哪种类型的数组。</p>
-<ul>
-<li>MYSQLI_ASSOC(关联数组)</li>
-<li>MYSQLI_NUM(数字数组)</li>
-<li>MYSQLI_BOTH(同时产生以上两者)–默认使用</li>
-</ul>
-<p>例子：</p>
-<pre><code>&lt;?php
-$con = mysql_connect(&quot;localhost&quot;, &quot;hello&quot;, &quot;321&quot;);
-if (!$con)
-  &#123;
-  die(&#39;Could not connect: &#39; . mysql_error());
-  &#125;
-
-$db_selected = mysql_select_db(&quot;test_db&quot;,$con);
-$sql = &quot;SELECT * from Person WHERE Lastname=&#39;Adams&#39;&quot;;
-$result = mysql_query($sql,$con);
-print_r(mysql_fetch_array($result));
-
-mysql_close($con);
-?&gt;</code></pre>
-<pre><code>输出结果
-Array
-(
-[0] =&gt; Adams
-[LastName] =&gt; Adams
-[1] =&gt; John
-[FirstName] =&gt; John
-[2] =&gt; London
-[City] =&gt; London
-) </code></pre>
-<h3 id="4-mysql-query常常和mysql-fetch-array一起连用"><a href="#4-mysql-query常常和mysql-fetch-array一起连用" class="headerlink" title="4.mysql_query常常和mysql_fetch_array一起连用"></a>4.mysql_query常常和mysql_fetch_array一起连用</h3><p>例子：</p>
-<p>$tempresult=mysql_query (“SQL语句”);<br> while ($row = mysql_fetch_array($tempresult))<br>    {<br>      print $row[0]; //打印第一列的记录<br>      print $row[1];  //打印第二列的记录<br>    }  </p>
-<p>  数组变量 $row 被 mysql_fetch_array 函数建立并用查询的结果字段来填充，数组的每一个分量对应于查询结果的每一个字段 。</p>
-<h3 id="5-addslashes-和htmlspecialchars-的相同和区别"><a href="#5-addslashes-和htmlspecialchars-的相同和区别" class="headerlink" title="5.addslashes()和htmlspecialchars()的相同和区别"></a>5.addslashes()和htmlspecialchars()的相同和区别</h3><p>二者都用来都特殊符号进行转义，用于防止SQL语句的注入。</p>
-<p>①addslashes()通常用于防止sql注入，它可对通过get，post和cookie传递过来的参数的单引号、双引号、\以及null前加“\”进行转义</p>
-<p>如：如变量$str=$_POST[“str”];的值为：bb’ or 1=’1。通过addslashes()函数过滤后会变为：bb斜杆&#39; or 1=斜杆&#39;1。</p>
-<p>②htmlspecialchars()也是对字符进行转义，与addslashes（）不同的是htmlspecialchars()是将特殊字符用引用实体替换。</p>
-<p><img src="%5Cimages%5C4.png"></p>
-<p>③addslashes()在执行sql语句前对通过get、post和cookie传递来的参数中的单引号，双引号,\ 和null进行转义。但sql执行成功后，插入到数据库中的数据是不带有转义字符\的。这时如果插入到数据库中的是一些js脚本，当这些脚本被读取出来时还是会被执行。</p>
-<p>这时我们可对读取出来的数据使用htmlspecialchars()进行过滤，避免执行被注入的脚本。</p>
-<p>④在使用这两个函数之前需要先使用get_magic_quotes_gpc()验证下php.ini配置文件里的<code>magic_quotes_gpc</code>设置是否自动为GPC(get,post,cookie)传来的数据中的’”加上反斜线。如果没有确定直接使用该函数，可能造成双层转义。</p>
-<h3 id="6-get-magic-quotes-gpc"><a href="#6-get-magic-quotes-gpc" class="headerlink" title="6.get_magic_quotes_gpc()"></a>6.get_magic_quotes_gpc()</h3><p>用于检验php.ini配置文件中magic_quotes_gpc的设置是否开启自动为GPC(GET,POST,COOKIE)传来的数据进行转义。</p>
-<h3 id="7-ctype-digit-检测字符串中是否只含有数字。注：字符串里的数字，负数，小数都不行。"><a href="#7-ctype-digit-检测字符串中是否只含有数字。注：字符串里的数字，负数，小数都不行。" class="headerlink" title="7.ctype_digit()检测字符串中是否只含有数字。注：字符串里的数字，负数，小数都不行。"></a>7.ctype_digit()检测字符串中是否只含有数字。注：字符串里的数字，负数，小数都不行。</h3><p>例子：</p>
-<p><strong>&lt;?php</strong><br><strong>$strings = array(‘1820.20’, ‘10002’, ‘wsl!12’);</strong><br><strong>foreach ($strings as $testcase) {</strong><br>  <strong>if (ctype_digit($testcase)) {</strong><br>    <strong>echo “The string $testcase consists of all digits.\n”;</strong><br>  <strong>} else {</strong><br>    <strong>echo “The string $testcase does not consist of all digits.\n”;</strong><br>  <strong>}</strong><br><strong>}</strong></p>
-<p>结果：</p>
-<pre><code>The string 1820.20 does not consist of all digits.
-The string 10002 consists of all digits.
-The string wsl!12 does not consist of all digits.</code></pre>
-<p>例子：字符串里的数字才可以！！！</p>
-<h4 id="附：is-numeric-—-检测变量是否为数字或数字字符串-数字可以为负数，小数"><a href="#附：is-numeric-—-检测变量是否为数字或数字字符串-数字可以为负数，小数" class="headerlink" title="附：is_numeric() — 检测变量是否为数字或数字字符串(数字可以为负数，小数)"></a>附：is_numeric() — 检测变量是否为数字或数字字符串(数字可以为负数，小数)</h4><p><strong>&lt;?php</strong></p>
-<p><strong>$numeric_string = ‘42’;</strong><br><strong>$integer    = 42;</strong></p>
-<p><strong>ctype_digit($numeric_string); // true</strong><br>*<em>ctype_digit($integer);     // false (ASCII 42 is the * character)*</em></p>
-<p><strong>is_numeric($numeric_string);  // true</strong><br><strong>is_numeric($integer);     // true</strong></p>
-<h3 id="8-mysql-real-escape-string-转义-SQL-语句中使用的字符串中的特殊字符。"><a href="#8-mysql-real-escape-string-转义-SQL-语句中使用的字符串中的特殊字符。" class="headerlink" title="8.mysql_real_escape_string() 转义 SQL 语句中使用的字符串中的特殊字符。"></a>8.mysql_real_escape_string() 转义 SQL 语句中使用的字符串中的特殊字符。</h3><p>下列字符受影响：</p>
-<ul>
-<li>\x00</li>
-<li>\n</li>
-<li>\r</li>
-<li>\</li>
-<li>‘</li>
-<li>“</li>
-<li>\x1a</li>
-</ul>
-<p>功能于addslashes一样，范围不一样！</p>
-<h3 id="9-SERVER-是一个包含了诸如头信息-header-、路径-path-、以及脚本位置-script-locations-等等信息的数组。"><a href="#9-SERVER-是一个包含了诸如头信息-header-、路径-path-、以及脚本位置-script-locations-等等信息的数组。" class="headerlink" title="9.$_SERVER 是一个包含了诸如头信息(header)、路径(path)、以及脚本位置(script locations)等等信息的数组。"></a>9.$_SERVER 是一个包含了诸如头信息(header)、路径(path)、以及脚本位置(script locations)等等信息的数组。</h3><h3 id="10-setcookie-用于设置-cookie"><a href="#10-setcookie-用于设置-cookie" class="headerlink" title="10.setcookie() 用于设置 cookie"></a>10.setcookie() 用于设置 cookie</h3><pre><code>setcookie(name, value, expire, path, domain)</code></pre>
-<pre><code>setcookie(&quot;user&quot;, &quot;runoob&quot;, time()+3600)</code></pre>
-<p>①这里设置了cookie的名称为user，值为runoob，1小时后失效。</p>
-<p>②$_COOKIE() 变量用于取回 cookie 的值。</p>
-<p>③删除COOKIE</p>
-<p>当删除 cookie 时,应当使过期日期设置为过去的时间点。</p>
-<pre><code>设置 cookie 过期时间为过去 1 小时
-setcookie(&quot;user&quot;, &quot;&quot;, time()-3600);</code></pre>
-<h3 id="11-mysql-num-rows-函数"><a href="#11-mysql-num-rows-函数" class="headerlink" title="11.mysql_num_rows()函数"></a>11.mysql_num_rows()函数</h3><p>mysql_num_rows(data) 函数返回结果集中行的数目</p>
-<p>data（必须）结果集</p>
-<p>输入数字，返回行数如1，2，3。。。</p>
-<h3 id="12-explode-separator-string-limit"><a href="#12-explode-separator-string-limit" class="headerlink" title="12.explode(separator,string,limit)"></a>12.explode(<em>separator,string,limit</em>)</h3><table>
-<thead>
-<tr>
-<th>separator</th>
-<th>必需。规定在哪里分割字符串。</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><em>string</em></td>
-<td>必需。要分割的字符串。</td>
-</tr>
-<tr>
-<td><em>limit</em></td>
-<td>可选。规定所返回的数组元素的数目。可能的值：大于 0 - 返回包含最多 <em>limit</em> 个元素的数组小于 0 - 返回包含除了最后的 <em>-limit</em> 个元素以外的所有元素的数组0 - 会被当做 1, 返回包含一个元素的数组</td>
-</tr>
-</tbody></table>
-<p><img src="/6.png"></p>
-
+                <h4 id="知识补充："><a href="#知识补充：" class="headerlink" title="知识补充："></a>知识补充：</h4><p>一个字节占8位即0000 0000。范围为-128~+127。-0表示为-128</p>
+<h3 id="GBK编码"><a href="#GBK编码" class="headerlink" title="GBK编码"></a>GBK编码</h3><p>①是为了结合中国国情，因为汉字而衍生出的一种的编码方式。</p>
+<p>②GBK的文字编码是用双字节来表示的，即不论中、英文字符均使用<u>双字节</u>来表示，<u>但是为了区分中文，将其最高位置1.</u></p>
+<p>③GBK码共收入汉字21003，符号883个，简体、繁体字融于一库。</p>
+<p>④GBK是在国家标准GB2312基础上扩容后兼容GB2312的标准。</p>
+<h3 id="UTF-8编码"><a href="#UTF-8编码" class="headerlink" title="UTF-8编码"></a>UTF-8编码</h3><p>①UTF-8编码包含全世界所有国家需要用到的字符。</p>
+<p>②UTF-8编码用于解决国际字符的一种多字节编码方式，对于<u>英文字符则使用一字节</u>来编码，<u>中文汉字则使用三个字节</u>来编码。</p>
+<p>③UTF-8编码的文字可以正常显示在各国支持UTF-8编码字符集的浏览器上。</p>
+<h3 id="注："><a href="#注：" class="headerlink" title="注："></a>注：</h3><p>UTF-8版本虽然具有良好的国际兼容性，但中文需要比GBK版本多占用50%的数据库存储空间，因此并非推荐使用，仅供对国际兼容性有特殊要求的用户使用。</p>
+<h3 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h3><p>①GBK就是在保存你的帖子的时候，一个汉字占用两个字节。外国人（使用UTF-8编码）看会出现乱码，GBK编码主要针对中国国情而出现的。</p>
+<p>②UTF8就是在保存你的帖子的时候，一个汉字占用3个字节。但是外国人看的话不会乱码，此为西人为了解决多字节字符而形成之解决方案。</p>
+<p>③对于英文较多的论坛使用UTF-8编码比GBK编码更节省储存空间。反之中文较多的论坛，如果大部分面向中国客户，使用GBK编码更合适。</p>
+<p>④但是GBK仅针对中国国情而发明出来的，在国际上兼容性并不是很好，所以大多数的时候还是采用UTF-8编码。</p>
+<h4 id=""><a href="#" class="headerlink" title=""></a></h4><h4 id="作者是菜鸟有错请谅解！！"><a href="#作者是菜鸟有错请谅解！！" class="headerlink" title="作者是菜鸟有错请谅解！！"></a>作者是菜鸟有错请谅解！！</h4>
             </div>
             <hr/>
 
@@ -601,7 +497,7 @@ setcookie(&quot;user&quot;, &quot;&quot;, time()-3600);</code></pre>
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2020/11/26/PHP%E5%87%BD%E6%95%B0%E5%A4%A7%E5%85%A8/">http://example.com/2020/11/26/PHP%E5%87%BD%E6%95%B0%E5%A4%A7%E5%85%A8/</a>
+                    <a href="http://example.com/2020/12/08/GBK%E5%92%8CUTF-8%E6%96%87%E5%AD%97%E7%BC%96%E7%A0%81%E7%9A%84%E5%8C%BA%E5%88%AB/">http://example.com/2020/12/08/GBK%E5%92%8CUTF-8%E6%96%87%E5%AD%97%E7%BC%96%E7%A0%81%E7%9A%84%E5%8C%BA%E5%88%AB/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -806,54 +702,18 @@ setcookie(&quot;user&quot;, &quot;&quot;, time()-3600);</code></pre>
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2020/11/27/GET%E8%AF%B7%E6%B1%82%E5%92%8CPOST%E8%AF%B7%E6%B1%82/">
+                <a href="/2020/12/08/GBK%E5%92%8CUTF-8%E6%96%87%E5%AD%97%E7%BC%96%E7%A0%81%E7%9A%84%E5%8C%BA%E5%88%AB/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/6.jpg" class="responsive-img" alt="GET请求和POST请求">
+                        <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="GBK和UTF-8文字编码的区别">
                         
-                        <span class="card-title">GET请求和POST请求</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            
-                        
-                    </div>
-                    <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-11-27
-                        </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-user fa-fw"></i>
-                            Chan.talent
-                            
-                        </span>
-                    </div>
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2020/11/26/SQL%E6%B3%A8%E5%85%A5%E7%82%B9%E5%88%A4%E6%96%AD/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="SQL注入点判断">
-                        
-                        <span class="card-title">SQL注入点判断</span>
+                        <span class="card-title">GBK和UTF-8文字编码的区别</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -864,7 +724,45 @@ setcookie(&quot;user&quot;, &quot;&quot;, time()-3600);</code></pre>
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-11-26
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-08
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            Chan.talent
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2020/12/06/TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="TCP三次握手">
+                        
+                        <span class="card-title">TCP三次握手</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-06
                             </span>
                         <span class="publish-author">
                             
