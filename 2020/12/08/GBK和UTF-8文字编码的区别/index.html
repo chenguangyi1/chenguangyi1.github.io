@@ -460,6 +460,16 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <h4 id="知识补充："><a href="#知识补充：" class="headerlink" title="知识补充："></a>知识补充：</h4><p>一个字节占8位即0000 0000。范围为-128~+127。-0表示为-128</p>
+<p><u>注：查看Mysql数据库编码命令show variables like ‘character%’;</u></p>
+<pre><code>Variable_name            | Value                                                      |
++--------------------------+------------------------------------------------------------+
+| character_set_client     | utf8                                                       |
+| character_set_connection | utf8                                                       |
+| character_set_database   | utf8                                                       |
+| character_set_filesystem | binary                                                     |
+| character_set_results    | utf8                                                       |
+| character_set_server     | utf8                                                       |
+| character_set_system     | utf8</code></pre>
 <h3 id="GBK编码"><a href="#GBK编码" class="headerlink" title="GBK编码"></a>GBK编码</h3><p>①是为了结合中国国情，因为汉字而衍生出的一种的编码方式。</p>
 <p>②GBK的文字编码是用双字节来表示的，即不论中、英文字符均使用<u>双字节</u>来表示，<u>但是为了区分中文，将其最高位置1.</u></p>
 <p>③GBK码共收入汉字21003，符号883个，简体、繁体字融于一库。</p>

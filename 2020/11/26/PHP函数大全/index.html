@@ -575,7 +575,153 @@ setcookie(&quot;user&quot;, &quot;&quot;, time()-3600);</code></pre>
 <td>可选。规定所返回的数组元素的数目。可能的值：大于 0 - 返回包含最多 <em>limit</em> 个元素的数组小于 0 - 返回包含除了最后的 <em>-limit</em> 个元素以外的所有元素的数组0 - 会被当做 1, 返回包含一个元素的数组</td>
 </tr>
 </tbody></table>
-<p><img src="/6.png"></p>
+<pre><code>&lt;?php
+$str = &#39;one,two,three,four&#39;;
+
+//  返回包含一个元素的数组
+print_r(explode(&#39;,&#39;,$str,0));
+print &quot;&lt;br&gt;&quot;;
+
+// 数组元素为 2
+print_r(explode(&#39;,&#39;,$str,2));
+print &quot;&lt;br&gt;&quot;;
+
+// 删除最后一个数组元素
+print_r(explode(&#39;,&#39;,$str,-1));
+print &quot;&lt;br/&gt;&quot;;
+print_r(explode(&#39;,&#39;,$str,-2));
+?&gt;</code></pre>
+<pre><code>Array
+(
+    [0] =&gt; one,two,three,four
+)
+
+Array
+(
+    [0] =&gt; one
+    [1] =&gt; two,three,four
+)
+
+Array
+(
+    [0] =&gt; one
+    [1] =&gt; two
+    [2] =&gt; three
+)
+
+Array
+(
+    [0] =&gt; one
+    [1] =&gt; two
+)</code></pre>
+<h3 id="13-Include-和require-文件的区别"><a href="#13-Include-和require-文件的区别" class="headerlink" title="13.Include()和require ()文件的区别"></a>13.Include()和require ()文件的区别</h3><ul>
+<li>require 会生成致命错误（E_COMPILE_ERROR）并停止脚本</li>
+<li>include 只生成警告（E_WARNING），并且脚本会继续</li>
+</ul>
+<p>注：</p>
+<p>①如果您希望继续执行，并向用户输出结果，即使包含文件已丢失，那么请使用 include。否则，在框架、CMS 或者复杂的 PHP 应用程序编程中，请始终使用 require 向执行流引用关键文件。这有助于提高应用程序的安全性和完整性，在某个关键文件意外丢失的情况下。</p>
+<p><u><strong><u>include</strong> 引入文件的时候，如果碰到错误，会给出提示，并继续运行下边的代码。</u></u></p>
+<p><u><strong>require</strong> 引入文件的时候，如果碰到错误，会给出提示，并停止运行下边的代码。</u></p>
+<p>②</p>
+<ul>
+<li>include 在执行到的时候才加载</li>
+<li>require 在一开始就加载</li>
+</ul>
+<p>③后缀_once</p>
+<p>include_once() 和 require_once() 和原来的区别是：已加载过的不加载。这两个语句用于在脚本执行期间，同一个文件有可能被包括超过一次的情况下，确保它只被包括一次，以避免函数重定义以及变量重新赋值等问题。</p>
+<p>语法：</p>
+<pre><code>include &#39;filename&#39;;</code></pre>
+<p>例子：</p>
+<p>假设我们有一个名为 “footer.php” 的标准的页脚文件，就像这样：</p>
+<pre><code>&lt;?php
+echo &quot;&lt;p&gt;Copyright © 2006-&quot; . date(&quot;Y&quot;) . &quot; W3School.com.cn&lt;/p&gt;&quot;;
+?&gt;</code></pre>
+<p>如需在一张页面中引用这个页脚文件，使用 include 语句：</p>
+<pre><code>&lt;html&gt;
+&lt;body&gt;
+
+&lt;h1&gt;欢迎访问我们的首页！&lt;/h1&gt;
+&lt;p&gt;一段文本。&lt;/p&gt;
+&lt;p&gt;一段文本。&lt;/p&gt;
+&lt;?php 
+include (&quot;footer.php&quot;);
+?&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<h3 id="14-die-函数"><a href="#14-die-函数" class="headerlink" title="14.die()函数"></a>14.die()函数</h3><p>是 <a target="_blank" rel="noopener" href="https://www.runoob.com/php/func-misc-exit.html">exit()</a> 函数的别名</p>
+<p>die(message) 函数输出一条消息，并退出当前脚本。</p>
+<p>message：必需，在退出脚本之前写入的消息或状态号（状态号不会被输出）</p>
+<pre><code>$res = mysql_query($sql) or die(&#39;You tried to be real smart, Try harder!!!! :( &#39;);</code></pre>
+<h3 id="15-error-reporting-函数"><a href="#15-error-reporting-函数" class="headerlink" title="15.error_reporting() 函数"></a>15.error_reporting() 函数</h3><pre><code>&lt;?php
+ // 关闭错误报告
+ error_reporting(0);
+
+ // 报告 runtime 错误
+ error_reporting(E_ERROR | E_WARNING | E_PARSE);
+
+ // 报告所有错误
+ error_reporting(E_ALL);
+
+ // 等同 error_reporting(E_ALL);
+ ini_set(&quot;error_reporting&quot;, E_ALL);
+
+ // 报告 E_NOTICE 之外的所有错误
+ error_reporting(E_ALL &amp; ~E_NOTICE);
+?&gt; </code></pre>
+<h3 id="16-echo-print-print-r"><a href="#16-echo-print-print-r" class="headerlink" title="16.echo ,print,print_r"></a>16.echo ,print,print_r</h3><ul>
+<li><p>echo -可以输出一个或多个字符串</p>
+</li>
+<li><p>print -只能输出简单类型变量的值，如int，string</p>
+</li>
+<li><p>print_r -可以输出复杂类型变量的值，如数组，对象</p>
+<p>print_r() 函数用于打印变量，以更容易理解的形式展示。</p>
+</li>
+</ul>
+<h3 id="17-intval-函数"><a href="#17-intval-函数" class="headerlink" title="17.intval() 函数"></a>17.intval() 函数</h3><p>int intval ( mixed $var [, int $base = 10 ] )</p>
+<ul>
+<li>$var：要转换成 integer 的数量值。</li>
+<li>$base：转化所使用的进制。</li>
+</ul>
+<p>如果 base 是 0，通过检测 var 的格式来决定使用的进制：</p>
+<ul>
+<li>如果字符串包括了 “0x” (或 “0X”) 的前缀，使用 16 进制 (hex)；否则，</li>
+<li>如果字符串以 “0” 开始，使用 8 进制(octal)；否则，</li>
+<li>将使用 10 进制 (decimal)。 </li>
+<li>32 位系统最大带符号的 integer 范围是 -2147483648 到 2147483647。</li>
+<li>64 位系统上，最大带符号的 integer 值是 9223372036854775807。</li>
+<li>intval() 不能用于数组 或 对象(类)，否则会产生 E_NOTICE 错误并返回 1。</li>
+</ul>
+<p><u>注：默认使用十进制。</u></p>
+<p>成功时返回 var 的 integer 值，失败时返回 0。 空的 array 返回 0，非空的 array 返回 1。</p>
+<pre><code>&lt;?php
+echo intval(42);                      // 42 
+echo intval(4.2);                     // 4 
+echo intval(&#39;42&#39;);                    // 42 
+echo intval(&#39;+42&#39;);                   // 42 
+echo intval(&#39;-42&#39;);                   // -42 
+echo intval(042);                     // 34 
+echo intval(&#39;042&#39;);                   // 42 
+echo intval(1e10);                    // 1410065408 
+echo intval(&#39;1e10&#39;);                  // 1 
+echo intval(0x1A);                    // 26 
+echo intval(42000000);                // 42000000 
+echo intval(420000000000000000000);   // 0 
+echo intval(&#39;420000000000000000000&#39;); // 2147483647 
+echo intval(42, 8);                   // 42 
+echo intval(&#39;42&#39;, 8);                 // 34 
+echo intval(array());                 // 0 
+echo intval(array(&#39;foo&#39;, &#39;bar&#39;));     // 1 
+?&gt;</code></pre>
+<h3 id="18-header"><a href="#18-header" class="headerlink" title="18.header()"></a>18.header()</h3><p>&lt;1&gt; 重定向功能，这种最常见 </p>
+<pre><code>&lt;?php 
+Header(&quot;Location: http://www.php.net&quot;); 
+?&gt;   </code></pre>
+<p><u>跳转页面功能 Location 是强制性参数</u></p>
+<ul>
+<li>其他功能作者懂了再跟新</li>
+</ul>
+<p>19.</p>
 
             </div>
             <hr/>
