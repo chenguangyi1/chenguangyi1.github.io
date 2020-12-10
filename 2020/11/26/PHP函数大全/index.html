@@ -548,7 +548,13 @@ The string wsl!12 does not consist of all digits.</code></pre>
 <li>\x1a</li>
 </ul>
 <p>功能于addslashes一样，范围不一样！</p>
-<h3 id="9-SERVER-是一个包含了诸如头信息-header-、路径-path-、以及脚本位置-script-locations-等等信息的数组。"><a href="#9-SERVER-是一个包含了诸如头信息-header-、路径-path-、以及脚本位置-script-locations-等等信息的数组。" class="headerlink" title="9.$_SERVER 是一个包含了诸如头信息(header)、路径(path)、以及脚本位置(script locations)等等信息的数组。"></a>9.$_SERVER 是一个包含了诸如头信息(header)、路径(path)、以及脚本位置(script locations)等等信息的数组。</h3><h3 id="10-setcookie-用于设置-cookie"><a href="#10-setcookie-用于设置-cookie" class="headerlink" title="10.setcookie() 用于设置 cookie"></a>10.setcookie() 用于设置 cookie</h3><pre><code>setcookie(name, value, expire, path, domain)</code></pre>
+<h3 id="9-SERVER-是一个包含了诸如头信息-header-、路径-path-、以及脚本位置-script-locations-等等信息的数组。"><a href="#9-SERVER-是一个包含了诸如头信息-header-、路径-path-、以及脚本位置-script-locations-等等信息的数组。" class="headerlink" title="9.$_SERVER 是一个包含了诸如头信息(header)、路径(path)、以及脚本位置(script locations)等等信息的数组。"></a>9.$_SERVER 是一个包含了诸如头信息(header)、路径(path)、以及脚本位置(script locations)等等信息的数组。</h3><ul>
+<li>REMOTE_ADDR  当前IP地址</li>
+<li>HTTP_USER_AGENT  对应HTTP请求中的USER_AGENT 指当前浏览器信息，系统一些信息</li>
+<li>HTTP_REFERER    从哪个网页地址发送的</li>
+<li>QUERY_STRING  返回查询的字符串</li>
+</ul>
+<h3 id="10-setcookie-用于设置-cookie"><a href="#10-setcookie-用于设置-cookie" class="headerlink" title="10.setcookie() 用于设置 cookie"></a>10.setcookie() 用于设置 cookie</h3><pre><code>setcookie(name, value, expire, path, domain)</code></pre>
 <pre><code>setcookie(&quot;user&quot;, &quot;runoob&quot;, time()+3600)</code></pre>
 <p>①这里设置了cookie的名称为user，值为runoob，1小时后失效。</p>
 <p>②$_COOKIE() 变量用于取回 cookie 的值。</p>
@@ -713,7 +719,7 @@ echo intval(&#39;42&#39;, 8);                 // 34
 echo intval(array());                 // 0 
 echo intval(array(&#39;foo&#39;, &#39;bar&#39;));     // 1 
 ?&gt;</code></pre>
-<h3 id="18-header"><a href="#18-header" class="headerlink" title="18.header()"></a>18.header()</h3><p>&lt;1&gt; 重定向功能，这种最常见 </p>
+<h3 id="18-header-函数"><a href="#18-header-函数" class="headerlink" title="18.header()函数"></a>18.header()函数</h3><p>&lt;1&gt; 重定向功能，这种最常见 </p>
 <pre><code>&lt;?php 
 Header(&quot;Location: http://www.php.net&quot;); 
 ?&gt;   </code></pre>
@@ -721,7 +727,9 @@ Header(&quot;Location: http://www.php.net&quot;);
 <ul>
 <li>其他功能作者懂了再跟新</li>
 </ul>
-<p>19.</p>
+<h3 id="19-mysql-fetch-row-函数"><a href="#19-mysql-fetch-row-函数" class="headerlink" title="19.mysql_fetch_row()函数"></a>19.mysql_fetch_row()函数</h3><p>从结果集中取得一行，并作为枚举数组返回。</p>
+<p><u>规定由 mysqli_query()、mysqli_store_result() 或 mysqli_use_result() 返回的结果集标识符。</u></p>
+<h3 id="20-mysql-affected-rows-函数"><a href="#20-mysql-affected-rows-函数" class="headerlink" title="20.mysql_affected_rows() 函数"></a>20.mysql_affected_rows() 函数</h3><p>返回前一次 MySQL 操作所影响的记录行数。</p>
 
             </div>
             <hr/>

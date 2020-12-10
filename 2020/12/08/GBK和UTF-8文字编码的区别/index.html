@@ -470,10 +470,23 @@
 | character_set_results    | utf8                                                       |
 | character_set_server     | utf8                                                       |
 | character_set_system     | utf8</code></pre>
+<p>①character_set_client 是指客户端发送过来的语句的编码方式;</p>
+<p>②character_set_connection 是指server收到客户端的语句后，要转换成的编码方式；</p>
+<p>③character_set_results 是指server执行语句后，返回给客户端的数据的编码。</p>
+<h5 id="数据传入"><a href="#数据传入" class="headerlink" title="数据传入"></a>数据传入</h5><pre><code>A1 客户端发送出语句(总是以utf8)------&gt; A2 sever收到语句解码(按character_set_client指定编码)
+                                                                    |
+                                                                    v
+A4 数据进入mysqld内部存储&lt;--------- A3 sever判断是否需要转换编码(以character_set_connection 目标编码)</code></pre>
+<p>A1传进去的数据是以UTF-8进行编码的。A2接收到句子进行解码，如果set_client设置成GBK，服务器会以为传进来的数据是以GBK的方式进行编码，所以就以GBK编码方式进行句子的解码。然后再进行A3将解码后的句子再以set_connection指定的编码马上对句子进行编码。最后传入数据库里。</p>
+<h5 id="数据传出回显"><a href="#数据传出回显" class="headerlink" title="数据传出回显"></a>数据传出回显</h5><pre><code>B1 server返回结果(按character_set_results 指定编码) -----&gt;B2客户端解码显示(总是以utf8)</code></pre>
+<p>B1 数据从数据库中取出显示，server会先按set_results指定的编码方式对数据进行编码，然后传到B2客户端进行UTF-8进行解码显示。</p>
+<p><u>注：客户端发送的句子不一定都是以utf-8的编码方式进行编码，要看实际环境。</u></p>
 <h3 id="GBK编码"><a href="#GBK编码" class="headerlink" title="GBK编码"></a>GBK编码</h3><p>①是为了结合中国国情，因为汉字而衍生出的一种的编码方式。</p>
 <p>②GBK的文字编码是用双字节来表示的，即不论中、英文字符均使用<u>双字节</u>来表示，<u>但是为了区分中文，将其最高位置1.</u></p>
 <p>③GBK码共收入汉字21003，符号883个，简体、繁体字融于一库。</p>
 <p>④GBK是在国家标准GB2312基础上扩容后兼容GB2312的标准。</p>
+<p>⑤一个GBK汉字占两个字节，取值范围是（编码位数）：第一个字节是（129-254），第二个字节（64-254）。</p>
+<p>当设置GBK编码后，遇到连续两个字节，都符合GBK取值范围，会自动解析为一个汉字。</p>
 <h3 id="UTF-8编码"><a href="#UTF-8编码" class="headerlink" title="UTF-8编码"></a>UTF-8编码</h3><p>①UTF-8编码包含全世界所有国家需要用到的字符。</p>
 <p>②UTF-8编码用于解决国际字符的一种多字节编码方式，对于<u>英文字符则使用一字节</u>来编码，<u>中文汉字则使用三个字节</u>来编码。</p>
 <p>③UTF-8编码的文字可以正常显示在各国支持UTF-8编码字符集的浏览器上。</p>

