@@ -459,8 +459,8 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="例子：-0-9-abc"><a href="#例子：-0-9-abc" class="headerlink" title="例子：^[0-9]+abc$"></a>例子：^[0-9]+abc$</h3><ul>
-<li>^表示匹配输入字符串的开始位置。</li>
+                <h3 id="①例子：-0-9-abc"><a href="#①例子：-0-9-abc" class="headerlink" title="①例子：^[0-9]+abc$"></a>①例子：^[0-9]+abc$</h3><ul>
+<li>^表示匹配输入字符串的开始位置。yi</li>
 <li>[0-9]匹配单个数字</li>
 <li>[0-9]+匹配多个数字</li>
 <li>+表示匹配一个或多个</li>
@@ -468,14 +468,28 @@
 <li>$表示匹配输入字符串结束的位置</li>
 </ul>
 <p><img src="D:\boke\blog\source\images\7.png"></p>
-<h3 id="a-z0-9-3-15"><a href="#a-z0-9-3-15" class="headerlink" title="^[a-z0-9_-]{3-15}$"></a><strong>^[a-z0-9_-]{3-15}$</strong></h3><p>规定只能用a-z，0-9，_ ,  - 。且长度在3-15之间。</p>
+<h3 id="②-a-z0-9-3-15"><a href="#②-a-z0-9-3-15" class="headerlink" title="②^[a-z0-9_-]{3-15}$"></a><strong>②^[a-z0-9_-]{3-15}$</strong></h3><p>规定只能用a-z，0-9，_ ,  - 。且长度在3-15之间。</p>
 <pre><code>var str = &quot;a1d23abc&quot;;
 var patt1 = /^[0-9a-z_]+/;      a1d23abc
 var patt2 = /^[0-9a-z_]/;       a
 var patt3 = /^[0-9a-z_]+abc$/;  a1d23abc
 var patt4 = /abc$/;             abc
 var patt5 = /b$/;               null</code></pre>
-<p>未完待续！！</p>
+<h3 id="③-，-，？的使用"><a href="#③-，-，？的使用" class="headerlink" title="③ +，*，？的使用"></a>③ +，*，？的使用</h3><ul>
+<li><strong>runoo+b</strong>，+ 号代表前面的字符（即o）必须至少出现一次（1次或多次）。</li>
+<li><strong>runoo*b</strong>，* 号代表前面的字符（即o）可以不出现，也可以出现一次或者多次（0次、或1次、或多次）。</li>
+<li><strong>colou?r</strong> ,可以匹配 color 或者 colour，? 问号代表前面的字符（即u）最多只可以出现一次（0次、或1次）。</li>
+</ul>
+<h3 id="④-，-g-s-S-w-的使用"><a href="#④-，-g-s-S-w-的使用" class="headerlink" title="④[^]，/g, \s, \S,\w 的使用"></a>④[^]，/g, \s, \S,\w 的使用</h3><ul>
+<li>/g 表示该表达式将用来在输入字符串中查找所有可能的匹配，返回的结果可以是多个。如果不加/g最多只会匹配一个</li>
+<li>/[^abc】/g  匹配除括号里内容外的全部字符</li>
+<li>/[…]/g 匹配里面的所有字符</li>
+<li>/[a-z]/g 匹配小写a-z中的所有字母</li>
+<li>/./g  &lt;=&gt;/[^\n\r】/g  匹配除换行符（\n、\r）之外的任何单个字符。</li>
+<li>/[\s\S]/g  匹配所有内容 （\s 是匹配所有空白符，包括换行，\S 非空白符，包括换行）</li>
+<li>/[\w]/g   &lt;=&gt; /\w/g  &lt;=&gt;  /[a-z0-9A-Z_]/g   匹配字母、数字、下划线。等价于 [A-Za-z0-9_]</li>
+</ul>
+<p><u>注：是否有【】这个进行包裹！！</u></p>
 
             </div>
             <hr/>
@@ -491,7 +505,7 @@ var patt5 = /b$/;               null</code></pre>
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="/about" rel="external nofollow noreferrer">Chan.talent</a>
+                    <a href="/about" rel="external nofollow noreferrer">Chan.Joy</a>
                 </span>
             </div>
             <div class="reprint__type">
@@ -514,7 +528,7 @@ var patt5 = /b$/;               null</code></pre>
                     本博客所有文章除特別声明外，均采用
                     <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
                     许可协议。转载请注明来源
-                    <a href="/about" target="_blank">Chan.talent</a>
+                    <a href="/about" target="_blank">Chan.Joy</a>
                     !
                 </span>
             </div>
@@ -733,7 +747,7 @@ var patt5 = /b$/;               null</code></pre>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
-                            Chan.talent
+                            Chan.Joy
                             
                         </span>
                     </div>
@@ -771,7 +785,7 @@ var patt5 = /b$/;               null</code></pre>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
-                            Chan.talent
+                            Chan.Joy
                             
                         </span>
                     </div>
@@ -976,7 +990,7 @@ code[class*="language-"], pre[class*="language-"] { white-space: pre !important;
                 <span id="year">2019-2020</span>
             
             <span id="year">2019</span>
-            <a href="/about" target="_blank">Chan.talent</a>
+            <a href="/about" target="_blank">Chan.Joy</a>
             |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
             |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
             <br>
