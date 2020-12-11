@@ -572,6 +572,7 @@ $id= preg_replace(&#39;/union\s+select/i&#39;,&quot;&quot;, $id);      //Strip o
 </tr>
 </tbody></table>
 <p>本关的Tomcat服务器过滤，验证。功能类似为一个WAF。但因为Tomcat解析的是第一个参数，而Apache解析的是最后一个。所以可以利用这个进行绕过WAF检测。</p>
+<pre><code>$match = preg_match(&quot;/^\d+$/&quot;, $input);       \d  匹配数字字符。等价于 [0-9]。 </code></pre>
 <pre><code>less-27/login.php?id=1&amp;id=2&amp;id=3</code></pre>
 <p>回显出来的是id=1，还是id=2，还是id=3呢？</p>
 <p>因为这里最终是apache进行解析回显。所以回显是id=3。所以保证第一个参数是对的绕过Tomcat检测，在最后一个参数处进行注入即可。</p>
