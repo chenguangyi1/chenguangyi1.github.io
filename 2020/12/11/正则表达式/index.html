@@ -464,10 +464,18 @@
 <li>[0-9]匹配单个数字</li>
 <li>[0-9]+匹配多个数字</li>
 <li>+表示匹配一个或多个</li>
-<li>abc$匹配以abc结尾的字符串</li>
+<li>abc$匹配字母abc并以abc结尾的字符串</li>
 <li>$表示匹配输入字符串结束的位置</li>
 </ul>
-<p><img src="%5Cimages%5C7.png"></p>
+<p><img src="D:\boke\blog\source\images\7.png"></p>
+<h3 id="a-z0-9-3-15"><a href="#a-z0-9-3-15" class="headerlink" title="^[a-z0-9_-]{3-15}$"></a><strong>^[a-z0-9_-]{3-15}$</strong></h3><p>规定只能用a-z，0-9，_ ,  - 。且长度在3-15之间。</p>
+<pre><code>var str = &quot;a1d23abc&quot;;
+var patt1 = /^[0-9a-z_]+/;      a1d23abc
+var patt2 = /^[0-9a-z_]/;       a
+var patt3 = /^[0-9a-z_]+abc$/;  a1d23abc
+var patt4 = /abc$/;             abc
+var patt5 = /b$/;               null</code></pre>
+<p>未完待续！！</p>
 
             </div>
             <hr/>
