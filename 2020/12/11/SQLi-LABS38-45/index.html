@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="TCP三次握手, Keep-Boom">
+    <meta name="keywords" content="SQLi-LABS38-45, Keep-Boom">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>TCP三次握手 | Keep-Boom</title>
+    <title>SQLi-LABS38-45 | Keep-Boom</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/5.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/23.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">TCP三次握手</h1>
+                    <h1 class="description center-align post-title">SQLi-LABS38-45</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-12-06
+                    2020-12-11
                 </div>
                 
 
@@ -459,13 +459,27 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p><img src="/images/5.png"></p>
-<h3 id="第一次握手："><a href="#第一次握手：" class="headerlink" title="第一次握手："></a>第一次握手：</h3><p>发送端（客户端）发送连接请求将SYN=1,ACK=0,产生一个随机序列seq=x（Client 进入 SYN-SENT(同步已发送)状态）</p>
-<h3 id="第二次握手："><a href="#第二次握手：" class="headerlink" title="第二次握手："></a>第二次握手：</h3><p>接收端（服务器端）接收到请求，确认的话会将（SYN=1,ACK=1,ack=x+1，产生随机序列seq=y ）发送给客户端请求连接（Server 进入 SYN-RCVD（同步收到）状态）</p>
-<h3 id="第三次握手："><a href="#第三次握手：" class="headerlink" title="第三次握手："></a>第三次握手：</h3><p>客户端接收到服务器端请求的报文，确认ACK=1,ack=x+1后，将ACK=1，ack=y+1发送给服务器端。服务器端确认ack=y+1，ACK=1完之后，（Client 和 Server 都进入 ESTABLISHED（已建立连接）状态），通信通道建立完成，可以开始传输数据。</p>
-<p>注：ack和ACK不同</p>
-<p>ack代表的是头部的确认号Acknowledge number,是对上一个包的序号进行确认的号。ack=seq+1</p>
-<p>ACK用于标志TCP包是否对上一个包进行确认操作，确认了置1。没确认则为0。</p>
+                <h3 id="堆叠注入"><a href="#堆叠注入" class="headerlink" title="堆叠注入"></a><u>堆叠注入</u></h3><p>我本人不是很喜欢这种注入的方式。</p>
+<h4 id="局限性比较大："><a href="#局限性比较大：" class="headerlink" title="局限性比较大："></a>局限性比较大：</h4><p>1.后面的sql注入语句无论对错，是否执行成功，我们在前端界面是看不出来的。延时注入，报错注入就都不能用了。</p>
+<p>2.<u>mysqli_multi_query(connection,query)函数执行一个或多个针对数据库的查询。多个查询用分号进行分隔。</u>必须要使用这个函数时才可以进行堆叠注入</p>
+<table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><em>connection</em></td>
+<td align="left">必需。规定要使用的 MySQL 连接。</td>
+</tr>
+<tr>
+<td align="left"><em>query</em></td>
+<td align="left">必需。规定一个或多个查询，用分号进行分隔。</td>
+</tr>
+</tbody></table>
+<p>3.有些数据库本就不支持多个语句的查询,可能受到API或者数据库引擎不支持的限制，当然了权限不足也可以解释为什么攻击者无法修改数据或者调用一些程序。</p>
+<p><u>我更推荐使用联合注入方法！实在没法子可以再使用堆叠注入！！</u></p>
 
             </div>
             <hr/>
@@ -491,7 +505,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2020/12/06/TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/">http://example.com/2020/12/06/TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/</a>
+                    <a href="http://example.com/2020/12/11/SQLi-LABS38-45/">http://example.com/2020/12/11/SQLi-LABS38-45/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -700,13 +714,13 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2020/12/08/GBK%E5%92%8CUTF-8%E6%96%87%E5%AD%97%E7%BC%96%E7%A0%81%E7%9A%84%E5%8C%BA%E5%88%AB/">
+                <a href="/2020/12/11/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="GBK和UTF-8文字编码的区别">
+                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="正则表达式">
                         
-                        <span class="card-title">GBK和UTF-8文字编码的区别</span>
+                        <span class="card-title">正则表达式</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -717,7 +731,7 @@
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-12-08
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-12-11
                         </span>
                         <span class="publish-author">
                             
@@ -737,13 +751,13 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/12/06/HTML%E5%9F%BA%E7%A1%80/">
+                <a href="/2020/12/08/GBK%E5%92%8CUTF-8%E6%96%87%E5%AD%97%E7%BC%96%E7%A0%81%E7%9A%84%E5%8C%BA%E5%88%AB/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="HTML基础">
+                        <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="GBK和UTF-8文字编码的区别">
                         
-                        <span class="card-title">HTML基础</span>
+                        <span class="card-title">GBK和UTF-8文字编码的区别</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -754,7 +768,7 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-06
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-08
                             </span>
                         <span class="publish-author">
                             

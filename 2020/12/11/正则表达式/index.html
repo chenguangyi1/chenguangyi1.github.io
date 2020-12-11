@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="TCP三次握手, Keep-Boom">
+    <meta name="keywords" content="正则表达式, Keep-Boom">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>TCP三次握手 | Keep-Boom</title>
+    <title>正则表达式 | Keep-Boom</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/5.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/3.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">TCP三次握手</h1>
+                    <h1 class="description center-align post-title">正则表达式</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-12-06
+                    2020-12-11
                 </div>
                 
 
@@ -459,13 +459,15 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p><img src="/images/5.png"></p>
-<h3 id="第一次握手："><a href="#第一次握手：" class="headerlink" title="第一次握手："></a>第一次握手：</h3><p>发送端（客户端）发送连接请求将SYN=1,ACK=0,产生一个随机序列seq=x（Client 进入 SYN-SENT(同步已发送)状态）</p>
-<h3 id="第二次握手："><a href="#第二次握手：" class="headerlink" title="第二次握手："></a>第二次握手：</h3><p>接收端（服务器端）接收到请求，确认的话会将（SYN=1,ACK=1,ack=x+1，产生随机序列seq=y ）发送给客户端请求连接（Server 进入 SYN-RCVD（同步收到）状态）</p>
-<h3 id="第三次握手："><a href="#第三次握手：" class="headerlink" title="第三次握手："></a>第三次握手：</h3><p>客户端接收到服务器端请求的报文，确认ACK=1,ack=x+1后，将ACK=1，ack=y+1发送给服务器端。服务器端确认ack=y+1，ACK=1完之后，（Client 和 Server 都进入 ESTABLISHED（已建立连接）状态），通信通道建立完成，可以开始传输数据。</p>
-<p>注：ack和ACK不同</p>
-<p>ack代表的是头部的确认号Acknowledge number,是对上一个包的序号进行确认的号。ack=seq+1</p>
-<p>ACK用于标志TCP包是否对上一个包进行确认操作，确认了置1。没确认则为0。</p>
+                <h3 id="例子：-0-9-abc"><a href="#例子：-0-9-abc" class="headerlink" title="例子：^[0-9]+abc$"></a>例子：^[0-9]+abc$</h3><ul>
+<li>^表示匹配输入字符串的开始位置。</li>
+<li>[0-9]匹配单个数字</li>
+<li>[0-9]+匹配多个数字</li>
+<li>+表示匹配一个或多个</li>
+<li>abc$匹配以abc结尾的字符串</li>
+<li>$表示匹配输入字符串结束的位置</li>
+</ul>
+<p><img src="%5Cimages%5C7.png"></p>
 
             </div>
             <hr/>
@@ -491,7 +493,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2020/12/06/TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/">http://example.com/2020/12/06/TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B/</a>
+                    <a href="http://example.com/2020/12/11/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">http://example.com/2020/12/11/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -696,54 +698,18 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2020/12/08/GBK%E5%92%8CUTF-8%E6%96%87%E5%AD%97%E7%BC%96%E7%A0%81%E7%9A%84%E5%8C%BA%E5%88%AB/">
+                <a href="/2020/12/11/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="GBK和UTF-8文字编码的区别">
+                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="正则表达式">
                         
-                        <span class="card-title">GBK和UTF-8文字编码的区别</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            
-                        
-                    </div>
-                    <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-12-08
-                        </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-user fa-fw"></i>
-                            Chan.talent
-                            
-                        </span>
-                    </div>
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2020/12/06/HTML%E5%9F%BA%E7%A1%80/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="HTML基础">
-                        
-                        <span class="card-title">HTML基础</span>
+                        <span class="card-title">正则表达式</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -754,7 +720,45 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-06
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-11
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            Chan.talent
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2020/12/11/SQLi-LABS38-45/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="SQLi-LABS38-45">
+                        
+                        <span class="card-title">SQLi-LABS38-45</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-11
                             </span>
                         <span class="publish-author">
                             

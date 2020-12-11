@@ -730,6 +730,13 @@ Header(&quot;Location: http://www.php.net&quot;);
 <h3 id="19-mysql-fetch-row-函数"><a href="#19-mysql-fetch-row-函数" class="headerlink" title="19.mysql_fetch_row()函数"></a>19.mysql_fetch_row()函数</h3><p>从结果集中取得一行，并作为枚举数组返回。</p>
 <p><u>规定由 mysqli_query()、mysqli_store_result() 或 mysqli_use_result() 返回的结果集标识符。</u></p>
 <h3 id="20-mysql-affected-rows-函数"><a href="#20-mysql-affected-rows-函数" class="headerlink" title="20.mysql_affected_rows() 函数"></a>20.mysql_affected_rows() 函数</h3><p>返回前一次 MySQL 操作所影响的记录行数。</p>
+<h3 id="21-dechex-number-函数"><a href="#21-dechex-number-函数" class="headerlink" title="21.dechex(number)函数"></a>21.dechex(number)函数</h3><p>把十进制数转换为十六进制数。</p>
+<pre><code>&lt;?php
+echo dechex(&quot;30&quot;) . &quot;&lt;br&gt;&quot;;       1e
+echo dechex(&quot;10&quot;) . &quot;&lt;br&gt;&quot;;       a
+echo dechex(&quot;1587&quot;) . &quot;&lt;br&gt;&quot;;     633
+echo dechex(&quot;70&quot;);                46
+?&gt;</code></pre>
 
             </div>
             <hr/>
