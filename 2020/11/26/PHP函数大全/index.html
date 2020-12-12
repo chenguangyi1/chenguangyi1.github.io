@@ -459,10 +459,10 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="1-isset-检查变量是否存在。"><a href="#1-isset-检查变量是否存在。" class="headerlink" title="1.isset() 检查变量是否存在。"></a>1.<strong>isset() 检查变量是否存在。</strong></h3><p>若变量不存在或为NULL，返回FALSE。</p>
+                <h3 id="isset-检查变量是否存在。"><a href="#isset-检查变量是否存在。" class="headerlink" title="isset() 检查变量是否存在。"></a><strong>isset() 检查变量是否存在。</strong></h3><p>若变量不存在或为NULL，返回FALSE。</p>
 <p>若变量不为NULL时，返回TRUE。</p>
 <p>若变量为多个时，必须都不为NULL，才返回TRUE。</p>
-<h3 id="2-mysql-query-query-connection-执行一条MySQL查询。"><a href="#2-mysql-query-query-connection-执行一条MySQL查询。" class="headerlink" title="2.mysql_query(query,connection)执行一条MySQL查询。"></a><strong>2.mysql_query(query,connection)执行一条MySQL查询。</strong></h3><p>query:(必需)规定要发送的SQL查询语句。注‘查询字符串不应以分号结束。</p>
+<h3 id="mysql-query-query-connection-执行一条MySQL查询。"><a href="#mysql-query-query-connection-执行一条MySQL查询。" class="headerlink" title="mysql_query(query,connection)执行一条MySQL查询。"></a><strong>mysql_query(query,connection)执行一条MySQL查询。</strong></h3><p>query:(必需)规定要发送的SQL查询语句。注‘查询字符串不应以分号结束。</p>
 <p>connection：(可选)SQL连接标识符。如果未规定，则使用上次的打开的连接。</p>
 <p>如果之前没有打开连接，这个函数会尝试无参数调用mysql_conncet()来建立连接。</p>
 <p>注：此函数仅对select,show,explain,describe句子返回资源标识符，如果查询失败则返回false。</p>
@@ -482,7 +482,7 @@ mysql_query($sql,$con);
 
 mysql_close($con);
 ?&gt;</code></pre>
-<h3 id="3-mysql-fetch-array-result-resulttype-从结果集中取得一行作为关联数组，或数字数组，或二者兼有。"><a href="#3-mysql-fetch-array-result-resulttype-从结果集中取得一行作为关联数组，或数字数组，或二者兼有。" class="headerlink" title="3.mysql_fetch_array(result,resulttype)从结果集中取得一行作为关联数组，或数字数组，或二者兼有。"></a><strong>3.mysql_fetch_array(result,resulttype)从结果集中取得一行作为关联数组，或数字数组，或二者兼有。</strong></h3><p>data:(必需)该数据指针指，由mysql_query,mysqli_store_result() ,mysqli_use_result()返回的结果。 </p>
+<h3 id="mysql-fetch-array-result-resulttype-从结果集中取得一行作为关联数组，或数字数组，或二者兼有。"><a href="#mysql-fetch-array-result-resulttype-从结果集中取得一行作为关联数组，或数字数组，或二者兼有。" class="headerlink" title="mysql_fetch_array(result,resulttype)从结果集中取得一行作为关联数组，或数字数组，或二者兼有。"></a><strong>mysql_fetch_array(result,resulttype)从结果集中取得一行作为关联数组，或数字数组，或二者兼有。</strong></h3><p>data:(必需)该数据指针指，由mysql_query,mysqli_store_result() ,mysqli_use_result()返回的结果。 </p>
 <p>resulttype:(可选)规定要返回哪种类型的数组。</p>
 <ul>
 <li>MYSQLI_ASSOC(关联数组)</li>
@@ -514,10 +514,10 @@ Array
 [2] =&gt; London
 [City] =&gt; London
 ) </code></pre>
-<h3 id="4-mysql-query常常和mysql-fetch-array一起连用"><a href="#4-mysql-query常常和mysql-fetch-array一起连用" class="headerlink" title="4.mysql_query常常和mysql_fetch_array一起连用"></a>4.mysql_query常常和mysql_fetch_array一起连用</h3><p>例子：</p>
+<h3 id="mysql-query常常和mysql-fetch-array一起连用"><a href="#mysql-query常常和mysql-fetch-array一起连用" class="headerlink" title="mysql_query常常和mysql_fetch_array一起连用"></a>mysql_query常常和mysql_fetch_array一起连用</h3><p>例子：</p>
 <p>$tempresult=mysql_query (“SQL语句”);<br> while ($row = mysql_fetch_array($tempresult))<br>    {<br>      print $row[0]; //打印第一列的记录<br>      print $row[1];  //打印第二列的记录<br>    }  </p>
 <p>  数组变量 $row 被 mysql_fetch_array 函数建立并用查询的结果字段来填充，数组的每一个分量对应于查询结果的每一个字段 。</p>
-<h3 id="5-addslashes-和htmlspecialchars-的相同和区别"><a href="#5-addslashes-和htmlspecialchars-的相同和区别" class="headerlink" title="5.addslashes()和htmlspecialchars()的相同和区别"></a>5.addslashes()和htmlspecialchars()的相同和区别</h3><p>二者都用来都特殊符号进行转义，用于防止SQL语句的注入。</p>
+<h3 id="addslashes-和htmlspecialchars-的相同和区别"><a href="#addslashes-和htmlspecialchars-的相同和区别" class="headerlink" title="addslashes()和htmlspecialchars()的相同和区别"></a>addslashes()和htmlspecialchars()的相同和区别</h3><p>二者都用来都特殊符号进行转义，用于防止SQL语句的注入。</p>
 <p>①addslashes()通常用于防止sql注入，它可对通过get，post和cookie传递过来的参数的单引号、双引号、\以及null前加“\”进行转义</p>
 <p>如：如变量$str=$_POST[“str”];的值为：bb’ or 1=’1。通过addslashes()函数过滤后会变为：bb斜杆&#39; or 1=斜杆&#39;1。</p>
 <p>②htmlspecialchars()也是对字符进行转义，与addslashes（）不同的是htmlspecialchars()是将特殊字符用引用实体替换。</p>
@@ -525,8 +525,8 @@ Array
 <p>③addslashes()在执行sql语句前对通过get、post和cookie传递来的参数中的单引号，双引号,\ 和null进行转义。但sql执行成功后，插入到数据库中的数据是不带有转义字符\的。这时如果插入到数据库中的是一些js脚本，当这些脚本被读取出来时还是会被执行。</p>
 <p>这时我们可对读取出来的数据使用htmlspecialchars()进行过滤，避免执行被注入的脚本。</p>
 <p>④在使用这两个函数之前需要先使用get_magic_quotes_gpc()验证下php.ini配置文件里的<code>magic_quotes_gpc</code>设置是否自动为GPC(get,post,cookie)传来的数据中的’”加上反斜线。如果没有确定直接使用该函数，可能造成双层转义。</p>
-<h3 id="6-get-magic-quotes-gpc"><a href="#6-get-magic-quotes-gpc" class="headerlink" title="6.get_magic_quotes_gpc()"></a>6.get_magic_quotes_gpc()</h3><p>用于检验php.ini配置文件中magic_quotes_gpc的设置是否开启自动为GPC(GET,POST,COOKIE)传来的数据进行转义。</p>
-<h3 id="7-ctype-digit-检测字符串中是否只含有数字。注：字符串里的数字，负数，小数都不行。"><a href="#7-ctype-digit-检测字符串中是否只含有数字。注：字符串里的数字，负数，小数都不行。" class="headerlink" title="7.ctype_digit()检测字符串中是否只含有数字。注：字符串里的数字，负数，小数都不行。"></a>7.ctype_digit()检测字符串中是否只含有数字。注：字符串里的数字，负数，小数都不行。</h3><p>例子：</p>
+<h3 id="get-magic-quotes-gpc"><a href="#get-magic-quotes-gpc" class="headerlink" title="get_magic_quotes_gpc()"></a>get_magic_quotes_gpc()</h3><p>用于检验php.ini配置文件中magic_quotes_gpc的设置是否开启自动为GPC(GET,POST,COOKIE)传来的数据进行转义。</p>
+<h3 id="ctype-digit-检测字符串中是否只含有数字。注：字符串里的数字，负数，小数都不行。"><a href="#ctype-digit-检测字符串中是否只含有数字。注：字符串里的数字，负数，小数都不行。" class="headerlink" title="ctype_digit()检测字符串中是否只含有数字。注：字符串里的数字，负数，小数都不行。"></a>ctype_digit()检测字符串中是否只含有数字。注：字符串里的数字，负数，小数都不行。</h3><p>例子：</p>
 <p><strong>&lt;?php</strong><br><strong>$strings = array(‘1820.20’, ‘10002’, ‘wsl!12’);</strong><br><strong>foreach ($strings as $testcase) {</strong><br>  <strong>if (ctype_digit($testcase)) {</strong><br>    <strong>echo “The string $testcase consists of all digits.\n”;</strong><br>  <strong>} else {</strong><br>    <strong>echo “The string $testcase does not consist of all digits.\n”;</strong><br>  <strong>}</strong><br><strong>}</strong></p>
 <p>结果：</p>
 <pre><code>The string 1820.20 does not consist of all digits.
@@ -537,7 +537,7 @@ The string wsl!12 does not consist of all digits.</code></pre>
 <p><strong>$numeric_string = ‘42’;</strong><br><strong>$integer    = 42;</strong></p>
 <p><strong>ctype_digit($numeric_string); // true</strong><br>*<em>ctype_digit($integer);     // false (ASCII 42 is the * character)*</em></p>
 <p><strong>is_numeric($numeric_string);  // true</strong><br><strong>is_numeric($integer);     // true</strong></p>
-<h3 id="8-mysql-real-escape-string-转义-SQL-语句中使用的字符串中的特殊字符。"><a href="#8-mysql-real-escape-string-转义-SQL-语句中使用的字符串中的特殊字符。" class="headerlink" title="8.mysql_real_escape_string() 转义 SQL 语句中使用的字符串中的特殊字符。"></a>8.mysql_real_escape_string() 转义 SQL 语句中使用的字符串中的特殊字符。</h3><p>下列字符受影响：</p>
+<h3 id="mysql-real-escape-string-转义-SQL-语句中使用的字符串中的特殊字符。"><a href="#mysql-real-escape-string-转义-SQL-语句中使用的字符串中的特殊字符。" class="headerlink" title="mysql_real_escape_string() 转义 SQL 语句中使用的字符串中的特殊字符。"></a>mysql_real_escape_string() 转义 SQL 语句中使用的字符串中的特殊字符。</h3><p>下列字符受影响：</p>
 <ul>
 <li>\x00</li>
 <li>\n</li>
@@ -548,13 +548,13 @@ The string wsl!12 does not consist of all digits.</code></pre>
 <li>\x1a</li>
 </ul>
 <p>功能于addslashes一样，范围不一样！</p>
-<h3 id="9-SERVER-是一个包含了诸如头信息-header-、路径-path-、以及脚本位置-script-locations-等等信息的数组。"><a href="#9-SERVER-是一个包含了诸如头信息-header-、路径-path-、以及脚本位置-script-locations-等等信息的数组。" class="headerlink" title="9.$_SERVER 是一个包含了诸如头信息(header)、路径(path)、以及脚本位置(script locations)等等信息的数组。"></a>9.$_SERVER 是一个包含了诸如头信息(header)、路径(path)、以及脚本位置(script locations)等等信息的数组。</h3><ul>
+<h3 id="SERVER-是一个包含了诸如头信息-header-、路径-path-、以及脚本位置-script-locations-等等信息的数组。"><a href="#SERVER-是一个包含了诸如头信息-header-、路径-path-、以及脚本位置-script-locations-等等信息的数组。" class="headerlink" title="$_SERVER 是一个包含了诸如头信息(header)、路径(path)、以及脚本位置(script locations)等等信息的数组。"></a>$_SERVER 是一个包含了诸如头信息(header)、路径(path)、以及脚本位置(script locations)等等信息的数组。</h3><ul>
 <li>REMOTE_ADDR  当前IP地址</li>
 <li>HTTP_USER_AGENT  对应HTTP请求中的USER_AGENT 指当前浏览器信息，系统一些信息</li>
 <li>HTTP_REFERER    从哪个网页地址发送的</li>
 <li>QUERY_STRING  返回查询的字符串</li>
 </ul>
-<h3 id="10-setcookie-用于设置-cookie"><a href="#10-setcookie-用于设置-cookie" class="headerlink" title="10.setcookie() 用于设置 cookie"></a>10.setcookie() 用于设置 cookie</h3><pre><code>setcookie(name, value, expire, path, domain)</code></pre>
+<h3 id="setcookie-用于设置-cookie"><a href="#setcookie-用于设置-cookie" class="headerlink" title="setcookie() 用于设置 cookie"></a>setcookie() 用于设置 cookie</h3><pre><code>setcookie(name, value, expire, path, domain)</code></pre>
 <pre><code>setcookie(&quot;user&quot;, &quot;runoob&quot;, time()+3600)</code></pre>
 <p>①这里设置了cookie的名称为user，值为runoob，1小时后失效。</p>
 <p>②$_COOKIE() 变量用于取回 cookie 的值。</p>
@@ -562,10 +562,10 @@ The string wsl!12 does not consist of all digits.</code></pre>
 <p>当删除 cookie 时,应当使过期日期设置为过去的时间点。</p>
 <pre><code>设置 cookie 过期时间为过去 1 小时
 setcookie(&quot;user&quot;, &quot;&quot;, time()-3600);</code></pre>
-<h3 id="11-mysql-num-rows-函数"><a href="#11-mysql-num-rows-函数" class="headerlink" title="11.mysql_num_rows()函数"></a>11.mysql_num_rows()函数</h3><p>mysql_num_rows(data) 函数返回结果集中行的数目</p>
+<h3 id="mysql-num-rows-函数"><a href="#mysql-num-rows-函数" class="headerlink" title="mysql_num_rows()函数"></a>mysql_num_rows()函数</h3><p>mysql_num_rows(data) 函数返回结果集中行的数目</p>
 <p>data（必须）结果集</p>
 <p>输入数字，返回行数如1，2，3。。。</p>
-<h3 id="12-explode-separator-string-limit"><a href="#12-explode-separator-string-limit" class="headerlink" title="12.explode(separator,string,limit)"></a>12.explode(<em>separator,string,limit</em>)</h3><table>
+<h3 id="explode-separator-string-limit"><a href="#explode-separator-string-limit" class="headerlink" title="explode(separator,string,limit)"></a>explode(<em>separator,string,limit</em>)</h3><table>
 <thead>
 <tr>
 <th>separator</th>
@@ -620,7 +620,7 @@ Array
     [0] =&gt; one
     [1] =&gt; two
 )</code></pre>
-<h3 id="13-Include-和require-文件的区别"><a href="#13-Include-和require-文件的区别" class="headerlink" title="13.Include()和require ()文件的区别"></a>13.Include()和require ()文件的区别</h3><ul>
+<h3 id="Include-和require-文件的区别"><a href="#Include-和require-文件的区别" class="headerlink" title="Include()和require ()文件的区别"></a>Include()和require ()文件的区别</h3><ul>
 <li>require 会生成致命错误（E_COMPILE_ERROR）并停止脚本</li>
 <li>include 只生成警告（E_WARNING），并且脚本会继续</li>
 </ul>
@@ -655,11 +655,11 @@ include (&quot;footer.php&quot;);
 
 &lt;/body&gt;
 &lt;/html&gt;</code></pre>
-<h3 id="14-die-函数"><a href="#14-die-函数" class="headerlink" title="14.die()函数"></a>14.die()函数</h3><p>是 <a target="_blank" rel="noopener" href="https://www.runoob.com/php/func-misc-exit.html">exit()</a> 函数的别名</p>
+<h3 id="die-函数"><a href="#die-函数" class="headerlink" title="die()函数"></a>die()函数</h3><p>是 <a target="_blank" rel="noopener" href="https://www.runoob.com/php/func-misc-exit.html">exit()</a> 函数的别名</p>
 <p>die(message) 函数输出一条消息，并退出当前脚本。</p>
 <p>message：必需，在退出脚本之前写入的消息或状态号（状态号不会被输出）</p>
 <pre><code>$res = mysql_query($sql) or die(&#39;You tried to be real smart, Try harder!!!! :( &#39;);</code></pre>
-<h3 id="15-error-reporting-函数"><a href="#15-error-reporting-函数" class="headerlink" title="15.error_reporting() 函数"></a>15.error_reporting() 函数</h3><pre><code>&lt;?php
+<h3 id="error-reporting-函数"><a href="#error-reporting-函数" class="headerlink" title="error_reporting() 函数"></a>error_reporting() 函数</h3><pre><code>&lt;?php
  // 关闭错误报告
  error_reporting(0);
 
@@ -675,7 +675,7 @@ include (&quot;footer.php&quot;);
  // 报告 E_NOTICE 之外的所有错误
  error_reporting(E_ALL &amp; ~E_NOTICE);
 ?&gt; </code></pre>
-<h3 id="16-echo-print-print-r"><a href="#16-echo-print-print-r" class="headerlink" title="16.echo ,print,print_r"></a>16.echo ,print,print_r</h3><ul>
+<h3 id="echo-print-print-r"><a href="#echo-print-print-r" class="headerlink" title="echo ,print,print_r"></a>echo ,print,print_r</h3><ul>
 <li><p>echo -可以输出一个或多个字符串</p>
 </li>
 <li><p>print -只能输出简单类型变量的值，如int，string</p>
@@ -684,7 +684,7 @@ include (&quot;footer.php&quot;);
 <p>print_r() 函数用于打印变量，以更容易理解的形式展示。</p>
 </li>
 </ul>
-<h3 id="17-intval-函数"><a href="#17-intval-函数" class="headerlink" title="17.intval() 函数"></a>17.intval() 函数</h3><p>int intval ( mixed $var [, int $base = 10 ] )</p>
+<h3 id="intval-函数"><a href="#intval-函数" class="headerlink" title="intval() 函数"></a>intval() 函数</h3><p>int intval ( mixed $var [, int $base = 10 ] )</p>
 <ul>
 <li>$var：要转换成 integer 的数量值。</li>
 <li>$base：转化所使用的进制。</li>
@@ -719,7 +719,7 @@ echo intval(&#39;42&#39;, 8);                 // 34
 echo intval(array());                 // 0 
 echo intval(array(&#39;foo&#39;, &#39;bar&#39;));     // 1 
 ?&gt;</code></pre>
-<h3 id="18-header-函数"><a href="#18-header-函数" class="headerlink" title="18.header()函数"></a>18.header()函数</h3><p>&lt;1&gt; 重定向功能，这种最常见 </p>
+<h3 id="header-函数"><a href="#header-函数" class="headerlink" title="header()函数"></a>header()函数</h3><p>&lt;1&gt; 重定向功能，这种最常见 </p>
 <pre><code>&lt;?php 
 Header(&quot;Location: http://www.php.net&quot;); 
 ?&gt;   </code></pre>
@@ -727,22 +727,47 @@ Header(&quot;Location: http://www.php.net&quot;);
 <ul>
 <li>其他功能作者懂了再跟新</li>
 </ul>
-<h3 id="19-mysql-fetch-row-函数"><a href="#19-mysql-fetch-row-函数" class="headerlink" title="19.mysql_fetch_row()函数"></a>19.mysql_fetch_row()函数</h3><p>从结果集中取得一行，并作为枚举数组返回。</p>
+<h3 id="mysql-fetch-row-函数"><a href="#mysql-fetch-row-函数" class="headerlink" title="mysql_fetch_row()函数"></a>mysql_fetch_row()函数</h3><p>从结果集中取得一行，并作为枚举数组返回。</p>
 <p><u>规定由 mysqli_query()、mysqli_store_result() 或 mysqli_use_result() 返回的结果集标识符。</u></p>
-<h3 id="20-mysql-affected-rows-函数"><a href="#20-mysql-affected-rows-函数" class="headerlink" title="20.mysql_affected_rows() 函数"></a>20.mysql_affected_rows() 函数</h3><p>返回前一次 MySQL 操作所影响的记录行数。</p>
-<h3 id="21-dechex-number-函数"><a href="#21-dechex-number-函数" class="headerlink" title="21.dechex(number)函数"></a>21.dechex(number)函数</h3><p>把十进制数转换为十六进制数。</p>
+<h3 id="mysql-affected-rows-函数"><a href="#mysql-affected-rows-函数" class="headerlink" title="mysql_affected_rows() 函数"></a>mysql_affected_rows() 函数</h3><p>返回前一次 MySQL 操作所影响的记录行数。</p>
+<h3 id="dechex-number-函数"><a href="#dechex-number-函数" class="headerlink" title="dechex(number)函数"></a>dechex(number)函数</h3><p>把十进制数转换为十六进制数。</p>
 <pre><code>&lt;?php
 echo dechex(&quot;30&quot;) . &quot;&lt;br&gt;&quot;;       1e
 echo dechex(&quot;10&quot;) . &quot;&lt;br&gt;&quot;;       a
 echo dechex(&quot;1587&quot;) . &quot;&lt;br&gt;&quot;;     633
 echo dechex(&quot;70&quot;);                46
 ?&gt;</code></pre>
-<h3 id="22-preg-match-string-pattern-string-subject"><a href="#22-preg-match-string-pattern-string-subject" class="headerlink" title="22.preg_match(string $pattern , string $subject)"></a>22.preg_match(string $pattern , string $subject)</h3><ul>
+<h3 id="preg-match-string-pattern-string-subject"><a href="#preg-match-string-pattern-string-subject" class="headerlink" title="preg_match(string $pattern , string $subject)"></a>preg_match(string $pattern , string $subject)</h3><ul>
 <li>$pattern: 要搜索的模式，字符串形式。</li>
 <li>$subject: 输入字符串</li>
 </ul>
 <p>匹配成功符合要求则返回1，否则返回0。</p>
-
+<h3 id="foreach"><a href="#foreach" class="headerlink" title="foreach()"></a>foreach()</h3><p>用于遍历数组</p>
+<p>每进行一次循环，当前数组元素的值就会被赋值给 $value 变量（数组指针会逐一地移动），在进行下一次循环时，您将看到数组中的下一个值。</p>
+<pre><code>&lt;?php 
+$x=array(&quot;Google&quot;,&quot;Runoob&quot;,&quot;Taobao&quot;); 
+foreach ($x as $value) 
+&#123;    echo $value . PHP_EOL; &#125; 
+?&gt;</code></pre>
+<pre><code>Google
+Runoob
+Taobao</code></pre>
+<pre><code>&lt;?php 
+$x=array(1=&gt;&quot;Google&quot;, 2=&gt;&quot;Runoob&quot;, 3=&gt;&quot;Taobao&quot;); 
+foreach ($x as $key =&gt; $value) 
+&#123;    echo &quot;key  为 &quot; . $key . &quot;，对应的 value 为 &quot;. $value . PHP_EOL; &#125; 
+?&gt;</code></pre>
+<pre><code>key  为 1，对应的 value 为 Google
+key  为 2，对应的 value 为 Runoob
+key  为 3，对应的 value 为 Taobao</code></pre>
+<h3 id="24-preg-quote-没搞太懂！"><a href="#24-preg-quote-没搞太懂！" class="headerlink" title="24.preg_quote()没搞太懂！"></a>24.preg_quote()没搞太懂！</h3><p>/ 是最通用的分隔符</p>
+<pre><code>&lt;?php 
+$keywords = &#39;$40 for a g3/400&#39;; 
+$keywords = preg_quote($keywords, &#39;/&#39;); 
+echo $keywords;  
+?&gt;</code></pre>
+<pre><code>返回 \$40 for a g3\/400</code></pre>
+<h3 id="25-session"><a href="#25-session" class="headerlink" title="25.session()"></a>25.session()</h3>
             </div>
             <hr/>
 

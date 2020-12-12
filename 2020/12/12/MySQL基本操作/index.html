@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="正则表达式, Keep-Boom">
+    <meta name="keywords" content="MySQL基本操作, Keep-Boom">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>正则表达式 | Keep-Boom</title>
+    <title>MySQL基本操作 | Keep-Boom</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/3.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/13.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">正则表达式</h1>
+                    <h1 class="description center-align post-title">MySQL基本操作</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-12-11
+                    2020-12-12
                 </div>
                 
 
@@ -459,56 +459,46 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="①例子：-0-9-abc"><a href="#①例子：-0-9-abc" class="headerlink" title="①例子：^[0-9]+abc$"></a>①例子：^[0-9]+abc$</h3><ul>
-<li>^表示匹配输入字符串的开始位置。yi</li>
-<li>[0-9]匹配单个数字</li>
-<li>[0-9]+匹配多个数字</li>
-<li>+表示匹配一个或多个</li>
-<li>abc$匹配字母abc并以abc结尾的字符串</li>
-<li>$表示匹配输入字符串结束的位置</li>
-</ul>
-<p><img src="D:\boke\blog\source\images\7.png"></p>
-<h3 id="②-a-z0-9-3-15"><a href="#②-a-z0-9-3-15" class="headerlink" title="②^[a-z0-9_-]{3-15}$"></a><strong>②^[a-z0-9_-]{3-15}$</strong></h3><p>规定只能用a-z，0-9，_ ,  - 。且长度在3-15之间。</p>
-<pre><code>var str = &quot;a1d23abc&quot;;
-var patt1 = /^[0-9a-z_]+/;      a1d23abc
-var patt2 = /^[0-9a-z_]/;       a
-var patt3 = /^[0-9a-z_]+abc$/;  a1d23abc
-var patt4 = /abc$/;             abc
-var patt5 = /b$/;               null</code></pre>
-<h3 id="③-，-，？的使用"><a href="#③-，-，？的使用" class="headerlink" title="③ +，*，？的使用"></a>③ +，*，？的使用</h3><ul>
-<li><strong>runoo+b</strong>，+ 号代表前面的字符（即o）必须至少出现一次（1次或多次）。</li>
-<li><strong>runoo*b</strong>，* 号代表前面的字符（即o）可以不出现，也可以出现一次或者多次（0次、或1次、或多次）。</li>
-<li><strong>colou?r</strong> ,可以匹配 color 或者 colour，? 问号代表前面的字符（即u）最多只可以出现一次（0次、或1次）。</li>
-</ul>
-<h3 id="④-，-g-s-S-w-的使用"><a href="#④-，-g-s-S-w-的使用" class="headerlink" title="④[^]，/g, \s, \S,\w 的使用"></a>④[^]，/g, \s, \S,\w 的使用</h3><ul>
-<li>/g 表示该表达式将用来在输入字符串中查找所有可能的匹配，返回的结果可以是多个。如果不加/g最多只会匹配一个</li>
-<li>/[^abc】/g  匹配除括号里内容外的全部字符</li>
-<li>/[…]/g 匹配里面的所有字符</li>
-<li>/[a-z]/g 匹配小写a-z中的所有字母</li>
-<li>/./g  &lt;=&gt;/[^\n\r】/g  匹配除换行符（\n、\r）之外的任何单个字符。</li>
-<li>/[\s\S]/g  匹配所有内容 （\s 是匹配所有空白符，包括换行，\S 非空白符，包括换行）</li>
-<li>/[\w]/g   &lt;=&gt; /\w/g  &lt;=&gt;  /[a-z0-9A-Z_]/g   匹配字母、数字、下划线。等价于 [A-Za-z0-9_]</li>
-</ul>
-<p><u>注：是否有【】这个进行包裹！！</u></p>
-<h3 id="⑤特殊符号-的使用"><a href="#⑤特殊符号-的使用" class="headerlink" title="⑤特殊符号   $,(),*,+,.,[],?,,^,{},| 的使用"></a>⑤特殊符号   $,(),*,+,.,[],?,,^,{},| 的使用</h3><p>所谓特殊字符，就是一些有特殊含义的字符，如上面说的 <strong>runoo*b</strong> 中的 <strong><strong>*，简单的说就是表示任何字符串的意思。如果要查找字符串中的 *</strong></strong> 符号，则需要对 ***** 进行转义</p>
-<pre><code>即在其前加一个 \(反斜杆即转义符号):runo\*ob 匹配 runo*ob。</code></pre>
-<ul>
-<li>^ 匹配输入字符串的开始位置</li>
-<li>$ 匹配输入字符串的结尾位置</li>
-<li>+匹配前子表达式<u>一次或多次</u></li>
-<li>*匹配前子表达式<u>零，一次或多次</u></li>
-<li>？匹配前子表达式<u>零或一次</u></li>
-<li>. 匹配除换行符\n 外的任何字符</li>
-<li>() 标记一个子表达式的开始和结束位置</li>
-<li>[] 标志一个中括号表达式的开始</li>
-<li>^如果在[]外侧表示字符串的开始，在[^]里面表示除里面的字符外的其他所有字符。</li>
-<li>|表示两项之间选择一个</li>
-<li>{}表示限定字符表达式的开始，如上面的②例子</li>
-<li>\ 标记下一个字符是特殊字符或文字</li>
-</ul>
-<h3 id="⑥"><a href="#⑥" class="headerlink" title="⑥"></a>⑥</h3><p>\d  匹配数字字符。等价于 [0-9]。 </p>
-<p>未完待续</p>
-
+                <h3 id="添加数据"><a href="#添加数据" class="headerlink" title="添加数据"></a>添加数据</h3><h5 id="①添加数据"><a href="#①添加数据" class="headerlink" title="①添加数据"></a>①添加数据</h5><p>insert into 表名（字段名1，字段名2，。。。）values (‘ 值1’,’值2’,’。。’)</p>
+<p><strong><em>#example</em></strong>: </p>
+<p>inset into users (id,username,password) values (‘18’,’keep’,’boom’);</p>
+<h5 id="②添加字段名"><a href="#②添加字段名" class="headerlink" title="②添加字段名"></a>②添加字段名</h5><p>alter table 表名 add column 字段名 字段类型 default null  (新增默认为空的字段名)</p>
+<p>alter table 表名 add column 字段名 字段类型 not null  (新增不为空的字段)</p>
+<p><strong><em>#example：</em></strong></p>
+<p>alter table email add column varchar(10) not null;</p>
+<h5 id="③添加表名"><a href="#③添加表名" class="headerlink" title="③添加表名"></a>③添加表名</h5><p>create table 新表名 like 已有的表名</p>
+<p><strong><em>#example:</em></strong></p>
+<p>create table email1 like email;</p>
+<h5 id="④添加数据库"><a href="#④添加数据库" class="headerlink" title="④添加数据库"></a>④添加数据库</h5><p>create database 数据库名</p>
+<p><strong><em>#exmaple:</em></strong></p>
+<p>create database keepboom;</p>
+<h3 id="删除数据"><a href="#删除数据" class="headerlink" title="删除数据"></a>删除数据</h3><h5 id="①删除数据"><a href="#①删除数据" class="headerlink" title="①删除数据"></a>①删除数据</h5><p>delete from 表名 where(可选) 条件</p>
+<p><strong><em>#example：</em></strong></p>
+<p>delete from email where id=1;</p>
+<p>删除全部数据：delete from email;</p>
+<h5 id="②删除字段名"><a href="#②删除字段名" class="headerlink" title="②删除字段名"></a>②删除字段名</h5><p>alter table 表名 drop column 字段名</p>
+<p><strong><em>#exmaple:</em></strong></p>
+<p>alter table email drop column id;</p>
+<h5 id="③删除表名"><a href="#③删除表名" class="headerlink" title="③删除表名"></a>③删除表名</h5><p>drop table 表名</p>
+<p><strong><em>#example：</em></strong></p>
+<p>drop table email;</p>
+<h5 id="④删除数据库"><a href="#④删除数据库" class="headerlink" title="④删除数据库"></a>④删除数据库</h5><p>drop database 数据库名</p>
+<p><strong><em>#example：</em></strong></p>
+<p>drop database security；</p>
+<h3 id="修改数据"><a href="#修改数据" class="headerlink" title="修改数据"></a>修改数据</h3><h5 id="①修改数据"><a href="#①修改数据" class="headerlink" title="①修改数据"></a>①修改数据</h5><p>update 表名 set 字段名1=‘值1’，字段名2=‘值2’ where 条件</p>
+<p><strong><em>#exmaple：</em></strong></p>
+<p>update email set id_email=’chen’ where id=10;</p>
+<h5 id="②修改字段名"><a href="#②修改字段名" class="headerlink" title="②修改字段名"></a>②修改字段名</h5><p>alter table 表名 change 旧字段 新字段 类型</p>
+<p><strong><em>#example：</em></strong></p>
+<p>alter table email change id id2 varchar(10);</p>
+<h5 id="③修改表名"><a href="#③修改表名" class="headerlink" title="③修改表名"></a>③修改表名</h5><p>rename table 旧表名 to 新表名</p>
+<p><strong><em>#example:</em></strong></p>
+<p>rename table email to email1;</p>
+<p>alter table 旧表名 rename to 新表名</p>
+<p><strong><em>#example：</em></strong></p>
+<p>alter table email rename to email1;</p>
+<h5 id="④修改数据库名"><a href="#④修改数据库名" class="headerlink" title="④修改数据库名"></a>④修改数据库名</h5><p>还没找到资料！！</p>
+<h3 id="查找数据"><a href="#查找数据" class="headerlink" title="查找数据"></a>查找数据</h3>
             </div>
             <hr/>
 
@@ -533,7 +523,7 @@ var patt5 = /b$/;               null</code></pre>
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2020/12/11/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">http://example.com/2020/12/11/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/</a>
+                    <a href="http://example.com/2020/12/12/MySQL%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/">http://example.com/2020/12/12/MySQL%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -738,9 +728,10 @@ var patt5 = /b$/;               null</code></pre>
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2020/12/12/MySQL%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/">
                     <div class="card-image">
@@ -758,9 +749,9 @@ var patt5 = /b$/;               null</code></pre>
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-12-12
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-12
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -769,6 +760,7 @@ var patt5 = /b$/;               null</code></pre>
                         </span>
                     </div>
                 </div>
+
                 
             </div>
         </div>
@@ -779,13 +771,13 @@ var patt5 = /b$/;               null</code></pre>
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/12/11/SQLi-LABS38-45/">
+                <a href="/2020/12/11/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="SQLi-LABS38-45">
+                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="正则表达式">
                         
-                        <span class="card-title">SQLi-LABS38-45</span>
+                        <span class="card-title">正则表达式</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
