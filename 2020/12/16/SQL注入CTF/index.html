@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="PHP函数大全, Keep-Boom">
+    <meta name="keywords" content="SQL注入CTF, Keep-Boom">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>PHP函数大全 | Keep-Boom</title>
+    <title>SQL注入CTF | Keep-Boom</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/4.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/2.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">PHP函数大全</h1>
+                    <h1 class="description center-align post-title">SQL注入CTF</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-11-26
+                    2020-12-16
                 </div>
                 
 
@@ -459,337 +459,42 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="isset-检查变量是否存在。"><a href="#isset-检查变量是否存在。" class="headerlink" title="isset() 检查变量是否存在。"></a><strong>isset() 检查变量是否存在。</strong></h3><p>若变量不存在或为NULL，返回FALSE。</p>
-<p>若变量不为NULL时，返回TRUE。</p>
-<p>若变量为多个时，必须都不为NULL，才返回TRUE。</p>
-<h3 id="mysql-query-query-connection-执行一条MySQL查询。"><a href="#mysql-query-query-connection-执行一条MySQL查询。" class="headerlink" title="mysql_query(query,connection)执行一条MySQL查询。"></a><strong>mysql_query(query,connection)执行一条MySQL查询。</strong></h3><p>query:(必需)规定要发送的SQL查询语句。注‘查询字符串不应以分号结束。</p>
-<p>connection：(可选)SQL连接标识符。如果未规定，则使用上次的打开的连接。</p>
-<p>如果之前没有打开连接，这个函数会尝试无参数调用mysql_conncet()来建立连接。</p>
-<p>注：此函数仅对select,show,explain,describe句子返回资源标识符，如果查询失败则返回false。</p>
-<p>对其他的SQL语句，执行成功则返回TRUE，失败则返回false。</p>
-<p>例子：</p>
-<pre><code>&lt;?php
-$con = mysql_connect(&quot;localhost&quot;,&quot;mysql_user&quot;,&quot;mysql_pwd&quot;);
-if (!$con)
-  &#123;
-  die(&#39;Could not connect: &#39; . mysql_error());
-  &#125;
-
-$sql = &quot;SELECT * FROM Person&quot;;
-mysql_query($sql,$con);
-
-// 一些代码
-
-mysql_close($con);
-?&gt;</code></pre>
-<h3 id="mysql-fetch-array-result-resulttype-从结果集中取得一行作为关联数组，或数字数组，或二者兼有。"><a href="#mysql-fetch-array-result-resulttype-从结果集中取得一行作为关联数组，或数字数组，或二者兼有。" class="headerlink" title="mysql_fetch_array(result,resulttype)从结果集中取得一行作为关联数组，或数字数组，或二者兼有。"></a><strong>mysql_fetch_array(result,resulttype)从结果集中取得一行作为关联数组，或数字数组，或二者兼有。</strong></h3><p>data:(必需)该数据指针指，由mysql_query,mysqli_store_result() ,mysqli_use_result()返回的结果。 </p>
-<p>resulttype:(可选)规定要返回哪种类型的数组。</p>
-<ul>
-<li>MYSQLI_ASSOC(关联数组)</li>
-<li>MYSQLI_NUM(数字数组)</li>
-<li>MYSQLI_BOTH(同时产生以上两者)–默认使用</li>
-</ul>
-<p>例子：</p>
-<pre><code>&lt;?php
-$con = mysql_connect(&quot;localhost&quot;, &quot;hello&quot;, &quot;321&quot;);
-if (!$con)
-  &#123;
-  die(&#39;Could not connect: &#39; . mysql_error());
-  &#125;
-
-$db_selected = mysql_select_db(&quot;test_db&quot;,$con);
-$sql = &quot;SELECT * from Person WHERE Lastname=&#39;Adams&#39;&quot;;
-$result = mysql_query($sql,$con);
-print_r(mysql_fetch_array($result));
-
-mysql_close($con);
-?&gt;</code></pre>
-<pre><code>输出结果
-Array
-(
-[0] =&gt; Adams
-[LastName] =&gt; Adams
-[1] =&gt; John
-[FirstName] =&gt; John
-[2] =&gt; London
-[City] =&gt; London
-) </code></pre>
-<h3 id="mysql-query常常和mysql-fetch-array一起连用"><a href="#mysql-query常常和mysql-fetch-array一起连用" class="headerlink" title="mysql_query常常和mysql_fetch_array一起连用"></a>mysql_query常常和mysql_fetch_array一起连用</h3><p>例子：</p>
-<p>$tempresult=mysql_query (“SQL语句”);<br> while ($row = mysql_fetch_array($tempresult))<br>    {<br>      print $row[0]; //打印第一列的记录<br>      print $row[1];  //打印第二列的记录<br>    }  </p>
-<p>  数组变量 $row 被 mysql_fetch_array 函数建立并用查询的结果字段来填充，数组的每一个分量对应于查询结果的每一个字段 。</p>
-<h3 id="addslashes-和htmlspecialchars-的相同和区别"><a href="#addslashes-和htmlspecialchars-的相同和区别" class="headerlink" title="addslashes()和htmlspecialchars()的相同和区别"></a>addslashes()和htmlspecialchars()的相同和区别</h3><p>二者都用来都特殊符号进行转义，用于防止SQL语句的注入。</p>
-<p>①addslashes()通常用于防止sql注入，它可对通过get，post和cookie传递过来的参数的单引号、双引号、\以及null前加“\”进行转义</p>
-<p>如：如变量$str=$_POST[“str”];的值为：bb’ or 1=’1。通过addslashes()函数过滤后会变为：bb斜杆&#39; or 1=斜杆&#39;1。</p>
-<p>②htmlspecialchars()也是对字符进行转义，与addslashes（）不同的是htmlspecialchars()是将特殊字符用引用实体替换。</p>
-<p><img src="%5Cimages%5C4.png"></p>
-<p>③addslashes()在执行sql语句前对通过get、post和cookie传递来的参数中的单引号，双引号,\ 和null进行转义。但sql执行成功后，插入到数据库中的数据是不带有转义字符\的。这时如果插入到数据库中的是一些js脚本，当这些脚本被读取出来时还是会被执行。</p>
-<p>这时我们可对读取出来的数据使用htmlspecialchars()进行过滤，避免执行被注入的脚本。</p>
-<p>④在使用这两个函数之前需要先使用get_magic_quotes_gpc()验证下php.ini配置文件里的<code>magic_quotes_gpc</code>设置是否自动为GPC(get,post,cookie)传来的数据中的’”加上反斜线。如果没有确定直接使用该函数，可能造成双层转义。</p>
-<h3 id="get-magic-quotes-gpc"><a href="#get-magic-quotes-gpc" class="headerlink" title="get_magic_quotes_gpc()"></a>get_magic_quotes_gpc()</h3><p>用于检验php.ini配置文件中magic_quotes_gpc的设置是否开启自动为GPC(GET,POST,COOKIE)传来的数据进行转义。</p>
-<h3 id="ctype-digit-检测字符串中是否只含有数字。注：字符串里的数字，负数，小数都不行。"><a href="#ctype-digit-检测字符串中是否只含有数字。注：字符串里的数字，负数，小数都不行。" class="headerlink" title="ctype_digit()检测字符串中是否只含有数字。注：字符串里的数字，负数，小数都不行。"></a>ctype_digit()检测字符串中是否只含有数字。注：字符串里的数字，负数，小数都不行。</h3><p>例子：</p>
-<p><strong>&lt;?php</strong><br><strong>$strings = array(‘1820.20’, ‘10002’, ‘wsl!12’);</strong><br><strong>foreach ($strings as $testcase) {</strong><br>  <strong>if (ctype_digit($testcase)) {</strong><br>    <strong>echo “The string $testcase consists of all digits.\n”;</strong><br>  <strong>} else {</strong><br>    <strong>echo “The string $testcase does not consist of all digits.\n”;</strong><br>  <strong>}</strong><br><strong>}</strong></p>
-<p>结果：</p>
-<pre><code>The string 1820.20 does not consist of all digits.
-The string 10002 consists of all digits.
-The string wsl!12 does not consist of all digits.</code></pre>
-<p>例子：字符串里的数字才可以！！！</p>
-<h4 id="附：is-numeric-—-检测变量是否为数字或数字字符串-数字可以为负数，小数"><a href="#附：is-numeric-—-检测变量是否为数字或数字字符串-数字可以为负数，小数" class="headerlink" title="附：is_numeric() — 检测变量是否为数字或数字字符串(数字可以为负数，小数)"></a>附：is_numeric() — 检测变量是否为数字或数字字符串(数字可以为负数，小数)</h4><p><strong>&lt;?php</strong></p>
-<p><strong>$numeric_string = ‘42’;</strong><br><strong>$integer    = 42;</strong></p>
-<p><strong>ctype_digit($numeric_string); // true</strong><br>*<em>ctype_digit($integer);     // false (ASCII 42 is the * character)*</em></p>
-<p><strong>is_numeric($numeric_string);  // true</strong><br><strong>is_numeric($integer);     // true</strong></p>
-<h3 id="mysql-real-escape-string-转义-SQL-语句中使用的字符串中的特殊字符。"><a href="#mysql-real-escape-string-转义-SQL-语句中使用的字符串中的特殊字符。" class="headerlink" title="mysql_real_escape_string() 转义 SQL 语句中使用的字符串中的特殊字符。"></a>mysql_real_escape_string() 转义 SQL 语句中使用的字符串中的特殊字符。</h3><p>下列字符受影响：</p>
-<ul>
-<li>\x00</li>
-<li>\n</li>
-<li>\r</li>
-<li>\</li>
-<li>‘</li>
-<li>“</li>
-<li>\x1a</li>
-</ul>
-<p>功能于addslashes一样，范围不一样！</p>
-<h3 id="SERVER-是一个包含了诸如头信息-header-、路径-path-、以及脚本位置-script-locations-等等信息的数组。"><a href="#SERVER-是一个包含了诸如头信息-header-、路径-path-、以及脚本位置-script-locations-等等信息的数组。" class="headerlink" title="$_SERVER 是一个包含了诸如头信息(header)、路径(path)、以及脚本位置(script locations)等等信息的数组。"></a>$_SERVER 是一个包含了诸如头信息(header)、路径(path)、以及脚本位置(script locations)等等信息的数组。</h3><ul>
-<li>REMOTE_ADDR  当前IP地址</li>
-<li>HTTP_USER_AGENT  对应HTTP请求中的USER_AGENT 指当前浏览器信息，系统一些信息</li>
-<li>HTTP_REFERER    从哪个网页地址发送的</li>
-<li>QUERY_STRING  返回查询的字符串</li>
-</ul>
-<h3 id="setcookie-用于设置-cookie"><a href="#setcookie-用于设置-cookie" class="headerlink" title="setcookie() 用于设置 cookie"></a>setcookie() 用于设置 cookie</h3><pre><code>setcookie(name, value, expire, path, domain)</code></pre>
-<pre><code>setcookie(&quot;user&quot;, &quot;runoob&quot;, time()+3600)</code></pre>
-<p>①这里设置了cookie的名称为user，值为runoob，1小时后失效。</p>
-<p>②$_COOKIE() 变量用于取回 cookie 的值。</p>
-<p>③删除COOKIE</p>
-<p>当删除 cookie 时,应当使过期日期设置为过去的时间点。</p>
-<pre><code>设置 cookie 过期时间为过去 1 小时
-setcookie(&quot;user&quot;, &quot;&quot;, time()-3600);</code></pre>
-<h3 id="mysql-num-rows-函数"><a href="#mysql-num-rows-函数" class="headerlink" title="mysql_num_rows()函数"></a>mysql_num_rows()函数</h3><p>mysql_num_rows(data) 函数返回结果集中行的数目</p>
-<p>data（必须）结果集</p>
-<p>输入数字，返回行数如1，2，3。。。</p>
-<h3 id="explode-separator-string-limit"><a href="#explode-separator-string-limit" class="headerlink" title="explode(separator,string,limit)"></a>explode(<em>separator,string,limit</em>)</h3><table>
-<thead>
-<tr>
-<th>separator</th>
-<th>必需。规定在哪里分割字符串。</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><em>string</em></td>
-<td>必需。要分割的字符串。</td>
-</tr>
-<tr>
-<td><em>limit</em></td>
-<td>可选。规定所返回的数组元素的数目。可能的值：大于 0 - 返回包含最多 <em>limit</em> 个元素的数组小于 0 - 返回包含除了最后的 <em>-limit</em> 个元素以外的所有元素的数组0 - 会被当做 1, 返回包含一个元素的数组</td>
-</tr>
-</tbody></table>
-<pre><code>&lt;?php
-$str = &#39;one,two,three,four&#39;;
-
-//  返回包含一个元素的数组
-print_r(explode(&#39;,&#39;,$str,0));
-print &quot;&lt;br&gt;&quot;;
-
-// 数组元素为 2
-print_r(explode(&#39;,&#39;,$str,2));
-print &quot;&lt;br&gt;&quot;;
-
-// 删除最后一个数组元素
-print_r(explode(&#39;,&#39;,$str,-1));
-print &quot;&lt;br/&gt;&quot;;
-print_r(explode(&#39;,&#39;,$str,-2));
-?&gt;</code></pre>
-<pre><code>Array
-(
-    [0] =&gt; one,two,three,four
-)
-
-Array
-(
-    [0] =&gt; one
-    [1] =&gt; two,three,four
-)
-
-Array
-(
-    [0] =&gt; one
-    [1] =&gt; two
-    [2] =&gt; three
-)
-
-Array
-(
-    [0] =&gt; one
-    [1] =&gt; two
-)</code></pre>
-<h3 id="Include-和require-文件的区别"><a href="#Include-和require-文件的区别" class="headerlink" title="Include()和require ()文件的区别"></a>Include()和require ()文件的区别</h3><ul>
-<li>require 会生成致命错误（E_COMPILE_ERROR）并停止脚本</li>
-<li>include 只生成警告（E_WARNING），并且脚本会继续</li>
-</ul>
-<p>注：</p>
-<p>①如果您希望继续执行，并向用户输出结果，即使包含文件已丢失，那么请使用 include。否则，在框架、CMS 或者复杂的 PHP 应用程序编程中，请始终使用 require 向执行流引用关键文件。这有助于提高应用程序的安全性和完整性，在某个关键文件意外丢失的情况下。</p>
-<p><u><strong><u>include</strong> 引入文件的时候，如果碰到错误，会给出提示，并继续运行下边的代码。</u></u></p>
-<p><u><strong>require</strong> 引入文件的时候，如果碰到错误，会给出提示，并停止运行下边的代码。</u></p>
-<p>②</p>
-<ul>
-<li>include 在执行到的时候才加载</li>
-<li>require 在一开始就加载</li>
-</ul>
-<p>③后缀_once</p>
-<p>include_once() 和 require_once() 和原来的区别是：已加载过的不加载。这两个语句用于在脚本执行期间，同一个文件有可能被包括超过一次的情况下，确保它只被包括一次，以避免函数重定义以及变量重新赋值等问题。</p>
-<p>语法：</p>
-<pre><code>include &#39;filename&#39;;</code></pre>
-<p>例子：</p>
-<p>假设我们有一个名为 “footer.php” 的标准的页脚文件，就像这样：</p>
-<pre><code>&lt;?php
-echo &quot;&lt;p&gt;Copyright © 2006-&quot; . date(&quot;Y&quot;) . &quot; W3School.com.cn&lt;/p&gt;&quot;;
-?&gt;</code></pre>
-<p>如需在一张页面中引用这个页脚文件，使用 include 语句：</p>
-<pre><code>&lt;html&gt;
-&lt;body&gt;
-
-&lt;h1&gt;欢迎访问我们的首页！&lt;/h1&gt;
-&lt;p&gt;一段文本。&lt;/p&gt;
-&lt;p&gt;一段文本。&lt;/p&gt;
-&lt;?php 
-include (&quot;footer.php&quot;);
-?&gt;
-
-&lt;/body&gt;
-&lt;/html&gt;</code></pre>
-<h3 id="die-函数"><a href="#die-函数" class="headerlink" title="die()函数"></a>die()函数</h3><p>是 <a target="_blank" rel="noopener" href="https://www.runoob.com/php/func-misc-exit.html">exit()</a> 函数的别名</p>
-<p>die(message) 函数输出一条消息，并退出当前脚本。</p>
-<p>message：必需，在退出脚本之前写入的消息或状态号（状态号不会被输出）</p>
-<pre><code>$res = mysql_query($sql) or die(&#39;You tried to be real smart, Try harder!!!! :( &#39;);</code></pre>
-<h3 id="error-reporting-函数"><a href="#error-reporting-函数" class="headerlink" title="error_reporting() 函数"></a>error_reporting() 函数</h3><pre><code>&lt;?php
- // 关闭错误报告
- error_reporting(0);
-
- // 报告 runtime 错误
- error_reporting(E_ERROR | E_WARNING | E_PARSE);
-
- // 报告所有错误
- error_reporting(E_ALL);
-
- // 等同 error_reporting(E_ALL);
- ini_set(&quot;error_reporting&quot;, E_ALL);
-
- // 报告 E_NOTICE 之外的所有错误
- error_reporting(E_ALL &amp; ~E_NOTICE);
-?&gt; </code></pre>
-<h3 id="echo-print-print-r"><a href="#echo-print-print-r" class="headerlink" title="echo ,print,print_r"></a>echo ,print,print_r</h3><ul>
-<li><p>echo -可以输出一个或多个字符串</p>
-</li>
-<li><p>print -只能输出简单类型变量的值，如int，string</p>
-</li>
-<li><p>print_r -可以输出复杂类型变量的值，如数组，对象</p>
-<p>print_r() 函数用于打印变量，以更容易理解的形式展示。</p>
-</li>
-</ul>
-<h3 id="intval-函数"><a href="#intval-函数" class="headerlink" title="intval() 函数"></a>intval() 函数</h3><p>int intval ( mixed $var [, int $base = 10 ] )</p>
-<ul>
-<li>$var：要转换成 integer 的数量值。</li>
-<li>$base：转化所使用的进制。</li>
-</ul>
-<p>如果 base 是 0，通过检测 var 的格式来决定使用的进制：</p>
-<ul>
-<li>如果字符串包括了 “0x” (或 “0X”) 的前缀，使用 16 进制 (hex)；否则，</li>
-<li>如果字符串以 “0” 开始，使用 8 进制(octal)；否则，</li>
-<li>将使用 10 进制 (decimal)。 </li>
-<li>32 位系统最大带符号的 integer 范围是 -2147483648 到 2147483647。</li>
-<li>64 位系统上，最大带符号的 integer 值是 9223372036854775807。</li>
-<li>intval() 不能用于数组 或 对象(类)，否则会产生 E_NOTICE 错误并返回 1。</li>
-</ul>
-<p><u>注：默认使用十进制。</u></p>
-<p>成功时返回 var 的 integer 值，失败时返回 0。 空的 array 返回 0，非空的 array 返回 1。</p>
-<pre><code>&lt;?php
-echo intval(42);                      // 42 
-echo intval(4.2);                     // 4 
-echo intval(&#39;42&#39;);                    // 42 
-echo intval(&#39;+42&#39;);                   // 42 
-echo intval(&#39;-42&#39;);                   // -42 
-echo intval(042);                     // 34 
-echo intval(&#39;042&#39;);                   // 42 
-echo intval(1e10);                    // 1410065408 
-echo intval(&#39;1e10&#39;);                  // 1 
-echo intval(0x1A);                    // 26 
-echo intval(42000000);                // 42000000 
-echo intval(420000000000000000000);   // 0 
-echo intval(&#39;420000000000000000000&#39;); // 2147483647 
-echo intval(42, 8);                   // 42 
-echo intval(&#39;42&#39;, 8);                 // 34 
-echo intval(array());                 // 0 
-echo intval(array(&#39;foo&#39;, &#39;bar&#39;));     // 1 
-?&gt;</code></pre>
-<h3 id="header-函数"><a href="#header-函数" class="headerlink" title="header()函数"></a>header()函数</h3><p>&lt;1&gt; 重定向功能，这种最常见 </p>
-<pre><code>&lt;?php 
-Header(&quot;Location: http://www.php.net&quot;); 
-?&gt;   </code></pre>
-<p><u>跳转页面功能 Location 是强制性参数</u></p>
-<ul>
-<li>其他功能作者懂了再跟新</li>
-</ul>
-<h3 id="mysql-fetch-row-函数"><a href="#mysql-fetch-row-函数" class="headerlink" title="mysql_fetch_row()函数"></a>mysql_fetch_row()函数</h3><p>从结果集中取得一行，并作为枚举数组返回。</p>
-<p><u>规定由 mysqli_query()、mysqli_store_result() 或 mysqli_use_result() 返回的结果集标识符。</u></p>
-<h3 id="mysql-affected-rows-函数"><a href="#mysql-affected-rows-函数" class="headerlink" title="mysql_affected_rows() 函数"></a>mysql_affected_rows() 函数</h3><p>返回前一次 MySQL 操作所影响的记录行数。</p>
-<h3 id="dechex-number-函数"><a href="#dechex-number-函数" class="headerlink" title="dechex(number)函数"></a>dechex(number)函数</h3><p>把十进制数转换为十六进制数。</p>
-<pre><code>&lt;?php
-echo dechex(&quot;30&quot;) . &quot;&lt;br&gt;&quot;;       1e
-echo dechex(&quot;10&quot;) . &quot;&lt;br&gt;&quot;;       a
-echo dechex(&quot;1587&quot;) . &quot;&lt;br&gt;&quot;;     633
-echo dechex(&quot;70&quot;);                46
-?&gt;</code></pre>
-<h3 id="preg-match-string-pattern-string-subject"><a href="#preg-match-string-pattern-string-subject" class="headerlink" title="preg_match(string $pattern , string $subject)"></a>preg_match(string $pattern , string $subject)</h3><ul>
-<li>$pattern: 要搜索的模式，字符串形式。</li>
-<li>$subject: 输入字符串</li>
-</ul>
-<p>匹配成功符合要求则返回1，否则返回0。</p>
-<h3 id="foreach"><a href="#foreach" class="headerlink" title="foreach()"></a>foreach()</h3><p>用于遍历数组</p>
-<p>每进行一次循环，当前数组元素的值就会被赋值给 $value 变量（数组指针会逐一地移动），在进行下一次循环时，您将看到数组中的下一个值。</p>
-<pre><code>&lt;?php 
-$x=array(&quot;Google&quot;,&quot;Runoob&quot;,&quot;Taobao&quot;); 
-foreach ($x as $value) 
-&#123;    echo $value . PHP_EOL; &#125; 
-?&gt;</code></pre>
-<pre><code>Google
-Runoob
-Taobao</code></pre>
-<pre><code>&lt;?php 
-$x=array(1=&gt;&quot;Google&quot;, 2=&gt;&quot;Runoob&quot;, 3=&gt;&quot;Taobao&quot;); 
-foreach ($x as $key =&gt; $value) 
-&#123;    echo &quot;key  为 &quot; . $key . &quot;，对应的 value 为 &quot;. $value . PHP_EOL; &#125; 
-?&gt;</code></pre>
-<pre><code>key  为 1，对应的 value 为 Google
-key  为 2，对应的 value 为 Runoob
-key  为 3，对应的 value 为 Taobao</code></pre>
-<h3 id="preg-quote"><a href="#preg-quote" class="headerlink" title="preg_quote()"></a>preg_quote()</h3><p>用于转义正则表达式字符</p>
-<p>/ 是最通用的分隔符</p>
-<pre><code>&lt;?php 
-$keywords = &#39;$40 for a g3/400&#39;; 
-$keywords = preg_quote($keywords, &#39;/&#39;); 
-echo $keywords;  
-?&gt;</code></pre>
-<pre><code>返回 \$40 for a g3\/400</code></pre>
-<h3 id="mysqli-connect"><a href="#mysqli-connect" class="headerlink" title="mysqli_connect()"></a>mysqli_connect()</h3><p>打开一个到 MySQL 服务器的新的连接</p>
-<p>mysqli_connect(<em>host,username,password,dbname,port,socket</em>)</p>
-<p>host:ip地址或主机名</p>
-<p>username:用户名</p>
-<p>password:密码</p>
-<p>dbname:要连接使用的数据库名</p>
-<p>port:要连接到的服务器的端口号</p>
-<p>socket:规定的socket（我也不太懂）！！</p>
-<pre><code>&lt;?php
-$con=mysqli_connect(&quot;localhost&quot;,&quot;wrong_user&quot;,&quot;my_password&quot;,&quot;my_db&quot;);
-// 检查连接
-if (!$con)
-&#123;
-  die(&quot;连接错误: &quot; . mysqli_connect_error());
-&#125;
-?&gt;</code></pre>
-<h3 id="mysqli-connect-errno"><a href="#mysqli-connect-errno" class="headerlink" title="mysqli_connect_errno()"></a>mysqli_connect_errno()</h3><p>返回上一次连接错误的错误代码。</p>
-<h3 id="mysqli-select-db"><a href="#mysqli-select-db" class="headerlink" title="mysqli_select_db()"></a>mysqli_select_db()</h3><p>更改之前连接的数据库</p>
-<p>mysqli_select_db(<em>connection,dbname</em>)</p>
-<p>connection:要使用的mysql连接</p>
-<p>dbname:要使用的数据库名</p>
-<h3 id="mysql-fetch-assoc"><a href="#mysql-fetch-assoc" class="headerlink" title="mysql_fetch_assoc()"></a>mysql_fetch_assoc()</h3><p>从结果集中取回一行，作为关联数组。而mysql_fetch_row是作为数字数组。</p>
+                <h3 id="GXYCTF2019-BabySQLi1"><a href="#GXYCTF2019-BabySQLi1" class="headerlink" title="[GXYCTF2019]BabySQLi1"></a>[GXYCTF2019]BabySQLi1</h3><p>补充小知识：</p>
+<p>常见的加密方式</p>
+<p>base32  由大写字母和数字或最后面有三个=构成</p>
+<p>base64  由大小写字母和数字或最后面有两个=构成</p>
+<p>md5 加密</p>
+<p>等（作者会了再补充）</p>
+<p>界面</p>
+<p><img src="D:\boke\blog\source\images\8.png"></p>
+<p>①最开始尝试 admin,admin。出现wrong pass！接着尝试a,1。出现wrong user。所以一定存在这admin这个用户。</p>
+<p>②接着尝试注入  ’   注入报错。加注释符#返回正常。</p>
+<p>③结合burpsuite爆破发现过滤了order or 等一些关键字！但没过滤union select 逐个尝试发现有3列。</p>
+<p>之后尝试都是出现not hack me ！用burpsuite拦截看响应包会发现</p>
+<pre><code>MMZFM422K5HDASKDN5TVU3SKOZRFGQRRMMZFM6KJJBSG6WSYJJWESSCWPJNFQSTVLFLTC3CJIQYGOSTZKJ2VSVZRNRFHOPJ5</code></pre>
+<p>由大写字母和数字构成大概率就是base32</p>
+<p>解密后出现</p>
+<p>。。。。。。==</p>
+<p>出现两个= ，明显是base64加密</p>
+<p>解密后出现</p>
+<p>select * from user where username = ‘$name’</p>
+<p>④之后没啥思路看了大佬的博客是说</p>
+<p>程序大概就是</p>
+<p>验证username是否正确，正确了再验证password是否正确，正确才输出。但密码我们不知道怎么办呢？</p>
+<p>⑤知识补充</p>
+<p>如果数据库中不存在某个数据但你 输入</p>
+<pre><code>select * from users where id=1 union select 1,&#39;admin&#39;,&#39;1&#39;;</code></pre>
+<p>会生成临时用户名为admin，密码为1的虚拟数据如：</p>
+<pre><code>+----+----------+----------+
+| id | username | password |
++----+----------+----------+
+|  1 | Dumb     | Dumb     |
+|  1 | admin    | 1        |
++----+----------+----------+</code></pre>
+<p>一般数据库里的密码都是经过加密的，所以测试几次会发现这里是用md5进行加密。我们就可以构造语句</p>
+<p>输入密码是123，数据库存的经过md5加密的密码是202cb962ac59075b964b07152d234b70</p>
+<pre><code>name=ad&#39; union select 1,&#39;admin&#39;,&#39;202cb962ac59075b964b07152d234b70&#39;#&amp;pw=123</code></pre>
+<p>flag就出来了！</p>
 
             </div>
             <hr/>
@@ -815,7 +520,7 @@ if (!$con)
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2020/11/26/PHP%E5%87%BD%E6%95%B0%E5%A4%A7%E5%85%A8/">http://example.com/2020/11/26/PHP%E5%87%BD%E6%95%B0%E5%A4%A7%E5%85%A8/</a>
+                    <a href="http://example.com/2020/12/16/SQL%E6%B3%A8%E5%85%A5CTF/">http://example.com/2020/12/16/SQL%E6%B3%A8%E5%85%A5CTF/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -1020,54 +725,18 @@ if (!$con)
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2020/11/27/GET%E8%AF%B7%E6%B1%82%E5%92%8CPOST%E8%AF%B7%E6%B1%82/">
+                <a href="/2020/12/16/SQL%E6%B3%A8%E5%85%A5CTF/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/6.jpg" class="responsive-img" alt="GET请求和POST请求">
+                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="SQL注入CTF">
                         
-                        <span class="card-title">GET请求和POST请求</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            
-                        
-                    </div>
-                    <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-11-27
-                        </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-user fa-fw"></i>
-                            Chan.Joy
-                            
-                        </span>
-                    </div>
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2020/11/26/SQL%E6%B3%A8%E5%85%A5%E7%82%B9%E5%88%A4%E6%96%AD/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="SQL注入点判断">
-                        
-                        <span class="card-title">SQL注入点判断</span>
+                        <span class="card-title">SQL注入CTF</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -1078,7 +747,45 @@ if (!$con)
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-11-26
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-16
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            Chan.Joy
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2020/12/12/MySQL%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/13.jpg" class="responsive-img" alt="MySQL基本操作">
+                        
+                        <span class="card-title">MySQL基本操作</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-12
                             </span>
                         <span class="publish-author">
                             
