@@ -514,7 +514,33 @@ $_FILES[&#39;file&#39;][&#39;tmp_name&#39;] 文件被上传后在服务端储存
 <p>接下来看看如何绕过：</p>
 <p>#上传.php的木马文件，用burp拦截下来，修改content-type 为：image/jpeg。</p>
 <h3 id="0x03"><a href="#0x03" class="headerlink" title="#0x03"></a>#0x03</h3><p>上传一个木马文件，发现*<u>提示：不允许上传.asp,.aspx,.php,.jsp后缀文件！</u>*</p>
-<p>待续。。</p>
+<p>函数知识补充：</p>
+<p>#trim(string[必须，要检测的字符串],charlist[可选，指定要删除字符串中的哪些字符])</p>
+<p>如果没填charlist默认删除</p>
+<ul>
+<li>“\0” - NULL</li>
+<li>“\t” - 制表符</li>
+<li>“\n” - 换行</li>
+<li>“\x0B” - 垂直制表符</li>
+<li>“\r” - 回车</li>
+<li>“ “ - 空格</li>
+</ul>
+<p>#deldot()删除文件名末尾的点</p>
+<p>注：这个函数没查到，不太确定。</p>
+<p>#strrchr(string[必须，要检查的字符串],char[必须，要查找的字符])</p>
+<p>返回从该字符开始一直到末尾的字符串。</p>
+<p>注：如果char参数用数字表示，则自动匹配数字 ASCII 值的字符。</p>
+<p>#strtolower(string[必须,把字符串转化为小写])</p>
+<p>#str_ireplace(find[必须，要查找的内容],replace[必须，要替换的内容],string[必须，要检查的字符串])</p>
+<p>#in_array(search[必须，要在数组中搜索的值],array[必须，要搜索的数组],type[可选])</p>
+<p>如果search存在在array中，返回true，反之返回flase。</p>
+<p>下面看看怎么绕过：</p>
+<p>#这里是用黑名单进行过滤，但却没有过滤php3 php5 phml 等</p>
+<p>所以可以上传后缀为php3的文件进行解析绕过。</p>
+<p>注：需要将apache配置文件中AddType X-application/http-php php3 php5 phtml 前面的#去掉，再重启下才能复现。</p>
+<p>而且最好apache服务器版本低点，版本太高可能复现不了。</p>
+<h3 id="0x04"><a href="#0x04" class="headerlink" title="#0x04"></a>#0x04</h3><p>查看提示，过滤了好多后缀。但是没有过滤 .htaccess文件。</p>
+<p>待续。。。睡觉！</p>
 
             </div>
             <hr/>

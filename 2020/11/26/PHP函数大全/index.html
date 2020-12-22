@@ -521,7 +521,7 @@ Array
 <p>①addslashes()通常用于防止sql注入，它可对通过get，post和cookie传递过来的参数的单引号、双引号、\以及null前加“\”进行转义</p>
 <p>如：如变量$str=$_POST[“str”];的值为：bb’ or 1=’1。通过addslashes()函数过滤后会变为：bb斜杆&#39; or 1=斜杆&#39;1。</p>
 <p>②htmlspecialchars()也是对字符进行转义，与addslashes（）不同的是htmlspecialchars()是将特殊字符用引用实体替换。</p>
-<p><img src="%5Cimages%5C4.png"></p>
+<p><img src="/images/4.png"></p>
 <p>③addslashes()在执行sql语句前对通过get、post和cookie传递来的参数中的单引号，双引号,\ 和null进行转义。但sql执行成功后，插入到数据库中的数据是不带有转义字符\的。这时如果插入到数据库中的是一些js脚本，当这些脚本被读取出来时还是会被执行。</p>
 <p>这时我们可对读取出来的数据使用htmlspecialchars()进行过滤，避免执行被注入的脚本。</p>
 <p>④在使用这两个函数之前需要先使用get_magic_quotes_gpc()验证下php.ini配置文件里的<code>magic_quotes_gpc</code>设置是否自动为GPC(get,post,cookie)传来的数据中的’”加上反斜线。如果没有确定直接使用该函数，可能造成双层转义。</p>
