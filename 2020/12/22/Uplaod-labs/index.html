@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="base家族, Keep-Boom">
+    <meta name="keywords" content="Uplaod-labs, Keep-Boom">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>base家族 | Keep-Boom</title>
+    <title>Uplaod-labs | Keep-Boom</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/14.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/10.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">base家族</h1>
+                    <h1 class="description center-align post-title">Uplaod-labs</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-12-19
+                    2020-12-22
                 </div>
                 
 
@@ -459,21 +459,62 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="base16"><a href="#base16" class="headerlink" title="base16"></a>base16</h3><p>由数字0-9以及大写字母ABCDEF</p>
-<p><u>不过有些题目里是是用小写字母</u></p>
-<h3 id="base32"><a href="#base32" class="headerlink" title="base32"></a>base32</h3><p>由大写字母（A-Z）和数字234567 还有填充符号：=</p>
-<p>base32后面常常带有一个=号</p>
-<h3 id="base58"><a href="#base58" class="headerlink" title="base58"></a>base58</h3><p>由（a-z）和（A-Z）和（1-9）</p>
-<p><u>注：大写字母i 和 o ，小写字母 l ，数字0 没有包括。</u></p>
-<h3 id="base62"><a href="#base62" class="headerlink" title="base62"></a>base62</h3><p>由大写字母（A-Z）、小写字母（a-z）、数字（0-9）</p>
-<h3 id="base64"><a href="#base64" class="headerlink" title="base64"></a>base64</h3><p>由大写字母（A-Z）、小写字母（a-z）、数字（0-9）以及+，/ 还有填充符号：=</p>
-<p>base64后面常常带有两个=号</p>
-<h3 id="base91"><a href="#base91" class="headerlink" title="base91"></a>base91</h3><p>可打印ASCII字符（0x21-0x7E）</p>
-<p>除以下三个符号外：</p>
-<p>-（破折号，0x2d）</p>
-<p>\（反斜杠，0x5C）</p>
-<p>‘（撇号，0x27）</p>
-<p>Bugku 的贝索斯族这道题目就是base91编码： <u>@iH&lt;,{bdR2H;i6*Tm,Wx2izpx2!</u></p>
+                <h3 id="0x01"><a href="#0x01" class="headerlink" title="#0x01"></a>#0x01</h3><p>先上传一个fox.php的木马文件，发现被拦截下来<u><em>该文件不允许上传，请上传.jpg|.png|.gif类型的文件,当前文件类型为：.php</em></u>。尝试挂burp修改http请求包。</p>
+<p>发现并没有流量产生就被拦截下来，所以应该是在前端就对文件格式进行了验证。</p>
+<p>按F12调出开发者模式。搜索form</p>
+<pre><code>&lt;form enctype=&quot;multipart/form-data&quot; method=&quot;post&quot; onsubmit=&quot;return checkFile()&quot;&gt;
+  &lt;p&gt;请选择要上传的图片：&lt;/p&gt;&lt;p&gt;
+  &lt;input class=&quot;input_file&quot; type=&quot;file&quot; name=&quot;upload_file&quot;&gt;
+  &lt;input class=&quot;button&quot; type=&quot;submit&quot; name=&quot;submit&quot; value=&quot;上传&quot;&gt;
+  &lt;/p&gt;&lt;/form&gt;</code></pre>
+<p>看到这里有个触发事件onsubmit=”return checkFile()” 点击提交就会触发，发现会返回checkFile()函数最后return的内容来验证。</p>
+<p> 在《script type=”text/javascript”》发现checkFile函数对上传文件进行了后缀名的验证。</p>
+<pre><code>  function checkFile() &#123;
+        var file = document.getElementsByName(&#39;upload_file&#39;)[0].value;
+        if (file == null || file == &quot;&quot;) &#123;
+            alert(&quot;请选择要上传的文件!&quot;);
+            return false;
+        &#125;
+        //定义允许上传的文件类型
+        var allow_ext = &quot;.jpg|.png|.gif&quot;;
+        //提取上传文件的类型
+        var ext_name = file.substring(file.lastIndexOf(&quot;.&quot;));
+        //判断上传文件类型是否允许上传
+        if (allow_ext.indexOf(ext_name) == -1) &#123;
+            var errMsg = &quot;该文件不允许上传，请上传&quot; + allow_ext + &quot;类型的文件,当前文件类型为：&quot; + ext_name;
+            alert(errMsg);
+            return false;
+        &#125;
+    &#125;</code></pre>
+<p>函数知识补充：</p>
+<p>#document.getElementsByname(name[必须])</p>
+<p>该方法与 getElementById() 方法相似，但是它查询元素的 name 属性，而不是 id 属性。</p>
+<p>getElementsByName() 方法返回的是元素的数组，而不是一个元素。</p>
+<p>#string.lastIndexOf(searchvalue[必须，要检索的字符],start[可选，说明说第几个位置开始，没写默认从0开始])</p>
+<p>如果没有匹配到返回 -1</p>
+<p>该方法与string.indexOf()相似，一个是找字符最早出现的位置，一个是最后出现的位置。</p>
+<p>#string.subsrting(from[必须，表示要开始提前字符串的初始位置],to[可选，没写默认从from开始到结尾])</p>
+<p>接下来看看如何绕过：</p>
+<p>#删除onsubmit事件，绕过验证机制。</p>
+<p>#修改验证函数，把return flase，改成return true。</p>
+<p>#把整个验证函数删除。</p>
+<p>#先传个后最为.jpg的文件。绕过验证，再用burp拦截下来，修改后缀为.php。</p>
+<p>#修改白名单添加|.php|,绕过验证。</p>
+<p>最后通过菜刀或者蚁剑连接上webshell。</p>
+<h3 id="0x02"><a href="#0x02" class="headerlink" title="#0x02"></a>#0x02</h3><p>试着上传一个.php的文件。发现*<u>提示：文件类型不正确，请重新上传！</u>*</p>
+<p>这关应该是拦截文件类型，是在服务器端进行拦截。</p>
+<p>函数知识补充：</p>
+<p>#file_exists(path[必须])函数检查文件或目录是否存在。存在返回ture，反之返回flase。</p>
+<p>#$_FILES是一个数组变量</p>
+<pre><code>$_FILES[&#39;file&#39;][&#39;name&#39;] 客户端文件的原名称。 
+$_FILES[&#39;file&#39;][&#39;type&#39;] 文件的 MIME 类型，需要浏览器提供该信息的支持，例如&quot;image/gif&quot;。 
+$_FILES[&#39;file&#39;][&#39;size&#39;] 已上传文件的大小，单位为字节。 
+$_FILES[&#39;file&#39;][&#39;tmp_name&#39;] 文件被上传后在服务端储存的临时文件名，一般是系统默认。</code></pre>
+<p>#move_uploaded_file(file[必须，要移动的文件],newloc[必须，要移动到的新的位置的信息])</p>
+<p>接下来看看如何绕过：</p>
+<p>#上传.php的木马文件，用burp拦截下来，修改content-type 为：image/jpeg。</p>
+<h3 id="0x03"><a href="#0x03" class="headerlink" title="#0x03"></a>#0x03</h3><p>上传一个木马文件，发现*<u>提示：不允许上传.asp,.aspx,.php,.jsp后缀文件！</u>*</p>
+<p>待续。。</p>
 
             </div>
             <hr/>
@@ -499,7 +540,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2020/12/19/base%E5%AE%B6%E6%97%8F/">http://example.com/2020/12/19/base%E5%AE%B6%E6%97%8F/</a>
+                    <a href="http://example.com/2020/12/22/Uplaod-labs/">http://example.com/2020/12/22/Uplaod-labs/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -704,9 +745,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2020/12/22/Uplaod-labs/">
                     <div class="card-image">
@@ -724,9 +766,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-12-22
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-22
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -735,6 +777,7 @@
                         </span>
                     </div>
                 </div>
+
                 
             </div>
         </div>
@@ -745,13 +788,13 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/12/19/Bugku-Crypto/">
+                <a href="/2020/12/19/base%E5%AE%B6%E6%97%8F/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="Bugku-Crypto">
+                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="base家族">
                         
-                        <span class="card-title">Bugku-Crypto</span>
+                        <span class="card-title">base家族</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
