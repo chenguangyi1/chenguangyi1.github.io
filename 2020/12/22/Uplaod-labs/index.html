@@ -459,7 +459,11 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="0x01"><a href="#0x01" class="headerlink" title="#0x01"></a>#0x01</h3><p>先上传一个fox.php的木马文件，发现被拦截下来<u><em>该文件不允许上传，请上传.jpg|.png|.gif类型的文件,当前文件类型为：.php</em></u>。尝试挂burp修改http请求包。</p>
+                <p>   环境</p>
+<p>apache2.4</p>
+<p>php5.2 和 php7.3 （有些关需要版本不一样）</p>
+<p>webshell 菜刀 （蚁剑低版本php不懂啥原因连不上）       </p>
+<h3 id="0x01"><a href="#0x01" class="headerlink" title="#0x01"></a>#0x01</h3><p>先上传一个fox.php的木马文件，发现被拦截下来<u><em>该文件不允许上传，请上传.jpg|.png|.gif类型的文件,当前文件类型为：.php</em></u>。尝试挂burp修改http请求包。</p>
 <p>发现并没有流量产生就被拦截下来，所以应该是在前端就对文件格式进行了验证。</p>
 <p>按F12调出开发者模式。搜索form</p>
 <pre><code>&lt;form enctype=&quot;multipart/form-data&quot; method=&quot;post&quot; onsubmit=&quot;return checkFile()&quot;&gt;
@@ -539,9 +543,43 @@ $_FILES[&#39;file&#39;][&#39;tmp_name&#39;] 文件被上传后在服务端储存
 <p>所以可以上传后缀为php3的文件进行解析绕过。</p>
 <p>注：需要将apache配置文件中AddType X-application/http-php php3 php5 phtml 前面的#去掉，再重启下才能复现。</p>
 <p>而且最好apache服务器版本低点，版本太高可能复现不了。</p>
-<h3 id="0x04"><a href="#0x04" class="headerlink" title="#0x04"></a>#0x04</h3><p>查看提示，过滤了好多后缀。但是没有过滤 .htaccess文件。</p>
-<p>待续。。。睡觉！</p>
-
+<h3 id="0x04（我没复现成功，需要把apache的版本降低才行）"><a href="#0x04（我没复现成功，需要把apache的版本降低才行）" class="headerlink" title="#0x04（我没复现成功，需要把apache的版本降低才行）"></a>#0x04（我没复现成功，需要把apache的版本降低才行）</h3><p>查看提示，过滤了好多后缀。但是没有过滤 .htaccess文件。</p>
+<p>写一个内容为以下内容的.htaccess文件，就可把上传的1.jpg图片按php文件进行解析。</p>
+<pre><code>&lt;FirlesMatch &quot;1.jpg&quot;&gt;
+SetHandler application/x-httpd-php 
+&lt;/FilesMatch&gt;</code></pre>
+<p>使用之前要把apache配置文件里AllowOverride设置为All</p>
+<p>LoadModule rewrite_module modules/mod_rewrite.so 前面的#删除。重启服务器</p>
+<p>知识补充：</p>
+<p>#.htaccess文件</p>
+<p>.htaccess文件是apache的分布式配置文件。他负责相关目录下的网页配置，通过.htaccess可以帮我们实现。其实就是把.htaccess里的内容写在apache的配置文件里。</p>
+<h3 id="0x05（用php7-3版本）"><a href="#0x05（用php7-3版本）" class="headerlink" title="#0x05（用php7.3版本）"></a>#0x05（用php7.3版本）</h3><p>这关提示目录下存在readme.php文件</p>
+<p>这关和第4关类似，上一关是利用apache中间件进行绕过，这关是利用php解析问题进行绕过。</p>
+<p>知识补充：</p>
+<p>.user.ini 功能和 .htaccess功能类似 一个是apache的，一个的php的配置文件。</p>
+<p>绕过成功前提：</p>
+<p>#服务端脚本语言是PHP语言</p>
+<p>#上传文件的目录下存在其他的php文件</p>
+<p>#服务器使用 CGI或者FASTCIG模式</p>
+<p>建一个.user.ini 的文件内容为：</p>
+<pre><code> auto_prepend_file=pass5.png</code></pre>
+<p>意思是：该目录下的所有php文件都包含pass5.png。</p>
+<p>再创建一个名为pass5.png的木马文件上传。（可以先用内容为 &lt;?php phpinfo(); ?》试下）</p>
+<p>注：按照大佬的博客是说，官方说上传后5分钟过后才会生效，所以可以直接重启服务器减少时间。</p>
+<p>解析pass5.png肯定不行，解析readme.php解析成功。</p>
+<p>用菜刀去连接readme.php就行。</p>
+<h3 id="0x06-php7-3-如果复现不了，可以去Buu的在线靶场复现。"><a href="#0x06-php7-3-如果复现不了，可以去Buu的在线靶场复现。" class="headerlink" title="#0x06(php7.3)如果复现不了，可以去Buu的在线靶场复现。"></a>#0x06(php7.3)如果复现不了，可以去Buu的在线靶场复现。</h3><p>这关少了个函数</p>
+<p>#strtolower()把字符串转为小写，在win系统下对大小写不敏感，会自动变成小写。Liunx系统下则对大小写敏感。</p>
+<p>上传木马文件fox.php,用burp拦截请求包，修改为fox.PHP</p>
+<h3 id="0x07-php5-2"><a href="#0x07-php5-2" class="headerlink" title="#0x07(php5.2)"></a>#0x07(php5.2)</h3><p>这关少了个函数</p>
+<p>#trim()如果还不懂该函数啥意思自行百度！</p>
+<p>注：在win系统下呢，如果文件后缀最后面是空格会自动省去。</p>
+<p>上传木马文件为fox.php,用burp拦截请求包，修改为fox.php_  [这里 _指的是空格]</p>
+<p>这样可以绕过服务端的验证，到达客户端时自动省去空格。</p>
+<h3 id="0x08-php5-2"><a href="#0x08-php5-2" class="headerlink" title="#0x08(php5.2)"></a>#0x08(php5.2)</h3><p>这关少了个函数</p>
+<p>#deldot()不懂百度！</p>
+<p>原理和0x07一样。win系统会省去最后的 .</p>
+<h3 id="0x09"><a href="#0x09" class="headerlink" title="#0x09"></a>#0x09</h3>
             </div>
             <hr/>
 
