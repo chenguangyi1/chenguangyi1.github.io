@@ -580,7 +580,25 @@ Table: users
 | 12 | dhakkan  | dumbo      |
 | 14 | admin4   | admin4     |
 +----+----------+------------+</code></pre>
-<h3 id="3"><a href="#3" class="headerlink" title="3."></a>3.</h3>
+<h3 id="3-POST注入"><a href="#3-POST注入" class="headerlink" title="3.POST注入"></a>3.POST注入</h3><p>python sqlmap.py  -r “路径\http包.txt” -p “uname”</p>
+<p>-r 从一个文件中载入HTTP请求</p>
+<p>-p 可注入的参数</p>
+<h3 id="4-各种指令的使用"><a href="#4-各种指令的使用" class="headerlink" title="4.各种指令的使用"></a>4.各种指令的使用</h3><h5 id="–current-user"><a href="#–current-user" class="headerlink" title="–current-user"></a>–current-user</h5><p>当前数据库所使用的账户</p>
+<h5 id="–dbms-MySQL"><a href="#–dbms-MySQL" class="headerlink" title="–dbms=MySQL"></a>–dbms=MySQL</h5><p>指定数据库类型为MySQL</p>
+<h5 id="–file-read-“路径-1-txt”"><a href="#–file-read-“路径-1-txt”" class="headerlink" title="–file-read “路径\1.txt”"></a>–file-read “路径\1.txt”</h5><p>含义：读取目标服务器路径下的1.txt文件</p>
+<p>注：使用前先查询当前用户是否拥有读取文件的权限</p>
+<p>–file-write “路径\1.txt” –file-dest “D:\2.txt”</p>
+<p>含义：将本地下的1.txt 文件的内容，写入到目标服务器下D盘下，并命名为2.txt。</p>
+<p>注：使用该指令前需要先查询当前用户是否拥有写入文件的权限</p>
+<h5 id="–is-dba"><a href="#–is-dba" class="headerlink" title="–is-dba"></a>–is-dba</h5><p>当前用户是否拥有（root权限）</p>
+<h5 id="–level-1"><a href="#–level-1" class="headerlink" title="–level=1"></a>–level=1</h5><p>From which level check for this test</p>
+<p>1: Always (&lt;100 requests)<br>2: Try a bit harder (100-200 requests)<br>3: Good number of requests (200-500 requests)<br>4: Extensive test (500-1000 requests)<br>5: You have plenty of time (&gt;1000 requests)</p>
+<p>默认使用level 1</p>
+<h5 id="–passwords"><a href="#–passwords" class="headerlink" title="–passwords"></a>–passwords</h5><p>数据库密码</p>
+<h5 id="–risk-1"><a href="#–risk-1" class="headerlink" title="–risk=1"></a>–risk=1</h5><p>Likelihood(可能性) of a payload to damage the data integrity(完整性)</p>
+<p>1: Low risk<br>2: Medium risk<br>3: High risk</p>
+<h5 id="–users"><a href="#–users" class="headerlink" title="–users"></a>–users</h5><p>所有数据库用户</p>
+
             </div>
             <hr/>
 

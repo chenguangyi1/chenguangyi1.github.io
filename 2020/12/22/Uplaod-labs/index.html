@@ -579,7 +579,12 @@ SetHandler application/x-httpd-php
 <h3 id="0x08-php5-2"><a href="#0x08-php5-2" class="headerlink" title="#0x08(php5.2)"></a>#0x08(php5.2)</h3><p>这关少了个函数</p>
 <p>#deldot()不懂百度！</p>
 <p>原理和0x07一样。win系统会省去最后的 .</p>
-<h3 id="0x09"><a href="#0x09" class="headerlink" title="#0x09"></a>#0x09</h3>
+<h3 id="0x09-php7-3-不行可以去buu在线靶场复现"><a href="#0x09-php7-3-不行可以去buu在线靶场复现" class="headerlink" title="#0x09(php7.3)不行可以去buu在线靶场复现"></a>#0x09(php7.3)不行可以去buu在线靶场复现</h3><p>这里也是利用win系统的特性。没有过滤（：：$DATA)在后缀加：：$DATA就可绕过</p>
+<p>07,08,09这三关都是利用win系统独有的特性。所以渗透时，搜集操作系统信息很重要！</p>
+<h3 id="0x10"><a href="#0x10" class="headerlink" title="#0x10"></a>#0x10</h3><p>这关是结合前面几关绕过的特点进行总结使用。</p>
+<p>burp 拦截进行后缀名拼凑绕过 fox.php.. .（或者其他组合方式win系统下才可以用）</p>
+<p>绕过原理，可以把每个函数过滤结果echo出来观察。</p>
+<h3 id="0x11"><a href="#0x11" class="headerlink" title="#0x11"></a>#0x11</h3>
             </div>
             <hr/>
 
