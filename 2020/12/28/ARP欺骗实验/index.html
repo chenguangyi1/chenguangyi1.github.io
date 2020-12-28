@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Uplaod-labs, Keep-Boom">
+    <meta name="keywords" content="ARP欺骗实验, Keep-Boom">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>Uplaod-labs | Keep-Boom</title>
+    <title>ARP欺骗实验 | Keep-Boom</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/10.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/2.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">Uplaod-labs</h1>
+                    <h1 class="description center-align post-title">ARP欺骗实验</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-12-22
+                    2020-12-28
                 </div>
                 
 
@@ -459,132 +459,26 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>   环境</p>
-<p>apache2.4</p>
-<p>php5.2 和 php7.3 （有些关需要版本不一样）</p>
-<p>webshell 菜刀 （蚁剑低版本php不懂啥原因连不上）       </p>
-<h3 id="0x01"><a href="#0x01" class="headerlink" title="#0x01"></a>#0x01</h3><p>先上传一个fox.php的木马文件，发现被拦截下来<u><em>该文件不允许上传，请上传.jpg|.png|.gif类型的文件,当前文件类型为：.php</em></u>。尝试挂burp修改http请求包。</p>
-<p>发现并没有流量产生就被拦截下来，所以应该是在前端就对文件格式进行了验证。</p>
-<p>按F12调出开发者模式。搜索form</p>
-<pre><code>&lt;form enctype=&quot;multipart/form-data&quot; method=&quot;post&quot; onsubmit=&quot;return checkFile()&quot;&gt;
-  &lt;p&gt;请选择要上传的图片：&lt;/p&gt;&lt;p&gt;
-  &lt;input class=&quot;input_file&quot; type=&quot;file&quot; name=&quot;upload_file&quot;&gt;
-  &lt;input class=&quot;button&quot; type=&quot;submit&quot; name=&quot;submit&quot; value=&quot;上传&quot;&gt;
-  &lt;/p&gt;&lt;/form&gt;</code></pre>
-<p>看到这里有个触发事件onsubmit=”return checkFile()” 点击提交就会触发，发现会返回checkFile()函数最后return的内容来验证。</p>
-<p> 在《script type=”text/javascript”》发现checkFile函数对上传文件进行了后缀名的验证。</p>
-<pre><code>  function checkFile() &#123;
-        var file = document.getElementsByName(&#39;upload_file&#39;)[0].value;
-        if (file == null || file == &quot;&quot;) &#123;
-            alert(&quot;请选择要上传的文件!&quot;);
-            return false;
-        &#125;
-        //定义允许上传的文件类型
-        var allow_ext = &quot;.jpg|.png|.gif&quot;;
-        //提取上传文件的类型
-        var ext_name = file.substring(file.lastIndexOf(&quot;.&quot;));
-        //判断上传文件类型是否允许上传
-        if (allow_ext.indexOf(ext_name) == -1) &#123;
-            var errMsg = &quot;该文件不允许上传，请上传&quot; + allow_ext + &quot;类型的文件,当前文件类型为：&quot; + ext_name;
-            alert(errMsg);
-            return false;
-        &#125;
-    &#125;</code></pre>
-<p>函数知识补充：</p>
-<p>#document.getElementsByname(name[必须])</p>
-<p>该方法与 getElementById() 方法相似，但是它查询元素的 name 属性，而不是 id 属性。</p>
-<p>getElementsByName() 方法返回的是元素的数组，而不是一个元素。</p>
-<p>#string.lastIndexOf(searchvalue[必须，要检索的字符],start[可选，说明说第几个位置开始，没写默认从0开始])</p>
-<p>如果没有匹配到返回 -1</p>
-<p>该方法与string.indexOf()相似，一个是找字符最早出现的位置，一个是最后出现的位置。</p>
-<p>#string.subsrting(from[必须，表示要开始提前字符串的初始位置],to[可选，没写默认从from开始到结尾])</p>
-<p>接下来看看如何绕过：</p>
-<p>#删除onsubmit事件，绕过验证机制。</p>
-<p>#修改验证函数，把return flase，改成return true。</p>
-<p>#把整个验证函数删除。</p>
-<p>#先传个后最为.jpg的文件。绕过验证，再用burp拦截下来，修改后缀为.php。</p>
-<p>#修改白名单添加|.php|,绕过验证。</p>
-<p>最后通过菜刀或者蚁剑连接上webshell。</p>
-<h3 id="0x02"><a href="#0x02" class="headerlink" title="#0x02"></a>#0x02</h3><p>试着上传一个.php的文件。发现*<u>提示：文件类型不正确，请重新上传！</u>*</p>
-<p>这关应该是拦截文件类型，是在服务器端进行拦截。</p>
-<p>函数知识补充：</p>
-<p>#file_exists(path[必须])函数检查文件或目录是否存在。存在返回ture，反之返回flase。</p>
-<p>#$_FILES是一个数组变量</p>
-<pre><code>$_FILES[&#39;file&#39;][&#39;name&#39;] 客户端文件的原名称。 
-$_FILES[&#39;file&#39;][&#39;type&#39;] 文件的 MIME 类型，需要浏览器提供该信息的支持，例如&quot;image/gif&quot;。 
-$_FILES[&#39;file&#39;][&#39;size&#39;] 已上传文件的大小，单位为字节。 
-$_FILES[&#39;file&#39;][&#39;tmp_name&#39;] 文件被上传后在服务端储存的临时文件名，一般是系统默认。</code></pre>
-<p>#move_uploaded_file(file[必须，要移动的文件],newloc[必须，要移动到的新的位置的信息])</p>
-<p>接下来看看如何绕过：</p>
-<p>#上传.php的木马文件，用burp拦截下来，修改content-type 为：image/jpeg。</p>
-<h3 id="0x03"><a href="#0x03" class="headerlink" title="#0x03"></a>#0x03</h3><p>上传一个木马文件，发现*<u>提示：不允许上传.asp,.aspx,.php,.jsp后缀文件！</u>*</p>
-<p>函数知识补充：</p>
-<p>#trim(string[必须，要检测的字符串],charlist[可选，指定要删除字符串中的哪些字符])</p>
-<p>如果没填charlist默认删除</p>
-<ul>
-<li>“\0” - NULL</li>
-<li>“\t” - 制表符</li>
-<li>“\n” - 换行</li>
-<li>“\x0B” - 垂直制表符</li>
-<li>“\r” - 回车</li>
-<li>“ “ - 空格</li>
-</ul>
-<p>#deldot()删除文件名末尾的点</p>
-<p>注：这个函数没查到，不太确定。</p>
-<p>#strrchr(string[必须，要检查的字符串],char[必须，要查找的字符])</p>
-<p>返回从该字符开始一直到末尾的字符串。</p>
-<p>注：如果char参数用数字表示，则自动匹配数字 ASCII 值的字符。</p>
-<p>#strtolower(string[必须,把字符串转化为小写])</p>
-<p>#str_ireplace(find[必须，要查找的内容],replace[必须，要替换的内容],string[必须，要检查的字符串])</p>
-<p>#in_array(search[必须，要在数组中搜索的值],array[必须，要搜索的数组],type[可选])</p>
-<p>如果search存在在array中，返回true，反之返回flase。</p>
-<p>下面看看怎么绕过：</p>
-<p>#这里是用黑名单进行过滤，但却没有过滤php3 php5 phml 等</p>
-<p>所以可以上传后缀为php3的文件进行解析绕过。</p>
-<p>注：需要将apache配置文件中AddType X-application/http-php php3 php5 phtml 前面的#去掉，再重启下才能复现。</p>
-<p>而且最好apache服务器版本低点，版本太高可能复现不了。</p>
-<h3 id="0x04（我没复现成功，需要把apache的版本降低才行）"><a href="#0x04（我没复现成功，需要把apache的版本降低才行）" class="headerlink" title="#0x04（我没复现成功，需要把apache的版本降低才行）"></a>#0x04（我没复现成功，需要把apache的版本降低才行）</h3><p>查看提示，过滤了好多后缀。但是没有过滤 .htaccess文件。</p>
-<p>写一个内容为以下内容的.htaccess文件，就可把上传的1.jpg图片按php文件进行解析。</p>
-<pre><code>&lt;FirlesMatch &quot;1.jpg&quot;&gt;
-SetHandler application/x-httpd-php 
-&lt;/FilesMatch&gt;</code></pre>
-<p>使用之前要把apache配置文件里AllowOverride设置为All</p>
-<p>LoadModule rewrite_module modules/mod_rewrite.so 前面的#删除。重启服务器</p>
-<p>知识补充：</p>
-<p>#.htaccess文件</p>
-<p>.htaccess文件是apache的分布式配置文件。他负责相关目录下的网页配置，通过.htaccess可以帮我们实现。其实就是把.htaccess里的内容写在apache的配置文件里。</p>
-<h3 id="0x05（用php7-3版本）"><a href="#0x05（用php7-3版本）" class="headerlink" title="#0x05（用php7.3版本）"></a>#0x05（用php7.3版本）</h3><p>这关提示目录下存在readme.php文件</p>
-<p>这关和第4关类似，上一关是利用apache中间件进行绕过，这关是利用php解析问题进行绕过。</p>
-<p>知识补充：</p>
-<p>.user.ini 功能和 .htaccess功能类似 一个是apache的，一个的php的配置文件。</p>
-<p>绕过成功前提：</p>
-<p>#服务端脚本语言是PHP语言</p>
-<p>#上传文件的目录下存在其他的php文件</p>
-<p>#服务器使用 CGI或者FASTCIG模式</p>
-<p>建一个.user.ini 的文件内容为：</p>
-<pre><code> auto_prepend_file=pass5.png</code></pre>
-<p>意思是：该目录下的所有php文件都包含pass5.png。</p>
-<p>再创建一个名为pass5.png的木马文件上传。（可以先用内容为 &lt;?php phpinfo(); ?》试下）</p>
-<p>注：按照大佬的博客是说，官方说上传后5分钟过后才会生效，所以可以直接重启服务器减少时间。</p>
-<p>解析pass5.png肯定不行，解析readme.php解析成功。</p>
-<p>用菜刀去连接readme.php就行。</p>
-<h3 id="0x06-php7-3-如果复现不了，可以去Buu的在线靶场复现。"><a href="#0x06-php7-3-如果复现不了，可以去Buu的在线靶场复现。" class="headerlink" title="#0x06(php7.3)如果复现不了，可以去Buu的在线靶场复现。"></a>#0x06(php7.3)如果复现不了，可以去Buu的在线靶场复现。</h3><p>这关少了个函数</p>
-<p>#strtolower()把字符串转为小写，在win系统下对大小写不敏感，会自动变成小写。Liunx系统下则对大小写敏感。</p>
-<p>上传木马文件fox.php,用burp拦截请求包，修改为fox.PHP</p>
-<h3 id="0x07-php5-2"><a href="#0x07-php5-2" class="headerlink" title="#0x07(php5.2)"></a>#0x07(php5.2)</h3><p>这关少了个函数</p>
-<p>#trim()如果还不懂该函数啥意思自行百度！</p>
-<p>注：在win系统下呢，如果文件后缀最后面是空格会自动省去。</p>
-<p>上传木马文件为fox.php,用burp拦截请求包，修改为fox.php_  [这里 _指的是空格]</p>
-<p>这样可以绕过服务端的验证，到达客户端时自动省去空格。</p>
-<h3 id="0x08-php5-2"><a href="#0x08-php5-2" class="headerlink" title="#0x08(php5.2)"></a>#0x08(php5.2)</h3><p>这关少了个函数</p>
-<p>#deldot()不懂百度！</p>
-<p>原理和0x07一样。win系统会省去最后的 .</p>
-<h3 id="0x09-php7-3-不行可以去buu在线靶场复现"><a href="#0x09-php7-3-不行可以去buu在线靶场复现" class="headerlink" title="#0x09(php7.3)不行可以去buu在线靶场复现"></a>#0x09(php7.3)不行可以去buu在线靶场复现</h3><p>这里也是利用win系统的特性。没有过滤（：：$DATA)在后缀加：：$DATA就可绕过</p>
-<p>07,08,09这三关都是利用win系统独有的特性。所以渗透时，搜集操作系统信息很重要！</p>
-<h3 id="0x10"><a href="#0x10" class="headerlink" title="#0x10"></a>#0x10</h3><p>这关是结合前面几关绕过的特点进行总结使用。</p>
-<p>burp 拦截进行后缀名拼凑绕过 fox.php.. .（或者其他组合方式win系统下才可以用）</p>
-<p>绕过原理，可以把每个函数过滤结果echo出来观察。</p>
-<h3 id="0x11"><a href="#0x11" class="headerlink" title="#0x11"></a>#0x11</h3>
+                <h3 id="这次实验的目的是对局域网内其他设备进行断网操作，及者监听操作。"><a href="#这次实验的目的是对局域网内其他设备进行断网操作，及者监听操作。" class="headerlink" title="这次实验的目的是对局域网内其他设备进行断网操作，及者监听操作。"></a>这次实验的目的是对局域网内其他设备进行断网操作，及者监听操作。</h3><h4 id="简单分析下ARP协议"><a href="#简单分析下ARP协议" class="headerlink" title="简单分析下ARP协议"></a>简单分析下ARP协议</h4><p>ARP(Address Resolution Protocol)地址解析协议，是根据IP地址获取其物理地址/MAC地址(硬件地址)的一个TCP/IP协议。它的作用是让局域网内的设备可以正常互相通信。地址解析协议是建立在网络中各个主机互相信任的基础上的。<u><em>所以存在一个缺点</em></u>，局域网络上的主机可以自主发送ARP应答消息，其他主机收到应答报文时不会检测该报文的真实性就会将其记入本机ARP缓存；由此攻击者就可以向某一主机发送伪ARP应答报文，使其发送的信息无法到达预期的主机或到达错误的主机，这就构成了一个ARP欺骗(ARPspoofing)。</p>
+<h4 id="局域网内两台设备如何通信的呢？"><a href="#局域网内两台设备如何通信的呢？" class="headerlink" title="局域网内两台设备如何通信的呢？"></a>局域网内两台设备如何通信的呢？</h4><p>局域网间的两台设备进行通信不是通过IP地址，而是通过MAC地址。</p>
+<p>局域网内有3台设备A,B,C。A的IP地址为192.168.1.1，MAC地址为01-01-01-01-01-01。B的IP地址为192.168.1.2，MAC地址为02-02-02-02-02-02。如果知道了对方的MAC地址（MAC地址就像是身份证，IP地址就像是姓名，名字一样的人很多，但身份证是唯一的），就可以进行通信了。如果不知道对方的MAC地址怎么办呢？</p>
+<p>之时A会发送一个ARP请求报文，里面包括了源IP地址(A的IP)，源MAC地址。目的IP地址(B的IP)，目的MAC地址(但此时不知道对方的MAC地址，就会设为广播地址FF-FF-FF-FF-FF-FF)。发送给交换机，交换机进行局域网内的广播，这个IP地址是谁的，C看到发现不是自己的IP地址就会丢弃掉，B发现是自己的就会接收，并把自己的MAC地址应答回去。此时应答就不是广播，而是单播。把ARP应答报文发送给交换机，交换机再转发给A。这样A的ARP缓存表里就有B的MAC地址。</p>
+<h4 id="ARP欺骗-中间人攻击中的一种-怎么实现呢？"><a href="#ARP欺骗-中间人攻击中的一种-怎么实现呢？" class="headerlink" title="ARP欺骗(中间人攻击中的一种)怎么实现呢？"></a>ARP欺骗(中间人攻击中的一种)怎么实现呢？</h4><p>发现A和B进行通信时，有个中间人进行转发就是交换机。而ARP有个缺点，就是不会检测报文的真实性就会接收。</p>
+<p>假如C要知道A和B之间在干啥怎么办呢？C可以发送一个应答报文给A(IP为交换机的IP，MAC地址为C的ACK地址)。这时A就会认为，C是转发人员，把传给B的信息传给C，C可以先把信息内容存起来再转发给B。对B也进行同样的操作，就可以知道A和B之间在干啥了，达到了窃听的效果。</p>
+<p>断网就是给A一个假的MAC地址，进行重定性。这样A就上网不了。当然断网没有意思，ARP欺骗主要是用来监听，挂马等操作。</p>
+<h4 id="如何进行监听操作呢？"><a href="#如何进行监听操作呢？" class="headerlink" title="如何进行监听操作呢？"></a>如何进行监听操作呢？</h4><p><u><em>前提：须在同一个局域网下，知道对方的IP。</em></u></p>
+<p>使用kali作为攻击机。网络连接模式设为桥接模式。</p>
+<p>先ifconfig查询自己的网段(192.168.1.  )及网卡信息(例如 eth0)</p>
+<p>使用nmap扫描出，同网段下存活的主机IP。</p>
+<p>在kali终端输入 route -n 可以查询网关</p>
+<p>使用kali终端执行  arpspoof -i eth0 -t 目标IP 网关 就可对目标进行断网操作。</p>
+<p>下一步监听：</p>
+<p>linux因为系统安全考虑，是不支持IP转发的，其配置文件写在/proc/sys/net/ipv4/ip_forward中。默认为0，接下来修改为1.</p>
+<p>echo 1 &gt; /proc/sys/net/ipv4/ip_forward</p>
+<p>然后再进行arpspoof -i eth0 -t 目标IP 网关 </p>
+<p>再ettercap -Tq -i eth0 就可对目标进行嗅探。</p>
+<p>只要对方进行操作，这边就会收到数据包。例如对方登录一个网站，输入账户密码，在你这边就会获取到相对应的网站，账户，密码。</p>
+
             </div>
             <hr/>
 
@@ -609,7 +503,7 @@ SetHandler application/x-httpd-php
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2020/12/22/Uplaod-labs/">http://example.com/2020/12/22/Uplaod-labs/</a>
+                    <a href="http://example.com/2020/12/28/ARP%E6%AC%BA%E9%AA%97%E5%AE%9E%E9%AA%8C/">http://example.com/2020/12/28/ARP%E6%AC%BA%E9%AA%97%E5%AE%9E%E9%AA%8C/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -814,9 +708,10 @@ SetHandler application/x-httpd-php
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2020/12/28/ARP%E6%AC%BA%E9%AA%97%E5%AE%9E%E9%AA%8C/">
                     <div class="card-image">
@@ -834,9 +729,9 @@ SetHandler application/x-httpd-php
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-12-28
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-28
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -845,6 +740,7 @@ SetHandler application/x-httpd-php
                         </span>
                     </div>
                 </div>
+
                 
             </div>
         </div>
@@ -855,13 +751,13 @@ SetHandler application/x-httpd-php
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/12/19/base%E5%AE%B6%E6%97%8F/">
+                <a href="/2020/12/22/Uplaod-labs/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="base家族">
+                        <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="Uplaod-labs">
                         
-                        <span class="card-title">base家族</span>
+                        <span class="card-title">Uplaod-labs</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -872,7 +768,7 @@ SetHandler application/x-httpd-php
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-19
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-22
                             </span>
                         <span class="publish-author">
                             
