@@ -584,7 +584,28 @@ SetHandler application/x-httpd-php
 <h3 id="0x10"><a href="#0x10" class="headerlink" title="#0x10"></a>#0x10</h3><p>这关是结合前面几关绕过的特点进行总结使用。</p>
 <p>burp 拦截进行后缀名拼凑绕过 fox.php.. .（或者其他组合方式win系统下才可以用）</p>
 <p>绕过原理，可以把每个函数过滤结果echo出来观察。</p>
-<h3 id="0x11"><a href="#0x11" class="headerlink" title="#0x11"></a>#0x11</h3>
+<h3 id="0x11"><a href="#0x11" class="headerlink" title="#0x11"></a>#0x11</h3><p>这关是把黑名单里的字符串，替换成空。</p>
+<p>这里可以利用SQL注入里的叠加。</p>
+<p>#fox.pphphp(这样解析后就变成fox.php)就上传成功</p>
+<p>注：不能写成fox.phphpp,不然会被解析成fox.hpp</p>
+<h3 id="0x12"><a href="#0x12" class="headerlink" title="#0x12"></a>#0x12</h3><pre class=" language-php"><code class="language-php"><span class="token variable">$img_path</span> <span class="token operator">=</span> <span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'save_path'</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token string">"/"</span><span class="token punctuation">.</span><span class="token function">rand</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span> <span class="token number">99</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">date</span><span class="token punctuation">(</span><span class="token string">"YmdHis"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token string">"."</span><span class="token punctuation">.</span><span class="token variable">$file_ext</span><span class="token punctuation">;</span></code></pre>
+<p>这关还有个可控的地方就是 save_path (就是路径可控)</p>
+<p>可以使用%00截断。这个%00截断其实和SQL注入里的注释作用是一样的让后面部分没有作用。</p>
+<p>那我们可以上传一个代有一句话木马的图片，绕过前面的检测。</p>
+<p>在save_path动手脚</p>
+<p><img src="/images/13.png"></p>
+<p><img src="/images/14.png"></p>
+<p>这样就会让原本图片里面的php代码，生成在fox.php这个文件里并写在该目录下。就可以成功绕过上传了。</p>
+<p>注：需要把php.ini 配置文件里的 magic_quotes_gpc 设置为Off</p>
+<p>不然会自动过滤，会失败。</p>
+<h3 id="0x13"><a href="#0x13" class="headerlink" title="#0x13"></a>#0x13</h3><p>和12关没啥区别，没什么好讲的。</p>
+<h3 id="0x14"><a href="#0x14" class="headerlink" title="#0x14"></a>#0x14</h3><p>先讲下相对路径</p>
+<p>#./表示当前目录下</p>
+<p>#../表示上一级目录，就是先移动到上一层目录，再寻找相关文件。</p>
+<p>函数知识补充：</p>
+<p>rb 是只读的意思，rb+是读写</p>
+<p>fread()</p>
+
             </div>
             <hr/>
 
