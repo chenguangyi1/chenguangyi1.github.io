@@ -466,30 +466,30 @@
 <h3 id="0x01"><a href="#0x01" class="headerlink" title="#0x01"></a>#0x01</h3><p>先上传一个fox.php的木马文件，发现被拦截下来<u><em>该文件不允许上传，请上传.jpg|.png|.gif类型的文件,当前文件类型为：.php</em></u>。尝试挂burp修改http请求包。</p>
 <p>发现并没有流量产生就被拦截下来，所以应该是在前端就对文件格式进行了验证。</p>
 <p>按F12调出开发者模式。搜索form</p>
-<pre><code>&lt;form enctype=&quot;multipart/form-data&quot; method=&quot;post&quot; onsubmit=&quot;return checkFile()&quot;&gt;
-  &lt;p&gt;请选择要上传的图片：&lt;/p&gt;&lt;p&gt;
-  &lt;input class=&quot;input_file&quot; type=&quot;file&quot; name=&quot;upload_file&quot;&gt;
-  &lt;input class=&quot;button&quot; type=&quot;submit&quot; name=&quot;submit&quot; value=&quot;上传&quot;&gt;
-  &lt;/p&gt;&lt;/form&gt;</code></pre>
+<pre class=" language-php"><code class="language-php"><span class="token markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>form</span> <span class="token attr-name">enctype</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>multipart/form-data<span class="token punctuation">"</span></span> <span class="token attr-name">method</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>post<span class="token punctuation">"</span></span> <span class="token attr-name">onsubmit</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>return checkFile()<span class="token punctuation">"</span></span><span class="token punctuation">></span></span></span>
+  <span class="token markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span></span>请选择要上传的图片：<span class="token markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span></span><span class="token markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span></span>
+  <span class="token markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>input_file<span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>file<span class="token punctuation">"</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>upload_file<span class="token punctuation">"</span></span><span class="token punctuation">></span></span></span>
+  <span class="token markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>submit<span class="token punctuation">"</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>submit<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>上传<span class="token punctuation">"</span></span><span class="token punctuation">></span></span></span>
+  <span class="token markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span></span><span class="token markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>form</span><span class="token punctuation">></span></span></span></code></pre>
 <p>看到这里有个触发事件onsubmit=”return checkFile()” 点击提交就会触发，发现会返回checkFile()函数最后return的内容来验证。</p>
 <p> 在《script type=”text/javascript”》发现checkFile函数对上传文件进行了后缀名的验证。</p>
-<pre><code>  function checkFile() &#123;
-        var file = document.getElementsByName(&#39;upload_file&#39;)[0].value;
-        if (file == null || file == &quot;&quot;) &#123;
-            alert(&quot;请选择要上传的文件!&quot;);
-            return false;
-        &#125;
-        //定义允许上传的文件类型
-        var allow_ext = &quot;.jpg|.png|.gif&quot;;
-        //提取上传文件的类型
-        var ext_name = file.substring(file.lastIndexOf(&quot;.&quot;));
-        //判断上传文件类型是否允许上传
-        if (allow_ext.indexOf(ext_name) == -1) &#123;
-            var errMsg = &quot;该文件不允许上传，请上传&quot; + allow_ext + &quot;类型的文件,当前文件类型为：&quot; + ext_name;
-            alert(errMsg);
-            return false;
-        &#125;
-    &#125;</code></pre>
+<pre class=" language-php"><code class="language-php">  <span class="token keyword">function</span> <span class="token function">checkFile</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+        <span class="token keyword">var</span> file <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementsByName</span><span class="token punctuation">(</span><span class="token string">'upload_file'</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>value<span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>file <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">||</span> file <span class="token operator">==</span> <span class="token string">""</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+            <span class="token function">alert</span><span class="token punctuation">(</span><span class="token string">"请选择要上传的文件!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+        <span class="token comment" spellcheck="true">//定义允许上传的文件类型</span>
+        <span class="token keyword">var</span> allow_ext <span class="token operator">=</span> <span class="token string">".jpg|.png|.gif"</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//提取上传文件的类型</span>
+        <span class="token keyword">var</span> ext_name <span class="token operator">=</span> file<span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span>file<span class="token punctuation">.</span><span class="token function">lastIndexOf</span><span class="token punctuation">(</span><span class="token string">"."</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//判断上传文件类型是否允许上传</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>allow_ext<span class="token punctuation">.</span><span class="token function">indexOf</span><span class="token punctuation">(</span>ext_name<span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+            <span class="token keyword">var</span> errMsg <span class="token operator">=</span> <span class="token string">"该文件不允许上传，请上传"</span> <span class="token operator">+</span> allow_ext <span class="token operator">+</span> <span class="token string">"类型的文件,当前文件类型为："</span> <span class="token operator">+</span> ext_name<span class="token punctuation">;</span>
+            <span class="token function">alert</span><span class="token punctuation">(</span>errMsg<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+    <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span></code></pre>
 <p>函数知识补充：</p>
 <p>#document.getElementsByname(name[必须])</p>
 <p>该方法与 getElementById() 方法相似，但是它查询元素的 name 属性，而不是 id 属性。</p>
@@ -510,10 +510,10 @@
 <p>函数知识补充：</p>
 <p>#file_exists(path[必须])函数检查文件或目录是否存在。存在返回ture，反之返回flase。</p>
 <p>#$_FILES是一个数组变量</p>
-<pre><code>$_FILES[&#39;file&#39;][&#39;name&#39;] 客户端文件的原名称。 
-$_FILES[&#39;file&#39;][&#39;type&#39;] 文件的 MIME 类型，需要浏览器提供该信息的支持，例如&quot;image/gif&quot;。 
-$_FILES[&#39;file&#39;][&#39;size&#39;] 已上传文件的大小，单位为字节。 
-$_FILES[&#39;file&#39;][&#39;tmp_name&#39;] 文件被上传后在服务端储存的临时文件名，一般是系统默认。</code></pre>
+<pre class=" language-php"><code class="language-php"><span class="token variable">$_FILES</span><span class="token punctuation">[</span><span class="token string">'file'</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">'name'</span><span class="token punctuation">]</span> 客户端文件的原名称。 
+<span class="token variable">$_FILES</span><span class="token punctuation">[</span><span class="token string">'file'</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">'type'</span><span class="token punctuation">]</span> 文件的 <span class="token constant">MIME</span> 类型，需要浏览器提供该信息的支持，例如<span class="token string">"image/gif"</span>。 
+<span class="token variable">$_FILES</span><span class="token punctuation">[</span><span class="token string">'file'</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">'size'</span><span class="token punctuation">]</span> 已上传文件的大小，单位为字节。 
+<span class="token variable">$_FILES</span><span class="token punctuation">[</span><span class="token string">'file'</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">'tmp_name'</span><span class="token punctuation">]</span> 文件被上传后在服务端储存的临时文件名，一般是系统默认。</code></pre>
 <p>#move_uploaded_file(file[必须，要移动的文件],newloc[必须，要移动到的新的位置的信息])</p>
 <p>接下来看看如何绕过：</p>
 <p>#上传.php的木马文件，用burp拦截下来，修改content-type 为：image/jpeg。</p>
@@ -545,9 +545,9 @@ $_FILES[&#39;file&#39;][&#39;tmp_name&#39;] 文件被上传后在服务端储存
 <p>而且最好apache服务器版本低点，版本太高可能复现不了。</p>
 <h3 id="0x04（我没复现成功，需要把apache的版本降低才行）"><a href="#0x04（我没复现成功，需要把apache的版本降低才行）" class="headerlink" title="#0x04（我没复现成功，需要把apache的版本降低才行）"></a>#0x04（我没复现成功，需要把apache的版本降低才行）</h3><p>查看提示，过滤了好多后缀。但是没有过滤 .htaccess文件。</p>
 <p>写一个内容为以下内容的.htaccess文件，就可把上传的1.jpg图片按php文件进行解析。</p>
-<pre><code>&lt;FirlesMatch &quot;1.jpg&quot;&gt;
-SetHandler application/x-httpd-php 
-&lt;/FilesMatch&gt;</code></pre>
+<pre class=" language-php"><code class="language-php"><span class="token markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>FirlesMatch</span> <span class="token attr-name">"1.jpg"</span><span class="token punctuation">></span></span></span>
+SetHandler application<span class="token operator">/</span>x<span class="token operator">-</span>httpd<span class="token operator">-</span>php 
+<span class="token markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>FilesMatch</span><span class="token punctuation">></span></span></span></code></pre>
 <p>使用之前要把apache配置文件里AllowOverride设置为All</p>
 <p>LoadModule rewrite_module modules/mod_rewrite.so 前面的#删除。重启服务器</p>
 <p>知识补充：</p>
@@ -562,7 +562,7 @@ SetHandler application/x-httpd-php
 <p>#上传文件的目录下存在其他的php文件</p>
 <p>#服务器使用 CGI或者FASTCIG模式</p>
 <p>建一个.user.ini 的文件内容为：</p>
-<pre><code> auto_prepend_file=pass5.png</code></pre>
+<pre class=" language-php"><code class="language-php"> auto_prepend_file<span class="token operator">=</span>pass5<span class="token punctuation">.</span>png</code></pre>
 <p>意思是：该目录下的所有php文件都包含pass5.png。</p>
 <p>再创建一个名为pass5.png的木马文件上传。（可以先用内容为 &lt;?php phpinfo(); ?》试下）</p>
 <p>注：按照大佬的博客是说，官方说上传后5分钟过后才会生效，所以可以直接重启服务器减少时间。</p>
@@ -637,53 +637,90 @@ SetHandler application/x-httpd-php
 </tr>
 </tbody></table>
 <p>返回的是一个数组</p>
-<pre><code>&lt;?php
-$data = &quot;GIF89a&quot;;
-print_r(unpack(&quot;C2chars&quot;,$data));
-?&gt; 
-&lt;?php
-$data = &quot;PHP&quot;;
-print_r(unpack(&quot;Cmyint&quot;,$data));
-?&gt;
-&lt;?php
-$data = &quot;PHP&quot;;
-print_r(unpack(&quot;C*&quot;,$data));
-?&gt; 
-&lt;?php
-$bin = pack(&quot;c2n2&quot;,0x1234,0x5678,65,66);
-print_r(unpack(&quot;c4chars/n2int&quot;,$bin));
-?&gt;</code></pre>
-<pre><code>Array
-(
-    [chars1] =&gt; 71
-    [chars2] =&gt; 73
-)
+<pre class=" language-php"><code class="language-php"><span class="token delimiter">&lt;?php</span>
+<span class="token variable">$data</span> <span class="token operator">=</span> <span class="token string">"GIF89a"</span><span class="token punctuation">;</span>
+<span class="token function">print_r</span><span class="token punctuation">(</span><span class="token function">unpack</span><span class="token punctuation">(</span><span class="token string">"C2chars"</span><span class="token punctuation">,</span><span class="token variable">$data</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token delimiter">?></span> 
+<span class="token delimiter">&lt;?php</span>
+<span class="token variable">$data</span> <span class="token operator">=</span> <span class="token string">"PHP"</span><span class="token punctuation">;</span>
+<span class="token function">print_r</span><span class="token punctuation">(</span><span class="token function">unpack</span><span class="token punctuation">(</span><span class="token string">"Cmyint"</span><span class="token punctuation">,</span><span class="token variable">$data</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token delimiter">?></span>
+<span class="token delimiter">&lt;?php</span>
+<span class="token variable">$data</span> <span class="token operator">=</span> <span class="token string">"PHP"</span><span class="token punctuation">;</span>
+<span class="token function">print_r</span><span class="token punctuation">(</span><span class="token function">unpack</span><span class="token punctuation">(</span><span class="token string">"C*"</span><span class="token punctuation">,</span><span class="token variable">$data</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token delimiter">?></span> 
+<span class="token delimiter">&lt;?php</span>
+<span class="token variable">$bin</span> <span class="token operator">=</span> <span class="token function">pack</span><span class="token punctuation">(</span><span class="token string">"c2n2"</span><span class="token punctuation">,</span><span class="token number">0x1234</span><span class="token punctuation">,</span><span class="token number">0x5678</span><span class="token punctuation">,</span><span class="token number">65</span><span class="token punctuation">,</span><span class="token number">66</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">print_r</span><span class="token punctuation">(</span><span class="token function">unpack</span><span class="token punctuation">(</span><span class="token string">"c4chars/n2int"</span><span class="token punctuation">,</span><span class="token variable">$bin</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token delimiter">?></span></code></pre>
+<pre class=" language-php"><code class="language-php"><span class="token keyword">Array</span>
+<span class="token punctuation">(</span>
+    <span class="token punctuation">[</span>chars1<span class="token punctuation">]</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token number">71</span>
+    <span class="token punctuation">[</span>chars2<span class="token punctuation">]</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token number">73</span>
+<span class="token punctuation">)</span>
 
-Array
-(
-    [myint] =&gt; 80
-)
-Array
-(
-    [1] =&gt; 80
-    [2] =&gt; 72
-    [3] =&gt; 80
-)
+<span class="token keyword">Array</span>
+<span class="token punctuation">(</span>
+    <span class="token punctuation">[</span>myint<span class="token punctuation">]</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token number">80</span>
+<span class="token punctuation">)</span>
+<span class="token keyword">Array</span>
+<span class="token punctuation">(</span>
+    <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token number">80</span>
+    <span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token number">72</span>
+    <span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token number">80</span>
+<span class="token punctuation">)</span>
 
-Array
-(
-    [chars1] =&gt; 52
-    [chars2] =&gt; 120
-    [int1] =&gt; 65
-    [int2] =&gt; 66
-)</code></pre>
+<span class="token keyword">Array</span>
+<span class="token punctuation">(</span>
+    <span class="token punctuation">[</span>chars1<span class="token punctuation">]</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token number">52</span>
+    <span class="token punctuation">[</span>chars2<span class="token punctuation">]</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token number">120</span>
+    <span class="token punctuation">[</span>int1<span class="token punctuation">]</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token number">65</span>
+    <span class="token punctuation">[</span>int2<span class="token punctuation">]</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token number">66</span>
+<span class="token punctuation">)</span></code></pre>
 <p>#这关需要结合文件包含漏洞才能成功。</p>
 <p>先制作一个木马图片在头部加GIF89a可以绕过检测。</p>
 <p>然后点击靶场自带的文件上传漏洞页面</p>
 <p>包含所上传的图片马让它解析成功。</p>
 <pre><code>?file=./upload/12325112521.gif</code></pre>
 <p>可以先把内容写成phpinfo()看下能否解析成功，再写入一句话木马。</p>
-<h3 id="0x15"><a href="#0x15" class="headerlink" title="#0x15"></a>#0x15</h3>
+<h3 id="0x15"><a href="#0x15" class="headerlink" title="#0x15"></a>#0x15</h3><p>函数知识补充：</p>
+<p>#getmagicsize()</p>
+<p>用于获取图像大小及相关信息，成功返回一个数组，失败则返回 FALSE 并产生一条 E_WARNING 级的错误信息。</p>
+<pre class=" language-php"><code class="language-php"><span class="token delimiter">&lt;?php</span>
+<span class="token variable">$remote_png_url</span> <span class="token operator">=</span> 'http<span class="token punctuation">:</span><span class="token comment" spellcheck="true">//www.runoob.com/wp-content/themes/w3cschool.cc/assets/img/logo-domain-green2.png';</span>
+<span class="token variable">$img_data</span> <span class="token operator">=</span> <span class="token function">getimagesize</span><span class="token punctuation">(</span><span class="token variable">$remote_png_url</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">print_r</span><span class="token punctuation">(</span><span class="token variable">$img_data</span> <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token delimiter">?></span></code></pre>
+<pre class=" language-php"><code class="language-php"><span class="token keyword">Array</span>
+<span class="token punctuation">(</span>
+    <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token number">290</span>
+    <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token number">69</span>
+    <span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token number">3</span>
+    <span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span> <span class="token operator">=</span><span class="token operator">></span> width<span class="token operator">=</span><span class="token string">"290"</span> height<span class="token operator">=</span><span class="token string">"69"</span>
+    <span class="token punctuation">[</span>bits<span class="token punctuation">]</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token number">8</span>
+    <span class="token punctuation">[</span>mime<span class="token punctuation">]</span> <span class="token operator">=</span><span class="token operator">></span> image<span class="token operator">/</span>png
+<span class="token punctuation">)</span></code></pre>
+<ul>
+<li>索引 0 给出的是图像宽度的像素值</li>
+<li>索引 1 给出的是图像高度的像素值</li>
+<li>索引 2 给出的是图像的类型，返回的是数字，其中1 = GIF，2 = JPG，3 = PNG，4 = SWF，5 = PSD，6 =  BMP，7 = TIFF(intel byte order)，8 = TIFF(motorola byte order)，9 = JPC，10 = JP2，11 = JPX，12 = JB2，13 = SWC，14 = IFF，15 = WBMP，16 = XBM</li>
+<li>索引 3 给出的是一个宽度和高度的字符串，可以直接用于 HTML 的 &lt;image标签</li>
+<li>索引 bits 给出的是图像的每种颜色的位数，二进制格式</li>
+<li>索引 channels 给出的是图像的通道值，RGB 图像默认是 3</li>
+<li>索引 mime 给出的是图像的 MIME 信息，此信息可以用来在 HTTP Content-type 头信息中发送正确的信息，如： header(“Content-type: image/jpeg”);</li>
+</ul>
+<p>#magic_type_to_extesion()</p>
+<p>根据指定的图像类型返回对应的后缀名。</p>
+<p>#这关的验证的思路和14关类似，添加头部信息GIF89a即可绕过。</p>
+<h3 id="0x16"><a href="#0x16" class="headerlink" title="#0x16"></a>#0x16</h3><p>函数知识补充：</p>
+<p>#exif_magictype()</p>
+<p>读取一个图像的第一个字节并检查其签名。如果发现了恰当的签名则返回一个对应的常量，否则返回 FALSE。</p>
+<p><img src="/images/15.png"></p>
+<p>注：需打开php_exif 模块，把前面的分号去掉就打开了。</p>
+<p>#这关也是换了个函数进行验证，思路和13关一样。</p>
+<p>总结下 14，15，16 三关。差别是使用不同的方法对传进来的文件进行信息的验证。</p>
+<p>看博客说exif_magictype 比 getmagicsize 验证快的多。</p>
+<h3 id="0x17"><a href="#0x17" class="headerlink" title="#0x17"></a>#0x17</h3>
             </div>
             <hr/>
 
