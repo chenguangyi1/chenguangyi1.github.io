@@ -603,9 +603,87 @@ SetHandler application/x-httpd-php
 <p>#./表示当前目录下</p>
 <p>#../表示上一级目录，就是先移动到上一层目录，再寻找相关文件。</p>
 <p>函数知识补充：</p>
-<p>rb 是只读的意思，rb+是读写</p>
-<p>fread()</p>
+<p>#rb 是只读的意思，rb+是读写</p>
+<p>#fread(resource $handle , int $length)</p>
+<table>
+<thead>
+<tr>
+<th><strong>handle</strong></th>
+<th><strong>文件系统指针，是典型地由 fopen() 创建的 resource(资源)。</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>length</strong></td>
+<td><strong>必需。规定要读取的最大字节数。</strong></td>
+</tr>
+</tbody></table>
+<p>函数会在到达指定长度或读到文件末尾（EOF）时（以先到者为准），停止运行。</p>
+<p>该函数返回读取的字符串，如果失败则返回 FALSE。</p>
+<p>#unpack(format,data)</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em>format</em></td>
+<td>必需。规定在解包数据时所使用的格式。</td>
+</tr>
+<tr>
+<td>data</td>
+<td>必需。规定被解包的二进制数据。</td>
+</tr>
+</tbody></table>
+<p>返回的是一个数组</p>
+<pre><code>&lt;?php
+$data = &quot;GIF89a&quot;;
+print_r(unpack(&quot;C2chars&quot;,$data));
+?&gt; 
+&lt;?php
+$data = &quot;PHP&quot;;
+print_r(unpack(&quot;Cmyint&quot;,$data));
+?&gt;
+&lt;?php
+$data = &quot;PHP&quot;;
+print_r(unpack(&quot;C*&quot;,$data));
+?&gt; 
+&lt;?php
+$bin = pack(&quot;c2n2&quot;,0x1234,0x5678,65,66);
+print_r(unpack(&quot;c4chars/n2int&quot;,$bin));
+?&gt;</code></pre>
+<pre><code>Array
+(
+    [chars1] =&gt; 71
+    [chars2] =&gt; 73
+)
 
+Array
+(
+    [myint] =&gt; 80
+)
+Array
+(
+    [1] =&gt; 80
+    [2] =&gt; 72
+    [3] =&gt; 80
+)
+
+Array
+(
+    [chars1] =&gt; 52
+    [chars2] =&gt; 120
+    [int1] =&gt; 65
+    [int2] =&gt; 66
+)</code></pre>
+<p>#这关需要结合文件包含漏洞才能成功。</p>
+<p>先制作一个木马图片在头部加GIF89a可以绕过检测。</p>
+<p>然后点击靶场自带的文件上传漏洞页面</p>
+<p>包含所上传的图片马让它解析成功。</p>
+<pre><code>?file=./upload/12325112521.gif</code></pre>
+<p>可以先把内容写成phpinfo()看下能否解析成功，再写入一句话木马。</p>
+<h3 id="0x15"><a href="#0x15" class="headerlink" title="#0x15"></a>#0x15</h3>
             </div>
             <hr/>
 
