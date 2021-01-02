@@ -852,6 +852,89 @@ SetHandler application<span class="token operator">/</span>x<span class="token o
 fputs(fopen(&#39;fox.php&#39;,&#39;w+&#39;),&#39;&lt;?php eval($_POST[fox]);?&gt;&#39;);
 ?&gt;</code></pre>
 <p>用burp截住包,我们需要的不断重放这个数据包，所以选择没有负载。线程设高一点，然后开始攻击。不断刷新页面即可，就会在目录下生存fox.php的木马文件。</p>
+<h3 id="0x19"><a href="#0x19" class="headerlink" title="#0x19"></a>#0x19</h3><p>还没学完面向对象，下次再补！</p>
+<h3 id="0x20"><a href="#0x20" class="headerlink" title="#0x20"></a>#0x20</h3><p>函数知识补充：</p>
+<p>#pathinfo(path,options) </p>
+<p>以数组的形式返回关于文件路径的信息。</p>
+<p>返回的数组元素如下：</p>
+<pre class=" language-php"><code class="language-php"><span class="token punctuation">[</span>dirname<span class="token punctuation">]</span><span class="token punctuation">:</span> 目录路径
+<span class="token punctuation">[</span>basename<span class="token punctuation">]</span><span class="token punctuation">:</span> 文件名
+<span class="token punctuation">[</span>extension<span class="token punctuation">]</span><span class="token punctuation">:</span> 文件后缀名
+<span class="token punctuation">[</span>filename<span class="token punctuation">]</span><span class="token punctuation">:</span> 不包含后缀的文件名</code></pre>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>path</td>
+<td>必需。规定要检查的路径。</td>
+</tr>
+<tr>
+<td>options</td>
+<td>可选。规定要返回的数组元素。默认是 all。可能的值：  PATHINFO_DIRNAME - 只返回 dirname     PATHINFO_BASENAME - 只返回 basename     PATHINFO_EXTENSION - 只返回 extension PATHINFO_FILENAME - 只返回 filename</td>
+</tr>
+</tbody></table>
+<pre class=" language-php"><code class="language-php"><span class="token delimiter">&lt;?php</span> 
+<span class="token function">print_r</span><span class="token punctuation">(</span><span class="token function">pathinfo</span><span class="token punctuation">(</span><span class="token string">"/testweb/test.txt"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 
+<span class="token delimiter">?></span></code></pre>
+<pre class=" language-php"><code class="language-php"><span class="token keyword">Array</span>
+<span class="token punctuation">(</span>
+    <span class="token punctuation">[</span>dirname<span class="token punctuation">]</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token operator">/</span>testweb
+    <span class="token punctuation">[</span>basename<span class="token punctuation">]</span> <span class="token operator">=</span><span class="token operator">></span> test<span class="token punctuation">.</span>txt
+    <span class="token punctuation">[</span>extension<span class="token punctuation">]</span> <span class="token operator">=</span><span class="token operator">></span> txt
+    <span class="token punctuation">[</span>filename<span class="token punctuation">]</span> <span class="token operator">=</span><span class="token operator">></span> test
+<span class="token punctuation">)</span></code></pre>
+<p>直接代码审计就可绕过。利用前面的思想用fox.php. .绕过。或许还有其他方法，自己发散思维。</p>
+<h3 id="0x21"><a href="#0x21" class="headerlink" title="#0x21"></a>#0x21</h3><p>函数知识补充：</p>
+<p>#end(array)</p>
+<p>将内部指针指向数组中的最后一个元素，并输出。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em>array</em></td>
+<td>必需。规定要使用的数组。</td>
+</tr>
+</tbody></table>
+<p>相关的方法：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.runoob.com/php/func-array-current.html">current()</a> - 返回数组中的当前元素的值。</li>
+<li><a target="_blank" rel="noopener" href="https://www.runoob.com/php/func-array-next.html">next()</a> - 将内部指针指向数组中的下一个元素，并输出。</li>
+<li><a target="_blank" rel="noopener" href="https://www.runoob.com/php/func-array-prev.html">prev()</a> - 将内部指针指向数组中的上一个元素，并输出。</li>
+<li><a target="_blank" rel="noopener" href="https://www.runoob.com/php/func-array-reset.html">reset()</a> - 将内部指针指向数组中的第一个元素，并输出。</li>
+<li><a target="_blank" rel="noopener" href="https://www.runoob.com/php/func-array-each.html">each()</a> - 返回当前元素的键名和键值，并将内部指针向前移动。</li>
+</ul>
+<p>#reset(array)</p>
+<p>将内部指针指向数组中的第一个元素，并输出</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em>array</em></td>
+<td>必需。规定要使用的数组。</td>
+</tr>
+</tbody></table>
+<p>这关是修改save_name将其改成一个数组</p>
+<p><img src="/images/16.png"></p>
+<p>因为先验证MIME类型所以需要修改Conent-Type</p>
+<p>然后利用数组方式来绕过后面的验证。</p>
+<p>注：</p>
+<p>#php后面要加/ 不然会生成fox.php.jpg</p>
+<p>#jpg的位置必须&gt;=2即④的位置</p>
+<p>#jpg可以换成gif或者png，但前面不能加其他的东西</p>
+<p>理解不了，可以自己把每个步骤echo出来观察变化。（我是这样做的，帮助自己理解）</p>
+<p>不足之处请见谅！作者是菜鸟。。。</p>
 
             </div>
             <hr/>
