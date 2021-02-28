@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="归档: 2021/1, Keep-Boom">
+    <meta name="keywords" content="归档: 2021/2, Keep-Boom">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>归档: 2021/1 | Keep-Boom</title>
+    <title>归档: 2021/2 | Keep-Boom</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -454,91 +454,43 @@
             
             
             <div class="cd-timeline-img month" data-aos="zoom-in-up">
-                <a href="/archives/2021/01">01</a>
+                <a href="/archives/2021/02">02</a>
             </div>
             
 
             
             <div class="cd-timeline-img day" data-aos="zoom-in-up">
-                <span>26</span>
+                <span>28</span>
             </div>
             <article class="cd-timeline-content" data-aos="fade-up">
                 <div class="article col s12 m6">
                     <div class="card">
-                        <a href="/2021/01/26/XSS%E9%9D%B6%E5%9C%BA%E5%90%88%E9%9B%86/">
+                        <a href="/2021/02/28/%E9%BB%91%E5%AE%A2%E4%B8%9B%E6%9E%97%E4%B9%8B%E6%97%85%E5%B0%8F%E6%B8%B8%E6%88%8F/">
                             <div class="card-image">
                                 
                                 
-                                <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="XSS靶场合集">
+                                <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="黑客丛林之旅小游戏">
                                 
-                                <span class="card-title">XSS靶场合集</span>
+                                <span class="card-title">黑客丛林之旅小游戏</span>
                             </div>
                         </a>
                         <div class="card-content article-content">
                             <div class="summary block-with-text">
                                 
-                                    https：//xss.haozi.me#0x00function render (input) &amp;#123;
-  return &lt;div + input + /div>
-&amp;#125;
-代码分析：无任何过滤。
-&lt;
+                                    #0x01
+所以第一关的密码为go9409。
+#0x02
+删掉onsubmit里的验证东西就行。
+#0x03
+打开存储查看cookie发现是no，改成yes刷新页面。
+#0x04单纯的莫尔斯密码。
+最后拼出来是IAMOK
+#0x05YmFz
                                 
                             </div>
                             <div class="publish-info">
                                 <span class="publish-date">
-                                    <i class="far fa-clock fa-fw icon-date"></i>2021-01-26
-                                </span>
-                                <span class="publish-author">
-                                    
-                                    <i class="fas fa-user fa-fw"></i>
-                                    Chan.Joy
-                                    
-                                </span>
-                            </div>
-                        </div>
-
-                        
-                    </div>
-                </div>
-            </article>
-        </div>
-        
-        <div class="cd-timeline-block">
-
-            
-            
-
-            
-            
-
-            
-            <div class="cd-timeline-img day" data-aos="zoom-in-up">
-                <span>04</span>
-            </div>
-            <article class="cd-timeline-content" data-aos="fade-up">
-                <div class="article col s12 m6">
-                    <div class="card">
-                        <a href="/2021/01/04/DVWA/">
-                            <div class="card-image">
-                                
-                                
-                                <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="DVWA">
-                                
-                                <span class="card-title">DVWA</span>
-                            </div>
-                        </a>
-                        <div class="card-content article-content">
-                            <div class="summary block-with-text">
-                                
-                                    Upload①Low
- &lt;?php   
-     if (isset($_POST['Upload'])) &amp;#123;       
-     $target_path = DVWA_WEB_PAGE_TO_ROOT."h
-                                
-                            </div>
-                            <div class="publish-info">
-                                <span class="publish-date">
-                                    <i class="far fa-clock fa-fw icon-date"></i>2021-01-04
+                                    <i class="far fa-clock fa-fw icon-date"></i>2021-02-28
                                 </span>
                                 <span class="publish-author">
                                     
