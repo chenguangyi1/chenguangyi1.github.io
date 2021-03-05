@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="黑客丛林之旅小游戏, Keep-Boom">
+    <meta name="keywords" content="i春秋XSS-Web, Keep-Boom">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>黑客丛林之旅小游戏 | Keep-Boom</title>
+    <title>i春秋XSS-Web | Keep-Boom</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/23.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/16.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">黑客丛林之旅小游戏</h1>
+                    <h1 class="description center-align post-title">i春秋XSS-Web</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-02-28
+                    2021-03-05
                 </div>
                 
 
@@ -459,32 +459,13 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h5 id="0x01"><a href="#0x01" class="headerlink" title="#0x01"></a>#0x01</h5><p><img src="/images/17.png"></p>
-<p>所以第一关的密码为go9409。</p>
-<h5 id="0x02"><a href="#0x02" class="headerlink" title="#0x02"></a>#0x02</h5><p><img src="/images/18.png"></p>
-<p>删掉onsubmit里的验证东西就行。</p>
-<h5 id="0x03"><a href="#0x03" class="headerlink" title="#0x03"></a>#0x03</h5><p><img src="/images/19.png"></p>
-<p>打开存储查看cookie发现是no，改成yes刷新页面。</p>
-<h5 id="0x04"><a href="#0x04" class="headerlink" title="#0x04"></a>#0x04</h5><p>单纯的莫尔斯密码。</p>
-<p>最后拼出来是IAMOK</p>
-<h5 id="0x05"><a href="#0x05" class="headerlink" title="#0x05"></a>#0x05</h5><p>YmFzZTY0aXNvaw== 明显是base64编码</p>
-<p>解密后为base64isok</p>
-<h5 id="0x06"><a href="#0x06" class="headerlink" title="#0x06"></a>#0x06</h5><p>Oracle 默认连接端口为1521</p>
-<p>MSSQL 默认连接端口为1433</p>
-<p>MySQL 默认连接端口为3306</p>
-<p>加起来就是答案</p>
-<h5 id="0x07"><a href="#0x07" class="headerlink" title="#0x07"></a>#0x07</h5><p>可以还原每一帧写出句子</p>
-<p>8b IGNORE wm UPPERCASE qne WORDS</p>
-<p>大写翻译为忽略大写</p>
-<p>密码为8bwmqne</p>
-<h5 id="0x08"><a href="#0x08" class="headerlink" title="#0x08"></a>#0x08</h5><p>社工学题目，靠猜！我没想出来。</p>
-<p>在作者游戏首页有介绍到他还有个弟弟叫吴其昌</p>
-<p>而游戏网址是fj543，所以密码为fj573。</p>
-<h5 id="0x09"><a href="#0x09" class="headerlink" title="#0x09"></a>#0x09</h5><p><img src="/images/20.png"></p>
-<p>将访问地址修改为level=9token，User-Agent rv:83 改成MSIE 5.43 就行。</p>
-<h5 id="0x0A"><a href="#0x0A" class="headerlink" title="#0x0A"></a>#0x0A</h5><p>下载文件，用压缩包密码爆破工具爆破即可。</p>
-<p>但是打开后，里面的txt文件不能查看，所以用type命令读取文件内容即可。</p>
-<pre><code>type \\. \D:\。。。\aux.10.txt</code></pre>
+                <h4 id="前面几关比较容易，主要是最后一关，过滤了-lt"><a href="#前面几关比较容易，主要是最后一关，过滤了-lt" class="headerlink" title="前面几关比较容易，主要是最后一关，过滤了&lt;"></a>前面几关比较容易，主要是最后一关，过滤了&lt;</h4><p><img src="/images/21.png"></p>
+<p>发现JS框架使用的是 AngularJS 1.4.6版本该版本存在沙箱逃逸。(1.6以下的都存在)。</p>
+<h4 id="验证XSS"><a href="#验证XSS" class="headerlink" title="验证XSS"></a>验证XSS</h4><p>payload：36</p>
+<p>如果回显出36，则说明成功执行。存在XSS(也可以换其他表达式)</p>
+<h4 id="沙箱逃逸"><a href="#沙箱逃逸" class="headerlink" title="沙箱逃逸"></a>沙箱逃逸</h4><pre><code>payload：&#123;&#123;'a'.constructor.prototype.charAt=[].join;$eval('x=1&#125; &#125; &#125;;alert('xss')//');&#125;&#125;</code></pre>
+<p>版本（1.4.0-1.4.9)</p>
+<p>执行成功后，会触发alert(‘xss’)；可以替换为其他的JS函数。</p>
 
             </div>
             <hr/>
@@ -510,7 +491,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2021/02/28/%E9%BB%91%E5%AE%A2%E4%B8%9B%E6%9E%97%E4%B9%8B%E6%97%85%E5%B0%8F%E6%B8%B8%E6%88%8F/">http://example.com/2021/02/28/%E9%BB%91%E5%AE%A2%E4%B8%9B%E6%9E%97%E4%B9%8B%E6%97%85%E5%B0%8F%E6%B8%B8%E6%88%8F/</a>
+                    <a href="http://example.com/2021/03/05/i%E6%98%A5%E7%A7%8BXSS-Web/">http://example.com/2021/03/05/i%E6%98%A5%E7%A7%8BXSS-Web/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -715,9 +696,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2021/03/05/i%E6%98%A5%E7%A7%8BXSS-Web/">
                     <div class="card-image">
@@ -735,9 +717,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-03-05
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-05
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -746,6 +728,7 @@
                         </span>
                     </div>
                 </div>
+
                 
             </div>
         </div>
@@ -756,13 +739,13 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/01/26/XSS%E9%9D%B6%E5%9C%BA%E5%90%88%E9%9B%86/">
+                <a href="/2021/02/28/%E9%BB%91%E5%AE%A2%E4%B8%9B%E6%9E%97%E4%B9%8B%E6%97%85%E5%B0%8F%E6%B8%B8%E6%88%8F/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="XSS靶场合集">
+                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="黑客丛林之旅小游戏">
                         
-                        <span class="card-title">XSS靶场合集</span>
+                        <span class="card-title">黑客丛林之旅小游戏</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -773,7 +756,7 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-01-26
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-02-28
                             </span>
                         <span class="publish-author">
                             
