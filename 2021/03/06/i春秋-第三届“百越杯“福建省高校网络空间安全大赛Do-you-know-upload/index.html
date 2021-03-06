@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="i春秋-百度杯CTF2017二月场爆破-3, Keep-Boom">
+    <meta name="keywords" content="i春秋-第三届“百越杯“福建省高校网络空间安全大赛Do you know upload, Keep-Boom">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>i春秋-百度杯CTF2017二月场爆破-3 | Keep-Boom</title>
+    <title>i春秋-第三届“百越杯“福建省高校网络空间安全大赛Do you know upload | Keep-Boom</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/10.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/9.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">i春秋-百度杯CTF2017二月场爆破-3</h1>
+                    <h1 class="description center-align post-title">i春秋-第三届“百越杯“福建省高校网络空间安全大赛Do you know upload</h1>
                 </div>
             </div>
         </div>
@@ -459,39 +459,16 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <pre class=" language-php"><code class="language-php"><span class="token function">error_reporting</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token function">session_start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token keyword">require</span><span class="token punctuation">(</span><span class="token string">'./flag.php'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">isset</span><span class="token punctuation">(</span><span class="token variable">$_SESSION</span><span class="token punctuation">[</span><span class="token string">'nums'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">&amp;</span><span class="token shell-comment comment">#123; </span>
-    <span class="token variable">$_SESSION</span><span class="token punctuation">[</span><span class="token string">'nums'</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> 
-    <span class="token variable">$_SESSION</span><span class="token punctuation">[</span><span class="token string">'time'</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">time</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 
-    <span class="token variable">$_SESSION</span><span class="token punctuation">[</span><span class="token string">'whoami'</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">'ea'</span><span class="token punctuation">;</span>
-<span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
-
-<span class="token keyword">if</span><span class="token punctuation">(</span><span class="token variable">$_SESSION</span><span class="token punctuation">[</span><span class="token string">'time'</span><span class="token punctuation">]</span><span class="token operator">+</span><span class="token number">120</span><span class="token operator">&lt;</span><span class="token function">time</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">&amp;</span><span class="token shell-comment comment">#123; </span>
-    <span class="token function">session_destroy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
-
-<span class="token variable">$value</span> <span class="token operator">=</span> <span class="token variable">$_REQUEST</span><span class="token punctuation">[</span><span class="token string">'value'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
-<span class="token variable">$str_rand</span> <span class="token operator">=</span> <span class="token function">range</span><span class="token punctuation">(</span><span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token string">'z'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token variable">$str_rands</span> <span class="token operator">=</span> <span class="token variable">$str_rand</span><span class="token punctuation">[</span><span class="token function">mt_rand</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">25</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token variable">$str_rand</span><span class="token punctuation">[</span><span class="token function">mt_rand</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">25</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
-<span class="token keyword">if</span><span class="token punctuation">(</span><span class="token variable">$_SESSION</span><span class="token punctuation">[</span><span class="token string">'whoami'</span><span class="token punctuation">]</span><span class="token operator">==</span><span class="token punctuation">(</span><span class="token variable">$value</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token variable">$value</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token function">substr</span><span class="token punctuation">(</span><span class="token function">md5</span><span class="token punctuation">(</span><span class="token variable">$value</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token operator">==</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token operator">&amp;</span><span class="token shell-comment comment">#123; </span>
-    <span class="token variable">$_SESSION</span><span class="token punctuation">[</span><span class="token string">'nums'</span><span class="token punctuation">]</span><span class="token operator">++</span><span class="token punctuation">;</span>                                                             
-    <span class="token variable">$_SESSION</span><span class="token punctuation">[</span><span class="token string">'whoami'</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token variable">$str_rands</span><span class="token punctuation">;</span> 
-    <span class="token keyword">echo</span> <span class="token variable">$str_rands</span><span class="token punctuation">;</span>                                                                 
-<span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
-
-<span class="token keyword">if</span><span class="token punctuation">(</span><span class="token variable">$_SESSION</span><span class="token punctuation">[</span><span class="token string">'nums'</span><span class="token punctuation">]</span><span class="token operator">>=</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token operator">&amp;</span><span class="token shell-comment comment">#123; </span>
-   <span class="token keyword">echo</span> <span class="token variable">$flag</span><span class="token punctuation">;</span>
-<span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
-<span class="token function">show_source</span><span class="token punctuation">(</span><span class="token constant">__FILE__</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token delimiter">?></span></code></pre>
-<p>代码分析：</p>
-<p>初始nums=0；whoami=ea;</p>
-<p>当whoami == $value[0].$value[1] 且substr(md5($value),5,4)==0时，nums++,whoami重新生成，会回显出新的whoami。</p>
-<p>当nums&gt;=10，回显出flag.</p>
-<p>#注：当md5一个数组时，返回null，null==0成立。而前面whoami只需每次修改$value[0]和$value[1]的值即可。</p>
-<p>payload：?value[0]=e&amp;value[1]=a;每次修改value[0]和value[1]的值即可。</p>
+                <p>先上传小马php文件，提示文件类型不对。</p>
+<p>用burp截包，修改类型为image/jpeg上传成功。</p>
+<p>连接上菜刀，发现没有flag.php。但是往上一层发现有个config.php文件</p>
+<p><img src="/images/22.png"></p>
+<p><img src="/images/23.png"></p>
+<p>发现有数据库连接用户名，密码。</p>
+<p>连接上数据库</p>
+<p><img src="/images/24.png"></p>
+<p>发现有个flag表</p>
+<p>select flag from flag 即可获得flag</p>
 
             </div>
             <hr/>
@@ -517,7 +494,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2021/03/06/i%E6%98%A5%E7%A7%8B-%E7%99%BE%E5%BA%A6%E6%9D%AFCTF2017%E4%BA%8C%E6%9C%88%E5%9C%BA%E7%88%86%E7%A0%B4-3/">http://example.com/2021/03/06/i%E6%98%A5%E7%A7%8B-%E7%99%BE%E5%BA%A6%E6%9D%AFCTF2017%E4%BA%8C%E6%9C%88%E5%9C%BA%E7%88%86%E7%A0%B4-3/</a>
+                    <a href="http://example.com/2021/03/06/i%E6%98%A5%E7%A7%8B-%E7%AC%AC%E4%B8%89%E5%B1%8A%E2%80%9C%E7%99%BE%E8%B6%8A%E6%9D%AF%E2%80%9C%E7%A6%8F%E5%BB%BA%E7%9C%81%E9%AB%98%E6%A0%A1%E7%BD%91%E7%BB%9C%E7%A9%BA%E9%97%B4%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9BDo-you-know-upload/">http://example.com/2021/03/06/i%E6%98%A5%E7%A7%8B-%E7%AC%AC%E4%B8%89%E5%B1%8A%E2%80%9C%E7%99%BE%E8%B6%8A%E6%9D%AF%E2%80%9C%E7%A6%8F%E5%BB%BA%E7%9C%81%E9%AB%98%E6%A0%A1%E7%BD%91%E7%BB%9C%E7%A9%BA%E9%97%B4%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9BDo-you-know-upload/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -722,9 +699,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2021/03/06/i%E6%98%A5%E7%A7%8B-%E7%AC%AC%E4%B8%89%E5%B1%8A%E2%80%9C%E7%99%BE%E8%B6%8A%E6%9D%AF%E2%80%9C%E7%A6%8F%E5%BB%BA%E7%9C%81%E9%AB%98%E6%A0%A1%E7%BD%91%E7%BB%9C%E7%A9%BA%E9%97%B4%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9BDo-you-know-upload/">
                     <div class="card-image">
@@ -742,9 +720,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-03-06
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-06
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -753,6 +731,7 @@
                         </span>
                     </div>
                 </div>
+
                 
             </div>
         </div>
@@ -763,13 +742,13 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/03/05/i%E6%98%A5%E7%A7%8BXSS-Web/">
+                <a href="/2021/03/06/i%E6%98%A5%E7%A7%8B-%E7%99%BE%E5%BA%A6%E6%9D%AFCTF2017%E4%BA%8C%E6%9C%88%E5%9C%BA%E7%88%86%E7%A0%B4-3/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="i春秋XSS-Web">
+                        <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="i春秋-百度杯CTF2017二月场爆破-3">
                         
-                        <span class="card-title">i春秋XSS-Web</span>
+                        <span class="card-title">i春秋-百度杯CTF2017二月场爆破-3</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -780,7 +759,7 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-05
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-06
                             </span>
                         <span class="publish-author">
                             
