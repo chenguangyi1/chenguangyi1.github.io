@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="SQL绕过姿势, Keep-Boom">
+    <meta name="keywords" content="百度杯-code, Keep-Boom">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>SQL绕过姿势 | Keep-Boom</title>
+    <title>百度杯-code | Keep-Boom</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/16.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/11.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">SQL绕过姿势</h1>
+                    <h1 class="description center-align post-title">百度杯-code</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-03-09
+                    2021-03-10
                 </div>
                 
 
@@ -459,9 +459,131 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h4 id="逗号绕过"><a href="#逗号绕过" class="headerlink" title="逗号绕过"></a>逗号绕过</h4><p>利用join</p>
-<p>select 1,2,3 == select * from (select 1)a join (select 2)b join (select 3)c</p>
-<p>题目练习：百度杯9月份sqli（春秋平台）</p>
+                <p>f12看到base64编码后的内容，尝试解码，发现不太对。看了看链接，应该是文件包含，尝试包含下index.php，查看源码。</p>
+<p>按f12出现base64编码后的源码，解码得</p>
+<pre class=" language-php"><code class="language-php"><span class="token delimiter">&lt;?php</span>
+<span class="token comment" spellcheck="true">/**
+
+ * Created by PhpStorm.
+ * Date: 2015/11/16
+ * Time: 1:31
+   */</span>
+   <span class="token function">header</span><span class="token punctuation">(</span><span class="token string">'content-type:text/html;charset=utf-8'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span> <span class="token function">isset</span><span class="token punctuation">(</span><span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'jpg'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+   <span class="token function">header</span><span class="token punctuation">(</span><span class="token string">'Refresh:0;url=./index.php?jpg=hei.jpg'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token variable">$file</span> <span class="token operator">=</span> <span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'jpg'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+   <span class="token keyword">echo</span> <span class="token string">'&lt;title>file:'</span><span class="token punctuation">.</span><span class="token variable">$file</span><span class="token punctuation">.</span><span class="token string">'&lt;/title>'</span><span class="token punctuation">;</span>
+   <span class="token variable">$file</span> <span class="token operator">=</span> <span class="token function">preg_replace</span><span class="token punctuation">(</span><span class="token string">"/[^a-zA-Z0-9.]+/"</span><span class="token punctuation">,</span><span class="token string">""</span><span class="token punctuation">,</span> <span class="token variable">$file</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token variable">$file</span> <span class="token operator">=</span> <span class="token function">str_replace</span><span class="token punctuation">(</span><span class="token string">"config"</span><span class="token punctuation">,</span><span class="token string">"_"</span><span class="token punctuation">,</span> <span class="token variable">$file</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token variable">$txt</span> <span class="token operator">=</span> <span class="token function">base64_encode</span><span class="token punctuation">(</span><span class="token function">file_get_contents</span><span class="token punctuation">(</span><span class="token variable">$file</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">echo</span> <span class="token string">"&lt;img src='data:image/gif;base64,"</span><span class="token punctuation">.</span><span class="token variable">$txt</span><span class="token punctuation">.</span><span class="token string">"'>&lt;/img>"</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">/*
+
+ * Can you find the flag file?
+   *
+    */</span>
+
+<span class="token delimiter">?></span></code></pre>
+<p>没得到啥有用的内容，看了大佬的wp。原来提示在 Created by PhpStorm.</p>
+<p>PhpStorm的一个特点，因为由phpstorm创建的文件在.idea目录下面自动生成一个workspace.xml 里面包含了网站文件的结构各种信息 </p>
+<p>访问url/.idea/workspace.xml 发现有fl3g_ichuqiu.php  config.php 。</p>
+<p>index.php里将config过滤成_，所以包含jpg=fl3gconfigichuqiu.php解码得</p>
+<pre class=" language-php"><code class="language-php"><span class="token delimiter">&lt;?php</span>
+<span class="token comment" spellcheck="true">/**
+
+ * Created by PhpStorm.
+ * Date: 2015/11/16
+ * Time: 1:31
+   */</span>
+   <span class="token function">error_reporting</span><span class="token punctuation">(</span><span class="token constant">E_ALL</span> <span class="token operator">||</span> <span class="token operator">~</span><span class="token constant">E_NOTICE</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token keyword">include</span><span class="token punctuation">(</span><span class="token string">'config.php'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token keyword">function</span> <span class="token function">random</span><span class="token punctuation">(</span><span class="token variable">$length</span><span class="token punctuation">,</span> <span class="token variable">$chars</span> <span class="token operator">=</span> <span class="token string">'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz'</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+   <span class="token variable">$hash</span> <span class="token operator">=</span> <span class="token string">''</span><span class="token punctuation">;</span>
+   <span class="token variable">$max</span> <span class="token operator">=</span> <span class="token function">strlen</span><span class="token punctuation">(</span><span class="token variable">$chars</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span>
+   <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token variable">$i</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> <span class="token variable">$i</span> <span class="token operator">&lt;</span> <span class="token variable">$length</span><span class="token punctuation">;</span> <span class="token variable">$i</span><span class="token operator">++</span><span class="token punctuation">)</span>    <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+       <span class="token variable">$hash</span> <span class="token punctuation">.</span><span class="token operator">=</span> <span class="token variable">$chars</span><span class="token punctuation">[</span><span class="token function">mt_rand</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token variable">$max</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+   <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+   <span class="token keyword">return</span> <span class="token variable">$hash</span><span class="token punctuation">;</span>
+   <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+
+<span class="token keyword">function</span> <span class="token function">encrypt</span><span class="token punctuation">(</span><span class="token variable">$txt</span><span class="token punctuation">,</span><span class="token variable">$key</span><span class="token punctuation">)</span><span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+    <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token variable">$i</span><span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span><span class="token variable">$i</span><span class="token operator">&lt;</span><span class="token function">strlen</span><span class="token punctuation">(</span><span class="token variable">$txt</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token variable">$i</span><span class="token operator">++</span><span class="token punctuation">)</span><span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+        <span class="token variable">$tmp</span> <span class="token punctuation">.</span><span class="token operator">=</span> <span class="token function">chr</span><span class="token punctuation">(</span><span class="token function">ord</span><span class="token punctuation">(</span><span class="token variable">$txt</span><span class="token punctuation">[</span><span class="token variable">$i</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">+</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+    <span class="token variable">$txt</span> <span class="token operator">=</span> <span class="token variable">$tmp</span><span class="token punctuation">;</span>
+    <span class="token variable">$rnd</span><span class="token operator">=</span><span class="token function">random</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$key</span><span class="token operator">=</span><span class="token function">md5</span><span class="token punctuation">(</span><span class="token variable">$rnd</span><span class="token punctuation">.</span><span class="token variable">$key</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$s</span><span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token variable">$i</span><span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span><span class="token variable">$i</span><span class="token operator">&lt;</span><span class="token function">strlen</span><span class="token punctuation">(</span><span class="token variable">$txt</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token variable">$i</span><span class="token operator">++</span><span class="token punctuation">)</span><span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token variable">$s</span> <span class="token operator">==</span> <span class="token number">32</span><span class="token punctuation">)</span> <span class="token variable">$s</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token variable">$ttmp</span> <span class="token punctuation">.</span><span class="token operator">=</span> <span class="token variable">$txt</span><span class="token punctuation">[</span><span class="token variable">$i</span><span class="token punctuation">]</span> <span class="token operator">^</span> <span class="token variable">$key</span><span class="token punctuation">[</span><span class="token operator">++</span><span class="token variable">$s</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+    <span class="token keyword">return</span> <span class="token function">base64_encode</span><span class="token punctuation">(</span><span class="token variable">$rnd</span><span class="token punctuation">.</span><span class="token variable">$ttmp</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+<span class="token keyword">function</span> <span class="token function">decrypt</span><span class="token punctuation">(</span><span class="token variable">$txt</span><span class="token punctuation">,</span><span class="token variable">$key</span><span class="token punctuation">)</span><span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+    <span class="token variable">$txt</span><span class="token operator">=</span><span class="token function">base64_decode</span><span class="token punctuation">(</span><span class="token variable">$txt</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$rnd</span> <span class="token operator">=</span> <span class="token function">substr</span><span class="token punctuation">(</span><span class="token variable">$txt</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$txt</span> <span class="token operator">=</span> <span class="token function">substr</span><span class="token punctuation">(</span><span class="token variable">$txt</span><span class="token punctuation">,</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$key</span><span class="token operator">=</span><span class="token function">md5</span><span class="token punctuation">(</span><span class="token variable">$rnd</span><span class="token punctuation">.</span><span class="token variable">$key</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token variable">$s</span><span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token variable">$i</span><span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span><span class="token variable">$i</span><span class="token operator">&lt;</span><span class="token function">strlen</span><span class="token punctuation">(</span><span class="token variable">$txt</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token variable">$i</span><span class="token operator">++</span><span class="token punctuation">)</span><span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token variable">$s</span> <span class="token operator">==</span> <span class="token number">32</span><span class="token punctuation">)</span> <span class="token variable">$s</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token variable">$tmp</span> <span class="token punctuation">.</span><span class="token operator">=</span> <span class="token variable">$txt</span><span class="token punctuation">[</span><span class="token variable">$i</span><span class="token punctuation">]</span><span class="token operator">^</span><span class="token variable">$key</span><span class="token punctuation">[</span><span class="token operator">++</span><span class="token variable">$s</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+    <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token variable">$i</span><span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span><span class="token variable">$i</span><span class="token operator">&lt;</span><span class="token function">strlen</span><span class="token punctuation">(</span><span class="token variable">$tmp</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token variable">$i</span><span class="token operator">++</span><span class="token punctuation">)</span><span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+        <span class="token variable">$tmp1</span> <span class="token punctuation">.</span><span class="token operator">=</span> <span class="token function">chr</span><span class="token punctuation">(</span><span class="token function">ord</span><span class="token punctuation">(</span><span class="token variable">$tmp</span><span class="token punctuation">[</span><span class="token variable">$i</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+    <span class="token keyword">return</span> <span class="token variable">$tmp1</span><span class="token punctuation">;</span>
+
+<span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+<span class="token variable">$username</span> <span class="token operator">=</span> <span class="token function">decrypt</span><span class="token punctuation">(</span><span class="token variable">$_COOKIE</span><span class="token punctuation">[</span><span class="token string">'user'</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token variable">$key</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token variable">$username</span> <span class="token operator">==</span> <span class="token string">'system'</span><span class="token punctuation">)</span><span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+    <span class="token keyword">echo</span> <span class="token variable">$flag</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span><span class="token shell-comment comment">#125;else&amp;#123;</span>
+    <span class="token function">setcookie</span><span class="token punctuation">(</span><span class="token string">'user'</span><span class="token punctuation">,</span><span class="token function">encrypt</span><span class="token punctuation">(</span><span class="token string">'guest'</span><span class="token punctuation">,</span><span class="token variable">$key</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">echo</span> <span class="token string">"╮(╯▽╰)╭"</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+<span class="token delimiter">?></span></code></pre>
+<p>不具体分析了。就是要利用guest的cooike 得出$key,$rnd的值，推出system的base64cookie。</p>
+<p>脚本：</p>
+<pre><code>&lt;?php
+
+$txt = &quot;guest&quot;;
+for($i = 0;$i &lt; strlen($txt);$i++)&#123;
+  $txt[$i] = chr(ord($txt[$i]) + 10);
+&#125;
+
+$cookie_guest = &quot;emVTQkZHCh8d&quot;;
+$cookie_guest = base64_decode($cookie_guest);
+$rnd = substr($cookie_guest,0,4);
+$ttmp = substr($cookie_guest,4);
+$key = &#39;&#39;;
+for($i = 0;$i &lt; strlen($txt);$i++)&#123;
+  $key .= ($ttmp[$i] ^ $txt[$i]);
+&#125;
+
+$tmp1 = &quot;system&quot;;
+for($i = 0;$i &lt; strlen($tmp1);$i++)&#123;
+  $tmp[$i] = chr(ord($tmp1[$i]) + 10);
+&#125;
+
+$md5 = &#39;ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz&#39;;
+for($i = 0; $i &lt; strlen($md5);$i++)&#123;
+  $key_new = $key.$md5[$i];
+  $cookie_system = &#39;&#39;;
+  for($j = 0;$j &lt; strlen($tmp1);$j++)&#123;
+​    $cookie_system .= ($tmp[$j] ^ $key_new[$j]);
+  &#125;
+  $cookie_system = base64_encode($rnd.$cookie_system);
+  echo $cookie_system;
+  echo &quot;&lt;br&gt;&quot;;
+&#125;
+
+?&gt; </code></pre>
+<p>最后用bp爆破下就可以了。</p>
 
             </div>
             <hr/>
@@ -487,7 +609,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2021/03/09/SQL%E7%BB%95%E8%BF%87%E5%A7%BF%E5%8A%BF/">http://example.com/2021/03/09/SQL%E7%BB%95%E8%BF%87%E5%A7%BF%E5%8A%BF/</a>
+                    <a href="http://example.com/2021/03/10/%E7%99%BE%E5%BA%A6%E6%9D%AF-code/">http://example.com/2021/03/10/%E7%99%BE%E5%BA%A6%E6%9D%AF-code/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -692,9 +814,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2021/03/10/%E7%99%BE%E5%BA%A6%E6%9D%AF-code/">
                     <div class="card-image">
@@ -712,9 +835,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-03-10
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-10
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -723,6 +846,7 @@
                         </span>
                     </div>
                 </div>
+
                 
             </div>
         </div>
@@ -733,13 +857,13 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/03/08/%E7%99%BE%E5%BA%A6%E6%9D%AF9%E6%9C%88%E4%BB%BDYeserCMS/">
+                <a href="/2021/03/09/SQL%E7%BB%95%E8%BF%87%E5%A7%BF%E5%8A%BF/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="百度杯9月份YeserCMS">
+                        <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="SQL绕过姿势">
                         
-                        <span class="card-title">百度杯9月份YeserCMS</span>
+                        <span class="card-title">SQL绕过姿势</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -750,7 +874,7 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-08
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-09
                             </span>
                         <span class="publish-author">
                             
