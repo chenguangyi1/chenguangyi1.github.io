@@ -535,6 +535,89 @@ echo&quot;public!&quot;;
 <p>G 表示GET  P表示POST  C表示COOKIE</p>
 <p>payload</p>
 <pre><code>?auth=1</code></pre>
+<p><strong>绕过过滤的空白字符</strong></p>
+<pre><code>&lt;?php
+highlight_file(__FILE__);
+$info = &quot;&quot;; 
+$req = [];
+
+ini_set(&quot;display_error&quot;, false); 
+error_reporting(0); 
+
+if(!isset($_GET[&#39;number&#39;]))&#123;
+   header(&quot;hint:26966dc52e85af40f59b4fe73d8c323a.txt&quot;); 
+
+   die(&quot;have a fun!!&quot;); 
+
+&#125;
+
+foreach([$_GET, $_POST] as $global_var) &#123;  
+    foreach($global_var as $key =&gt; $value) &#123; 
+        $value = trim($value); 
+        is_string($value) &amp;&amp; $req[$key] = addslashes($value); 
+    &#125; 
+&#125; 
+
+
+function is_palindrome_number($number) &#123; 
+    $number = strval($number); 
+    $i = 0; 
+    $j = strlen($number) - 1;
+    var_dump($number);
+    echo &quot;&lt;br/&gt;&quot;;
+    echo $number[$i];
+    echo &quot;&lt;br/&gt;&quot;;
+    echo $number[$j];
+    while($i &lt; $j) &#123; 
+        if($number[$i] !== $number[$j]) &#123; 
+            return false; 
+        &#125; 
+        $i++; 
+        $j--; 
+    &#125; 
+    return true; 
+&#125; 
+
+if(is_numeric($_REQUEST[&#39;number&#39;])) 
+&#123;
+
+   $info=&quot;sorry, you cann&#39;t input a number!&quot;;
+
+&#125;
+elseif($req[&#39;number&#39;]!=strval(intval($req[&#39;number&#39;]))) 
+&#123;
+
+     $info = &quot;number must be equal to it&#39;s integer!! &quot;;  
+
+&#125;
+else
+&#123;
+
+     $value1 = intval($req[&quot;number&quot;]);
+     $value2 = intval(strrev($req[&quot;number&quot;]));  
+
+     if($value1!=$value2)&#123;
+          $info=&quot;no, this is not a palindrome number!&quot;;
+     &#125;
+     else
+     &#123;
+
+          if(is_palindrome_number($req[&quot;number&quot;]))&#123;
+              $info = &quot;nice! &#123;$value1&#125; is a palindrome number!&quot;; 
+          &#125;
+          else
+          &#123;
+             $info=&quot;flag&#123;...&#125;&quot;;
+          &#125;
+     &#125;
+
+&#125;
+
+echo $info;</code></pre>
+<p>用%00绕过is_numeric</p>
+<p>用%0c或者%2b绕过is_palindrome_number()函数</p>
+<p>payload</p>
+<pre><code>?number=%00%0c1</code></pre>
 
             </div>
             <hr/>
@@ -765,18 +848,17 @@ echo&quot;public!&quot;;
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;本篇
-            </div>
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2021/04/19/PHP%E5%8F%98%E9%87%8F%E8%A6%86%E7%9B%96/">
+                <a href="/2021/04/21/MD5%E7%A2%B0%E6%92%9E/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="PHP变量覆盖">
+                        <img src="/medias/featureimages/20.jpg" class="responsive-img" alt="MD5碰撞">
                         
-                        <span class="card-title">PHP变量覆盖</span>
+                        <span class="card-title">MD5碰撞</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -786,9 +868,9 @@ echo&quot;public!&quot;;
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-04-19
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2021-04-21
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -797,7 +879,6 @@ echo&quot;public!&quot;;
                         </span>
                     </div>
                 </div>
-
                 
             </div>
         </div>

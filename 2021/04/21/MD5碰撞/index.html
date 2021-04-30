@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="SQL绕过姿势, Keep-Boom">
+    <meta name="keywords" content="MD5碰撞, Keep-Boom">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>SQL绕过姿势 | Keep-Boom</title>
+    <title>MD5碰撞 | Keep-Boom</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/16.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/20.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">SQL绕过姿势</h1>
+                    <h1 class="description center-align post-title">MD5碰撞</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-03-09
+                    2021-04-21
                 </div>
                 
 
@@ -459,69 +459,32 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p><strong>逗号绕过</strong></p>
-<p>利用join</p>
-<p>select 1,2,3 == select * from (select 1)a join (select 2)b join (select 3)c</p>
-<p>题目练习：百度杯9月份sqli（春秋平台）</p>
-<p>*<em>select * from ‘admin’ where password=md5($pass,true)*</em></p>
-<pre><code>ffifdyop
-
-129581926211651571912466741651878684928</code></pre>
-<pre><code>echo md5(&#39;ffifdyop&#39;,true);
-//&#39;or&#39;6�]��!r,��b
-select * from &#39;admin&#39; where password=md5($pass,true);
-//select * from &#39;admin&#39; where password=&#39;&#39;or&#39;6.......&#39;</code></pre>
-<p><strong>[GYCTF2020]Blacklist堆叠注入</strong></p>
-<p><img src="/images/63.png"></p>
-<p>比强网杯过滤更严格。</p>
-<p>官方payload：</p>
-<pre><code>1&#39;;handler FlagHere open;handler FlagHere read first;handler FlagHere close;#</code></pre>
-<p>HANDLER … OPEN语句打开一个表，使其可以使用后续HANDLER … READ语句访问，该表对象未被其他会话共享，并且在会话调用HANDLER … CLOSE或会话终止之前不会关闭</p>
-<pre><code>HANDLER tbl_name READ index_name &#123; FIRST | NEXT | PREV | LAST </code></pre>
-<p>通过HANDLER tbl_name OPEN打开一张表，无返回结果，实际上我们在这里声明了一个名为tb1_name的句柄。<br>通过HANDLER tbl_name READ FIRST获取句柄的第一行，通过READ NEXT依次获取其它行。最后一行执行之后再执行NEXT会返回一个空的结果。<br>通过HANDLER tbl_name CLOSE来关闭打开的句柄。通过索引去查看的话可以按照一定的顺序，获取表中的数据。<br>通过HANDLER tbl_name READ index_name FIRST，获取句柄第一行（索引最小的一行），NEXT获取下一行，PREV获取前一行，LAST获取最后一行（索引最大的一行）</p>
-<p><strong>ctfshow_web10虚拟表绕过</strong></p>
-<p>源码</p>
-<pre><code>&lt;?php
-        $flag=&quot;&quot;;
-        function replaceSpecialChar($strParam)&#123;
-             $regex = &quot;/(select|from|where|join|sleep|and|\s|union|,)/i&quot;;
-             return preg_replace($regex,&quot;&quot;,$strParam);
-        &#125;
-        if (!$con)
-        &#123;
-            die(&#39;Could not connect: &#39; . mysqli_error());
-        &#125;
-        if(strlen($username)!=strlen(replaceSpecialChar($username)))&#123;
-            die(&quot;sql inject error&quot;);
-        &#125;
-        if(strlen($password)!=strlen(replaceSpecialChar($password)))&#123;
-            die(&quot;sql inject error&quot;);
-        &#125;
-        $sql=&quot;select * from user where username = &#39;$username&#39;&quot;;
-        $result=mysqli_query($con,$sql);
-            if(mysqli_num_rows($result)&gt;0)&#123;
-                    while($row=mysqli_fetch_assoc($result))&#123;
-                        if($password==$row[&#39;password&#39;])&#123;
-                            echo &quot;登陆成功&lt;br&gt;&quot;;
-                            echo $flag;
-                        &#125;
-
-                     &#125;
-            &#125;
-    ?&gt;</code></pre>
-<p>利用虚拟表绕过password检测</p>
-<p>使用group by以后会按照password中的值进行排列</p>
-<p><img src="/images/84.png"></p>
-<p>（group by 后可以跟with rollup，表示在进行分组统计的基础上再次进行汇总统计）</p>
-<p><img src="/images/85.png"></p>
-<p>结果中将会多出一行，其中password列为null，count（*）为统计和。</p>
-<p>因为加入with rollup后 password有一行为NULL，我们只要输入空密码使得（NULL==NULL）即可满足<code>$password==$row[&#39;password&#39;]</code>的限制成功登陆。</p>
-<p>payload</p>
-<pre><code>username=admin&#39;/**/or/**/1=1/**/group/**/by/**/password/**/with/**/rollup#&amp;password=</code></pre>
-<p><strong>ctfshow_web14  information_schema.tables 绕过</strong></p>
-<p>反引号：它是为了区分MYSQL的保留字与普通字符而引入的符号</p>
-<pre><code>例如information_schema.tables和information_schema.`tables`都可以使用</code></pre>
-<p>再利用 load_file(‘path’)读取文件</p>
+                <p>PHP在处理哈希字符串时，</p>
+<p>会利用”**!=<strong>”或”</strong>==<strong>”来对哈希值进行比较，它把每一个以”</strong>0E<strong>”开头的哈希值都解释为</strong>0<strong>，所以如果两个不同的密码经过哈希以后，其哈希值都是以”</strong>0E**”开头的，那么PHP将会认为他们相同，都是0。</p>
+<p>“<strong>===</strong>“和”<strong>!==</strong>“即strict比较符，只有在类型相同时才相等。”<strong>==</strong>“和”<strong>!=</strong>“即non-strict比较符，会在类型转换后进行比较。</p>
+<p>此外0 == 字符会被认为是正确的，可以绕过验证</p>
+<p><strong>字母数字混合类（MD5值）：</strong></p>
+<p>s878926199a</p>
+<p>0e545993274517709034328855841020</p>
+<p>s155964671a</p>
+<p>0e342768416822451524974117254469</p>
+<p>s214587387a</p>
+<p>0e848240448830537924465865611904</p>
+<p>s214587387a</p>
+<p>0e848240448830537924465865611904 </p>
+<p><strong>大写字母类：</strong></p>
+<p>QLTHNDT</p>
+<p>0e405967825401955372549139051580 </p>
+<p>QNKCDZO</p>
+<p>0e830400451993494058024219903391 </p>
+<p>EEIZDOI</p>
+<p>0e782601363539291779881938479162</p>
+<p><strong>纯数字类：</strong></p>
+<p>240610708</p>
+<p>0e462097431906509019562988736854</p>
+<p><strong>题目 ctfshow_web5</strong></p>
+<p>参考文章</p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/echoDetected/p/12309225.html">https://www.cnblogs.com/echoDetected/p/12309225.html</a></p>
 
             </div>
             <hr/>
@@ -547,7 +510,7 @@ select * from &#39;admin&#39; where password=md5($pass,true);
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2021/03/09/SQL%E7%BB%95%E8%BF%87%E5%A7%BF%E5%8A%BF/">http://example.com/2021/03/09/SQL%E7%BB%95%E8%BF%87%E5%A7%BF%E5%8A%BF/</a>
+                    <a href="http://example.com/2021/04/21/MD5%E7%A2%B0%E6%92%9E/">http://example.com/2021/04/21/MD5%E7%A2%B0%E6%92%9E/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -752,54 +715,18 @@ select * from &#39;admin&#39; where password=md5($pass,true);
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2021/03/10/%E7%99%BE%E5%BA%A6%E6%9D%AF-code/">
+                <a href="/2021/04/21/MD5%E7%A2%B0%E6%92%9E/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="百度杯-code">
+                        <img src="/medias/featureimages/20.jpg" class="responsive-img" alt="MD5碰撞">
                         
-                        <span class="card-title">百度杯-code</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            
-                        
-                    </div>
-                    <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-03-10
-                        </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-user fa-fw"></i>
-                            Chan.Joy
-                            
-                        </span>
-                    </div>
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2021/03/08/%E7%99%BE%E5%BA%A6%E6%9D%AF9%E6%9C%88%E4%BB%BDYeserCMS/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="百度杯9月份YeserCMS">
-                        
-                        <span class="card-title">百度杯9月份YeserCMS</span>
+                        <span class="card-title">MD5碰撞</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -810,7 +737,45 @@ select * from &#39;admin&#39; where password=md5($pass,true);
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-08
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-04-21
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            Chan.Joy
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2021/04/19/PHP%E5%8F%98%E9%87%8F%E8%A6%86%E7%9B%96/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="PHP变量覆盖">
+                        
+                        <span class="card-title">PHP变量覆盖</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-04-19
                             </span>
                         <span class="publish-author">
                             
