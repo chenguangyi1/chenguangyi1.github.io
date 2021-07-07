@@ -551,6 +551,85 @@
             
             <div class="article col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
+                    <a href="/2021/07/07/php7%E5%86%85%E5%AD%98%E9%94%99%E8%AF%AFLFI/">
+                        <div class="card-image">
+                            
+                            
+                            <img src="/medias/featureimages/15.jpg" class="responsive-img" alt="php7内存错误LFI">
+                            
+                            <span class="card-title">php7内存错误LFI</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary block-with-text">
+                            
+                                原理
+原理利用payload使服务器发生内存错误，此时同时上传一个文件(经过30秒左右才会被删除)
+临时文件生成在upload_tmp_dir指定路径下
+包含临时文件使之生成一个新的木马文件放在tmp目录下
+exp
+# -*- coding
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-07-07
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fas fa-user fa-fw"></i>
+                                Chan.Joy
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/2021/05/27/cve-2018-12613-PhpMyadmin%E5%90%8E%E5%8F%B0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB/">
+                        <div class="card-image">
+                            
+                            
+                            <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="cve-2018-12613-PhpMyadmin后台文件包含">
+                            
+                            <span class="card-title">cve-2018-12613-PhpMyadmin后台文件包含</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary block-with-text">
+                            
+                                cve-2018-12613-PhpMyadmin后台文件包含
+影响版本 4.8.x &lt; phpMyAdmin &lt;4.8.2
+CVE-2018-12613
+漏洞描述
+An issue was discovered in phpM
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-05-27
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fas fa-user fa-fw"></i>
+                                Chan.Joy
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
                     <a href="/2021/05/25/php%E7%89%B9%E6%80%A7/">
                         <div class="card-image">
                             
@@ -564,10 +643,12 @@
                     <div class="card-content article-content">
                         <div class="summary block-with-text">
                             
-                                intval
-如果 base 是 0，通过检测 var 的格式来决定使用的进制：
-如果字符串包括了 &quot;0x&quot; (或 &quot;0X&quot;) 的前缀，使用 16 进制 (hex)；否则，
-如果字符串以 &quot;
+                                basename
+$path=&#39;/source/index.php&#39;;
+var_dump(basename($path));
+=&gt;index.php
+
+$path=&#39;/source/index.php/&#39
                             
                         </div>
                         <div class="publish-info">
@@ -851,87 +932,6 @@ if(isset($gift))&#12
                         <div class="publish-info">
                             <span class="publish-date">
                                 <i class="far fa-clock fa-fw icon-date"></i>2021-04-19
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-user fa-fw"></i>
-                                Chan.Joy
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2021/04/15/ssrf%E7%BB%95%E8%BF%87%E6%8A%80%E5%B7%A7/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/13.jpg" class="responsive-img" alt="ssrf绕过技巧">
-                            
-                            <span class="card-title">ssrf绕过技巧</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                [第二章 web进阶]SSRF Training
-源码
-&lt;?php 
-highlight_file(__FILE__);//用PHP高亮显示当前的文件
-function check_inner_ip($url) //获取url的域名，
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-04-15
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-user fa-fw"></i>
-                                Chan.Joy
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2021/04/12/TP5-1%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="TP5.1反序列化漏洞">
-                            
-                            <span class="card-title">TP5.1反序列化漏洞</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                s
-环境搭建
-BUU-N1BOOK[第三章 web进阶]thinkphp反序列化利用链 ，源码下载。
-也可以自己百度TP5.1.x的源码
-PHP版本7.0以上
-修改代码
-&lt;?php
-namespace app\index\contro
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-04-12
                             </span>
                             <span class="publish-author">
                                 
