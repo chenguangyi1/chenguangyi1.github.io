@@ -461,13 +461,13 @@
             <div id="articleContent">
                 <h4 id="①通达OA版本-lt-v11-5-amp-11-7（可shell）任意用户登陆漏洞"><a href="#①通达OA版本-lt-v11-5-amp-11-7（可shell）任意用户登陆漏洞" class="headerlink" title="①通达OA版本&lt;v11.5&amp;11.7（可shell）任意用户登陆漏洞"></a>①通达OA版本&lt;v11.5&amp;11.7（可shell）任意用户登陆漏洞</h4><h5 id="影响版本："><a href="#影响版本：" class="headerlink" title="影响版本："></a>影响版本：</h5><p>通达OA &lt; V 11.3 </p>
 <p>通达OA 2017</p>
-<h5 id="利用过程"><a href="#利用过程" class="headerlink" title="利用过程"></a>利用过程</h5><h5 id="1-访问ispirit-login-code-php-获取codeuid"><a href="#1-访问ispirit-login-code-php-获取codeuid" class="headerlink" title="1.访问ispirit/login_code.php 获取codeuid"></a>1.访问ispirit/login_code.php 获取codeuid</h5><p><img src="D:\boke\blog\source\images\115.png"></p>
+<h5 id="利用过程"><a href="#利用过程" class="headerlink" title="利用过程"></a>利用过程</h5><h5 id="1-访问ispirit-login-code-php-获取codeuid"><a href="#1-访问ispirit-login-code-php-获取codeuid" class="headerlink" title="1.访问ispirit/login_code.php 获取codeuid"></a>1.访问ispirit/login_code.php 获取codeuid</h5><p><img src="/images/115.png"></p>
 <h5 id="2-访问-logincheck-code-php，截包，修改"><a href="#2-访问-logincheck-code-php，截包，修改" class="headerlink" title="2.访问/logincheck_code.php，截包，修改"></a>2.访问/logincheck_code.php，截包，修改</h5><p>请求方式为POST</p>
 <p>Cookie:清空才行</p>
 <p>POST数据：UID=1&amp;CODEID={5123C340-BA60-3BBA-F600-9D04B54907DF}</p>
 <p>因为管理员UID为1，所以这边设成1。</p>
-<p><img src="D:\boke\blog\source\images\116.png"></p>
-<h5 id="3-响应包status为1才行，PHPSESSID就是凭证"><a href="#3-响应包status为1才行，PHPSESSID就是凭证" class="headerlink" title="3.响应包status为1才行，PHPSESSID就是凭证"></a>3.响应包status为1才行，PHPSESSID就是凭证</h5><p><img src="D:\boke\blog\source\images\117.png"></p>
+<p><img src="/images/116.png"></p>
+<h5 id="3-响应包status为1才行，PHPSESSID就是凭证"><a href="#3-响应包status为1才行，PHPSESSID就是凭证" class="headerlink" title="3.响应包status为1才行，PHPSESSID就是凭证"></a>3.响应包status为1才行，PHPSESSID就是凭证</h5><p><img src="/images/117.png"></p>
 <h5 id="4-直接访问general-index-php就可以直接登入后台"><a href="#4-直接访问general-index-php就可以直接登入后台" class="headerlink" title="4.直接访问general/index.php就可以直接登入后台"></a>4.直接访问general/index.php就可以直接登入后台</h5><h5 id="POC"><a href="#POC" class="headerlink" title="POC"></a>POC</h5><pre class=" language-python"><code class="language-python"><span class="token comment" spellcheck="true"># -*- coding:utf-8 -*-</span>
 
 <span class="token comment" spellcheck="true">#通达oa任意用户登录</span>
