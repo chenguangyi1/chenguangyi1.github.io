@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="php特性, Keep-Boom">
+    <meta name="keywords" content="ECB加密, Keep-Boom">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>php特性 | Keep-Boom</title>
+    <title>ECB加密 | Keep-Boom</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/14.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/10.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">php特性</h1>
+                    <h1 class="description center-align post-title">ECB加密</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-05-25
+                    2021-07-26
                 </div>
                 
 
@@ -459,75 +459,31 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h5 id="basename"><a href="#basename" class="headerlink" title="basename"></a><strong>basename</strong></h5><pre><code>$path=&#39;/source/index.php&#39;;
-var_dump(basename($path));
-=&gt;index.php
+                <h5 id="块加密"><a href="#块加密" class="headerlink" title="块加密"></a>块加密</h5><p>块加密，英文Block Cyper，又称分组加密，是一种常见的对称加密，具有代表性的块加密有DES，AES，3DES等。块加密的工作模式允许使用同一个分组密码密钥对多于一块的数据进行加密，并保证其安全性。</p>
+<h5 id="ECB模式"><a href="#ECB模式" class="headerlink" title="ECB模式"></a>ECB模式</h5><p>又称电子密码本模式：Electronic codebook，是最简单的块密码加密模式，加密前根据加密块大小（如AES为128位）分成若干块，之后将每块使用相同的密钥单独加密，解密同理。</p>
+<p><img src="/images/119.png"></p>
+<h5 id="BSidesCF-2019-Mixer"><a href="#BSidesCF-2019-Mixer" class="headerlink" title="[BSidesCF 2019]Mixer"></a>[BSidesCF 2019]Mixer</h5><p><img src="/images/120.png"></p>
+<p>题目的意思大概是和signature,rack.session无关。然后需要我们用admin身份登录获得flag。随便登录下</p>
+<p><img src="/images/121.png"></p>
+<p>在发送包中发现经过加密的user，随意修改一部分。报错发现</p>
+<p><img src="/images/122.png"></p>
+<p>只有语句解密发生错误，而其他部分正常解密。猜测是ECB加密。</p>
+<p>而加密过程一般是16字节为一个块，加密后变成32位的16进制。所以要如何拼凑出刚好另admin为1呢？这里有个技巧1.00000000000000 == 1</p>
+<h5 id="构造"><a href="#构造" class="headerlink" title="构造"></a>构造</h5><pre><code>&#123;&quot;first_name&quot;:&quot;A
 
-$path=&#39;/source/index.php/&#39;.urldecode(%99);
-var_dump(basename($path));
-=&gt;index.php
-basename这个函数会去掉文件名开头的非ASCII值</code></pre>
-<h5 id="create-fucntion"><a href="#create-fucntion" class="headerlink" title="create_fucntion"></a><strong>create_fucntion</strong></h5><pre><code>create_function(&#39;$a,$b&#39;,&#39;return $a+$b&#39;)
-想当于
-function lambda1(a,b)&#123;
-rerutn a+b;
-&#125;
+1.00000000000000
 
-利用
-$a = $_GET[&#39;a&#39;];
-create_function(&#39;&#39;,$a);
+&quot;,&quot;last_name&quot;:&quot;p
 
-payload:
-?a=&#125;echo system(&#39;ls&#39;);//</code></pre>
-<h5 id="ereg"><a href="#ereg" class="headerlink" title="ereg"></a><strong>ereg</strong></h5><pre><code>可以用%00绕过匹配
+aww&quot;,&quot;is_admin&quot;:
 
-if (ereg (&quot;^[a-zA-Z]+$&quot;, $_GET[&#39;c&#39;])===FALSE)  &#123;
-    die(&#39;error&#39;);
-
-&#125;
-//只有36d的人才能看到flag
-if(intval(strrev($_GET[&#39;c&#39;]))==0x36d)&#123;
-    echo $flag;
-&#125;
-
-payload
-?c=a%00778</code></pre>
-<h5 id="intval"><a href="#intval" class="headerlink" title="intval"></a><strong>intval</strong></h5><pre><code>如果 base 是 0，通过检测 var 的格式来决定使用的进制：
-如果字符串包括了 &quot;0x&quot; (或 &quot;0X&quot;) 的前缀，使用 16 进制 (hex)；否则，
-如果字符串以 &quot;0&quot; 开始，使用 8 进制(octal)；否则，
-将使用 10 进制 (decimal)。
-intval(&#39;4476.0&#39;)===4476    小数点  
-intval(&#39;+4476.0&#39;)===4476   正负号
-intval(&#39;4476e0&#39;)===4476    科学计数法
-intval(&#39;0x117c&#39;)===4476    16进制
-intval(&#39;010574&#39;)===4476    8进制
-intval(&#39; 010574&#39;)===4476   8进制+空格
-intval无法处理数组</code></pre>
-<pre><code>&lt;?=`cat *`;
-base64 &lt;==&gt;PD89YGNhdCAqYDs
-hex2bin &lt;==&gt;5044383959474e6864434171594473</code></pre>
-<h5 id="preg-replace"><a href="#preg-replace" class="headerlink" title="preg_replace"></a><strong>preg_replace</strong></h5><pre><code>在/e模式下，会把替换成的参数当作PHP代码执行。
-/e模式在PHP7已经被删除
-
-\\1表示匹配子查询的第一个内容 \\2则表示第二个
-?\S*=$&#123;phpinfo()&#125;
-$&#123;&#125;会把里面的代码当作变量执行</code></pre>
-<h5 id="switch"><a href="#switch" class="headerlink" title="switch"></a><strong>switch</strong></h5><pre><code>var_dump(highlight_file(__FILE__));
-=&gt;bool(true)
-
-$a = highlight_file(__FILE__);
-witch($a)&#123;
-    case &quot;upload&quot;:
-        echo 1;
-        break;
-    case &quot;download&quot;:
-        echo 2;
-        break;
-&#125;
-=&gt; 1;</code></pre>
-<h5 id="mb-strtolower"><a href="#mb-strtolower" class="headerlink" title="mb_strtolower"></a>mb_strtolower</h5><pre><code>%c4%b0 urldecode=&gt; İ
-var_dump(mb_strtolower(&#39;İ&#39;)===&#39;i&#39;);
-=&gt;True</code></pre>
+0&#125;</code></pre>
+<p>这样加密后1.00000000000000就是[32,64]位，取出来插入到倒二的位置，最后32位是<code>0&#125;</code>的加密密文，不影响比较。</p>
+<h5 id="利用"><a href="#利用" class="headerlink" title="利用"></a>利用</h5><p>以A1.00000000000000，XXXX登录</p>
+<p><img src="/images/123.png"></p>
+<p>把user值取出来，利用python进行拼接成新的user，替换cookie中的user值即可。</p>
+<pre class=" language-python"><code class="language-python">cookie <span class="token operator">=</span> <span class="token string">"aad68c136e7ae7b068a9738aa331c42e6a952dab19a8b3c1244d25f3f2583dcf0744bbd3479fcf39498c321e4319ab9a2a8f1af5b38a4fadd2d3d49ccff3005120c79eaffe98103c5380ce3774bd0d68"</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>cookie<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token operator">-</span><span class="token number">32</span><span class="token punctuation">]</span><span class="token operator">+</span>cookie<span class="token punctuation">[</span><span class="token number">32</span><span class="token punctuation">:</span><span class="token number">64</span><span class="token punctuation">]</span><span class="token operator">+</span>cookie<span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">32</span><span class="token punctuation">:</span><span class="token punctuation">]</span><span class="token punctuation">)</span></code></pre>
 
             </div>
             <hr/>
@@ -553,7 +509,7 @@ var_dump(mb_strtolower(&#39;İ&#39;)===&#39;i&#39;);
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2021/05/25/php%E7%89%B9%E6%80%A7/">http://example.com/2021/05/25/php%E7%89%B9%E6%80%A7/</a>
+                    <a href="http://example.com/2021/07/26/ECB%E5%8A%A0%E5%AF%86/">http://example.com/2021/07/26/ECB%E5%8A%A0%E5%AF%86/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -762,13 +718,13 @@ var_dump(mb_strtolower(&#39;İ&#39;)===&#39;i&#39;);
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2021/05/27/cve-2018-12613-PhpMyadmin%E5%90%8E%E5%8F%B0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB/">
+                <a href="/2021/07/29/php%E9%94%99%E8%AF%AF%E7%B1%BB%E7%9A%84%E5%88%A9%E7%94%A8/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="cve-2018-12613-PhpMyadmin后台文件包含">
+                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="php错误类的利用">
                         
-                        <span class="card-title">cve-2018-12613-PhpMyadmin后台文件包含</span>
+                        <span class="card-title">php错误类的利用</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -779,7 +735,7 @@ var_dump(mb_strtolower(&#39;İ&#39;)===&#39;i&#39;);
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-05-27
+                            <i class="far fa-clock fa-fw icon-date"></i>2021-07-29
                         </span>
                         <span class="publish-author">
                             
@@ -799,13 +755,13 @@ var_dump(mb_strtolower(&#39;İ&#39;)===&#39;i&#39;);
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/05/24/php%E7%BC%96%E7%A0%81Rce/">
+                <a href="/2021/07/26/%E6%B5%85%E6%9E%90SQLite%E6%B3%A8%E5%85%A5/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="php编码Rce">
+                        <img src="/medias/featureimages/20.jpg" class="responsive-img" alt="浅析SQLite注入">
                         
-                        <span class="card-title">php编码Rce</span>
+                        <span class="card-title">浅析SQLite注入</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -816,7 +772,7 @@ var_dump(mb_strtolower(&#39;İ&#39;)===&#39;i&#39;);
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-05-24
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-07-26
                             </span>
                         <span class="publish-author">
                             
