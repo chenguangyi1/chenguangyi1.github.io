@@ -362,6 +362,82 @@
             
             <div class="article col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
+                    <a href="/2021/03/11/i%E6%98%A5%E7%A7%8B-Hello-World-git%E6%96%87%E4%BB%B6%E6%B3%84%E9%9C%B2/">
+                        <div class="card-image">
+                            
+                            
+                            <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="i春秋-Hello World-git文件泄露">
+                            
+                            <span class="card-title">i春秋-Hello World-git文件泄露</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary block-with-text">
+                            
+                                f12发现有flag.xmas.js,访问404。再看cookie，解码发现是admin的rot13。然后没啥思路，看了wp，考的是敏感文件.git的泄露。
+git泄露原因.git文件是开发人员在开发过程中使用Git做开发时产生的隐藏目录，
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-11
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fas fa-user fa-fw"></i>
+                                0xEaS
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/2021/03/10/%E7%99%BE%E5%BA%A6%E6%9D%AF-code/">
+                        <div class="card-image">
+                            
+                            
+                            <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="百度杯-code">
+                            
+                            <span class="card-title">百度杯-code</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary block-with-text">
+                            
+                                f12看到base64编码后的内容，尝试解码，发现不太对。看了看链接，应该是文件包含，尝试包含下index.php，查看源码。
+按f12出现base64编码后的源码，解码得
+&lt;?php
+/**
+
+ * Created by PhpSt
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-03-10
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fas fa-user fa-fw"></i>
+                                0xEaS
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
                     <a href="/2021/03/09/SQL%E7%BB%95%E8%BF%87%E5%A7%BF%E5%8A%BF/">
                         <div class="card-image">
                             
@@ -663,80 +739,6 @@ if(!isset($_SESSION['nums']))&amp;#123;
                         <div class="publish-info">
                             <span class="publish-date">
                                 <i class="far fa-clock fa-fw icon-date"></i>2021-01-04
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-user fa-fw"></i>
-                                0xEaS
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2020/12/28/ARP%E6%AC%BA%E9%AA%97%E5%AE%9E%E9%AA%8C/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="ARP欺骗实验">
-                            
-                            <span class="card-title">ARP欺骗实验</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                这次实验的目的是对局域网内其他设备进行断网操作，及者监听操作。简单分析下ARP协议ARP(Address Resolution Protocol)地址解析协议，是根据IP地址获取其物理地址/MAC地址(硬件地址)的一个TCP/IP协议。它的
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-28
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-user fa-fw"></i>
-                                0xEaS
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2020/12/22/Uplaod-labs/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="Uplaod-labs">
-                            
-                            <span class="card-title">Uplaod-labs</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                   环境
-apache2.4
-php5.2 和 php7.3 （有些关需要版本不一样）
-webshell 菜刀 （蚁剑低版本php不懂啥原因连不上）       
-#0x01先上传一个fox.php的木马文件，发现被拦截下来该文件不允许上
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-12-22
                             </span>
                             <span class="publish-author">
                                 
