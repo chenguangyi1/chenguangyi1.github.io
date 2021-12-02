@@ -459,7 +459,20 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                
+                <h5 id="如何判断是否是struts2框架"><a href="#如何判断是否是struts2框架" class="headerlink" title="如何判断是否是struts2框架"></a>如何判断是否是struts2框架</h5><p>①网页后缀 login.do ，login.action</p>
+<p>②页面报错看是否存在strust字样等</p>
+<p>③判断 /struts/webconsole.html 是否存在来进行判断，需要 devMode 为 true</p>
+<p>其它的方法：通过 actionErrors。要求是对应的 Action 需要继承自 ActionSupport 类。 </p>
+<p>利用方法：</p>
+<p>如原始 URL 为 <a target="_blank" rel="noopener" href="https://threathunter.org/">https://threathunter.org</a></p>
+<p>则检测所用的 URL 为 <a target="_blank" rel="noopener" href="https://threathunter.org/?actionErrors=1111">https://threathunter.org/?actionErrors=1111</a> </p>
+<p>如果返回的页面出现异常，则可以认定为目标是基于 Struts2 构建的。</p>
+<p>异常包括但不限于以下几种现象： </p>
+<p>1、 页面直接出现 404 或者 500 等错误。 </p>
+<p>2、 页面上输出了与业务有关错误消息，或者 1111 被回显到了页面上。</p>
+<p>3、 页面的内容结构发生了明显的改变。 </p>
+<p>4、 页面发生了重定向。</p>
+
             </div>
             <hr/>
 
