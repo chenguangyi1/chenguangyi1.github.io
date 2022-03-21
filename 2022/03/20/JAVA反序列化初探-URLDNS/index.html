@@ -514,7 +514,7 @@
         &#125;</code></pre>
 <p>可以看到我们输入的url，就是这边传入的url。然后实例化URL类，并把<code>hashCode</code>值设为-1。然后把URL对象put进<code>hashMap</code>类。最后序列化<code>hashMap</code>对象。但payload里还重写了<code>getHostAddress</code>方法，现在先不说为什么，我们一步步看下去。</p>
 <p><strong>反序列过程分析</strong></p>
-<p>跟进下反序列化过程，因为<code>hashMap</code>类继承了<code>Serializable</code>序列化/反序列化接口，所以可以被序列化/反序列。搜下<code>readObject</code>发现重写了该方法。</p>
+<p>跟进下反序列化过程，因为<code>hashMap</code>类实现了<code>Serializable</code>序列化/反序列化接口，所以可以被序列化/反序列化。搜下<code>readObject</code>发现重写了该方法。</p>
 <p><img src="/images/352.png"></p>
 <p>可以看到我们传入的url对象,赋值给了这里的参数key，并调用hash处理key。</p>
 <p><img src="/images/353.png"></p>
