@@ -477,11 +477,11 @@
 <p>可以看到<code>InvokerTransformer</code>类不在链条里了，替换的是<code>InstantiateTransformer</code>和<code>TrAXFilter</code>类。</p>
 <p><strong><code>TrAXFilter</code>类</strong></p>
 <p>它的有参构造方法，会调用形参的<code>newIransfromer</code>方法，我们只要把这里的<code>templates</code>设成<code>TemplatesImpl</code>类就行了。</p>
-<p><img src="E:\boke\blog\source\images\420.png"></p>
+<p><img src="/images/420.png"></p>
 <p><strong><code>InstantiateTransformer</code>类</strong></p>
 <p>实现了<code>Transformer</code>接口，所以也有<code>transform</code>方法，他的作用就是调用构造方法。且这里的<code>input</code>、<code>iParamTypes</code>、<code>iArgs</code>都可控。我们就可以通过<code>TransformingComparator.compare()</code>方法去触发<code>InstantiateTransformer.transform()</code>方法</p>
-<p><img src="E:\boke\blog\source\images\421.png"></p>
-<p><img src="E:\boke\blog\source\images\422.png"></p>
+<p><img src="/images/421.png"></p>
+<p><img src="/images/422.png"></p>
 <p><strong>POC构造</strong></p>
 <pre><code>PriorityQueue.readObject()
         PriorityQueue.heapify()
