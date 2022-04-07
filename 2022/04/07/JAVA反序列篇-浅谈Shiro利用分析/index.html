@@ -481,17 +481,17 @@
 <li>进行Base64编码</li>
 <li>将编码过的字符串当做rememberMe字段的值发送给服务端</li>
 </ul>
-<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/0.png"></p>
-<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/1.png"></p>
+<p><img src="/images/423.png"></p>
+<p><img src="/images/424.png"></p>
 <h3 id="第一个问题"><a href="#第一个问题" class="headerlink" title="第一个问题"></a><strong>第一个问题</strong></h3><p>为什么<code>CommonsCollections6</code>等部分CC链条无法在<code>Shiro</code>中反序列化利用成功呢？</p>
 <p>把payload发送过去，没有像预期那样弹出计算器，Tomcat服务端也出现了报错，我们来一起探究下。</p>
-<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/2.png"></p>
+<p><img src="/images/425.png"></p>
 <p><code>org.apache.shiro.io.ClassResolvingObjectInputStream</code>类是一个<code>ObjectInputStream</code>的子类，其重写了<code>resolveClass</code>方法，</p>
 <p><code>resolveClass</code>是反序列化中用来查找类的方法，读取序列化流的时候，读到一个字符串形式的类名，通过这个方法来找到对应的     <code>java.lang.Class</code>对象。对比一下它的父类，也就是正常的<code>ObjectInputStream</code>类中的 <code>resolveClass</code>方法。</p>
-<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/3.png"></p>
-<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/4.png"></p>
+<p><img src="/images/426.png"></p>
+<p><img src="/images/427.png"></p>
 <p>前者用的是 <code>org.apache.shiro.util.ClassUtils#forName </code>（实际上内部用到了 <code>org.apache.catalina.loader.ParallelWebappClassLoader#loadClass</code> ），而后者用的是Java原 生的 <code>Class.forName</code>。下断点调试，看看哪个类触发了异常。</p>
-<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/5.png"></p>
+<p><img src="/images/428.png"></p>
 <p>出现异常的类是<code>Lorg.apache.commons.collections.Transformer</code>类，学过CC链就会知道表示的是<code>org.apache.commons.collections.Transformer</code>的数组。</p>
 <p>借用P牛的结论：如果反序列化流中包含非Java自身的数组，则会出现无法加载类的错误。这就解释了为什么<code>CommonsCollections6</code>及部分CC链条无法利用了，因为其中用到了<code>Transformer</code>数组。</p>
 <p><strong>构造不含Transformer数组的Gadget</strong></p>
@@ -509,7 +509,7 @@
                                         TransletClassLoader.defineClass()
                                             newInstance()
                                                 Runtime.getRuntime().exec(&quot;calc.exe&quot;)</code></pre>
-<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/6.png"></p>
+<p><img src="/images/429.png"></p>
 <p><strong>POC</strong></p>
 <pre><code>package payload;
 
@@ -633,9 +633,9 @@ public class Evil  extends AbstractTranslet &#123;
 <p>比如一个类<code>User</code>是个<code>JavaBean</code>，它有个<code>name</code>属性，则<code>PropertyUtils.getProperty(new Usesr(),&quot;name&quot;)</code>则会调用它的<code>getName()</code>方法。</p>
 <p>这有什么用呢？我们前面分析过<code>TemplateImpl</code>类中还有一个方法一样可以触发最后的字节码加载并实例化。那就是<code>getOutputProperties</code>方法，如果我们可以调用<code>PropertyUtils.getProperty(new TemplateImpl(),&quot;OutputProperties&quot;)</code>是不是就可以RCE了。</p>
 <p>经过大佬们的探索，发现<code>Commons Beanutils</code>中的<code>BeanComparator</code>类的<code>compare()</code>方法调用了<code>PropertyUtils.getProperty</code></p>
-<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/8.png"></p>
+<p><img src="/images/431.png"></p>
 <p>拼接<code>CommonsCollection2</code>的前半段形成新的利用链条</p>
-<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/9.png"></p>
+<p><img src="/images/432.png"></p>
 <p><strong>Gadget</strong></p>
 <pre><code>Gadget chain:
     PriorityQueue.readObject()
@@ -649,7 +649,7 @@ public class Evil  extends AbstractTranslet &#123;
                                     TransletClassLoader.defineClass()
                                            newInstance()
                                             Runtime.getRuntime().exec(&quot;calc.exe&quot;)</code></pre>
-<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/7.png"></p>
+<p><img src="/images/430.png"></p>
 <p><strong>POC</strong></p>
 <pre><code>package payload;
 
@@ -716,10 +716,10 @@ public class CB1_shiroAll &#123;
 <p><strong>0x01</strong></p>
 <p>使用垃圾数据绕过</p>
 <p>rememberMe = payload + == + 垃圾数据</p>
-<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/10.png"></p>
+<p><img src="/images/433.png"></p>
 <p><strong>0x02</strong></p>
 <p>使用未知HTTP请求绕过，有的WAF不会对未知HTTP请求进行拦截。但我们也需要保证后端会正常解析rememberMe字段，经试验此方法可行。</p>
-<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/11.png"></p>
+<p><img src="/images/434.png"></p>
 <p><strong>0x03</strong></p>
 <p>通过base64解码特性导致waf不能成功解码绕过waf</p>
 <p>参考文章：<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/P5h9_K4YcvsrU4tsdHsJdQ">你的扫描器可以绕过防火墙么？（一） (qq.com)</a></p>
@@ -728,10 +728,10 @@ public class CB1_shiroAll &#123;
 <li>字符串中包含 <code>. %</code> 等符号时，是选择忽略这些符号，还是报错</li>
 <li>字符串中包含 <code>=</code> 符号，解析到<code>=</code>时，是认为解析完成了，还是忽略”等号”继续解析</li>
 </ul>
-<p><img src="E:\boke\blog\source_posts\JAVA反序列篇-浅谈Shiro利用分析\12.png"></p>
+<p><img src="/images/435.png"></p>
 <p>所以我们可以通过在payload中添加<code>...........</code>或者<code>%%%%</code>来绕过waf，让waf解析失败</p>
-<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/13.png"></p>
-<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/14.png"></p>
+<p><img src="/images/436.png"></p>
+<p><img src="/images/437.png"></p>
 <h3 id="第五个问题"><a href="#第五个问题" class="headerlink" title="第五个问题"></a>第五个问题</h3><p><code>Shiro</code>环境不出网时，我们该怎么判断是否存在Shiro反序列化漏洞?</p>
 <p>参考文章：<a target="_blank" rel="noopener" href="http://www.lmxspace.com/2020/08/24/%E4%B8%80%E7%A7%8D%E5%8F%A6%E7%B1%BB%E7%9A%84shiro%E6%A3%80%E6%B5%8B%E6%96%B9%E5%BC%8F/">一种另类的shiro检测方式</a></p>
 <p>简单说下原理，就是反序列过程最后会进行类型转换，而返回包中DeleteMe字段是在密钥不对或者类型转换等错误抛出异常时，在返回头添加的字段。如果我们反序列化的类是<code>PrincipalCollection</code>的子类且密钥又正确，返回头便不会有DeleteMe字段。</p>
@@ -739,8 +739,8 @@ public class CB1_shiroAll &#123;
     return (PrincipalCollection)this.getSerializer().deserialize(serializedIdentity);
 &#125;</code></pre>
 <p>这个类就是<code>SimplePrincipalCollection</code></p>
-<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/15.png"></p>
-<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/16.png"></p>
+<p><img src="/images/438.png"></p>
+<p><img src="/images/439.png"></p>
 <p><strong>检测POC</strong></p>
 <pre><code>package payload;
 
@@ -764,7 +764,7 @@ public class KeyTest &#123;
     &#125;
 &#125;</code></pre>
 <p>通过返回头有没有DeleteMe字段来检测密钥，利用限制更小。当然WAF可能也会对这些类进行拦截，可以使用上面的方法或者寻找其他类进行绕过。</p>
-<p><img src="./JAVA%E5%8F%8D%E5%BA%8F%E5%88%97%E7%AF%87-%E6%B5%85%E8%B0%88Shiro%E5%88%A9%E7%94%A8%E5%88%86%E6%9E%90/17.png"></p>
+<p><img src="/images/440.png"></p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>学习一个漏洞的利用，不应该只是单纯在本地自己搭建的环境进行复现。更需要学习各种WAF的绕过，不出网等各种各样情况下该怎么进行应对。如果没有学习过WAF的常规绕过，又面对现在大部分网站都部署WAF的情况下可能会错过非常多的漏洞。然后就是不出网情况的利用，这种情况还是很常见。现在往往为了保证网站服务器的安全，会把网站的服务器设置成不出网状态会把服务端口经过各种映射让用户访问。</p>
 <p>以上是作者自己是思考见解，如有不对还望大家指点！</p>
 <h2 id="文章参考"><a href="#文章参考" class="headerlink" title="文章参考"></a>文章参考</h2><p>P牛的JAVA安全漫谈</p>
